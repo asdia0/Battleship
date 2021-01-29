@@ -60,6 +60,7 @@
                 for (int i = 0; i < ship.length; i++)
                 {
                     this.squares[square.id + i].hasShip = true;
+                    this.squares[square.id + i].hadShip = true;
                     ship.occupiedSquares.Add(this.squares[i]);
                 }
 
@@ -72,6 +73,7 @@
                 for (int i = 0; i < ship.length; i++)
                 {
                     this.squares[i * 10 + square.id].hasShip = true;
+                    this.squares[i * 10 + square.id].hadShip = true;
                     ship.occupiedSquares.Add(this.squares[i * 10 + square.id]);
                 }
 
@@ -85,15 +87,15 @@
             {
                 throw new Exception($"Square {opponent.id} has already been searched.");
             }
-
             else
             {
                 opponent.beenSearched = true;
 
                 if (opponent.hasShip == true)
                 {
-                    this.attacked[opponent.id] = (opponent, true);
                     opponent.hasShip = false;
+
+
                     foreach (Ship sp in opponent.grid.ships)
                     {
                         sp.occupiedSquares.Remove(opponent);
@@ -107,11 +109,6 @@
                     {
                         Game.update += $"You have struck an enemy ship.{Environment.NewLine}";
                     }
-                }
-
-                else
-                {
-                    this.attacked[opponent.id] = (opponent, false);
                 }
             }
         }

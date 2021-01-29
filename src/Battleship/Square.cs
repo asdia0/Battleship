@@ -24,6 +24,8 @@
         /// </summary>
         public bool beenSearched;
 
+        public bool? hadShip = null;
+
         /// <summary>
         /// Determines whether the square has an enemy ship on it.
         /// </summary>

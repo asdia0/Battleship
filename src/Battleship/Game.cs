@@ -152,24 +152,22 @@ namespace Battleships
 
             string enem = "";
 
-            foreach ((Square sq, bool ship) in player.attacked)
+            foreach (Square sq in opponent.squares)
             {
-                if (sq == null)
+                if (sq.beenSearched)
                 {
-                    enem += ".";
-                }
-
-                else
-                {
-                    if (ship)
+                    if (sq.hadShip == true)
                     {
                         enem += "x";
                     }
-
                     else
                     {
                         enem += "o";
                     }
+                }
+                else
+                {
+                    enem += ".";
                 }
             }
 
