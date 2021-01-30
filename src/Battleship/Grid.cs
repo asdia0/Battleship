@@ -81,29 +81,29 @@
             }
         }
 
-        public void Search(Square opponent)
+        public void Search(Square sq)
         {
-            if (opponent.beenSearched)
+            if (sq.beenSearched)
             {
-                throw new Exception($"Square {opponent.id} has already been searched.");
+                throw new Exception($"Square {sq.id} has already been searched.");
             }
             else
             {
-                opponent.beenSearched = true;
+                sq.beenSearched = true;
 
-                if (opponent.hasShip == true)
+                if (sq.hasShip == true)
                 {
-                    opponent.hasShip = false;
+                    sq.hasShip = false;
 
 
-                    foreach (Ship sp in opponent.grid.ships)
+                    foreach (Ship sp in sq.grid.ships)
                     {
-                        sp.occupiedSquares.Remove(opponent);
+                        sp.occupiedSquares.Remove(sq);
                     }
 
-                    if (opponent.grid == Game.player)
+                    if (sq.grid == Game.player)
                     {
-                        Game.update += $"Your ship has been struck at Square {opponent.id}.{Environment.NewLine}";
+                        Game.update += $"Your ship has been struck at Square {sq.id}.{Environment.NewLine}";
                     }
                     else
                     {

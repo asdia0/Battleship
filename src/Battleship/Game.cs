@@ -22,14 +22,13 @@ namespace Battleships
         {
             player = new Grid();
             opponent = new Grid();
-
-            StartGame();
         }
 
         public void StartGame()
         {
             SetUp();
             Attack();
+            EndGame();
         }
 
         public static void SetUp()
@@ -76,9 +75,21 @@ namespace Battleships
             //}
         }
 
+        public static void EndGame()
+        {
+            if (opponent.ships.Count == 0)
+            {
+                Console.WriteLine("Congratulations on winning!");
+            }
+            else if (player.ships.Count == 0)
+            {
+                Console.WriteLine("F.");
+            }
+        }
+
         public static void Attack()
         {
-            while (player.ships.Count != 0 || opponent.ships.Count != 0)
+            while (player.ships.Count > 0 && opponent.ships.Count > 0)
             {
                 UpdateConsole();
                 Random rnd = new Random();
@@ -102,6 +113,14 @@ namespace Battleships
 
                     player.Search(opponent.squares[id]);
 
+                    foreach (Ship ship in opponent.ships.ToList())
+                    {
+                        if (ship.occupiedSquares.Count == 0)
+                        {
+                            opponent.ships.Remove(ship);
+                        }
+                    }
+
                     turn = false;
                 }
                 else
@@ -118,7 +137,15 @@ namespace Battleships
                         }
                     }
 
-                    player.Search(player.squares[rannum]);
+                    opponent.Search(player.squares[rannum]);
+
+                    foreach (Ship ship in player.ships.ToList())
+                    {
+                        if (ship.occupiedSquares.Count == 0)
+                        {
+                            player.ships.Remove(ship);
+                        }
+                    }
 
                     move++;
 
@@ -180,6 +207,7 @@ namespace Battleships
             Console.Clear();
             Console.WriteLine($"Move {move}{Environment.NewLine}");
             Console.WriteLine($"You have {player.ships.Count} ships left.{Environment.NewLine}");
+            Console.WriteLine($"Your opponent has {opponent.ships.Count} ships left.{Environment.NewLine}");
             Console.WriteLine(string.Join(Environment.NewLine, groups.ToArray()));
             Console.WriteLine();
             Console.WriteLine(string.Join(Environment.NewLine, lst.ToArray()));
