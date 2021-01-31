@@ -8,35 +8,52 @@
     /// </summary>
     public class Ship
     {
-        public string type;
+        /// <summary>
+        /// The ship's type.
+        /// </summary>
+        public string Type;
 
-        public int length;
+        /// <summary>
+        /// The ship's length.
+        /// </summary>
+        public int Length;
 
-        public List<Square> occupiedSquares = new List<Square>();
+        /// <summary>
+        /// The list of squares that the ship occupies.
+        /// </summary>
+        public List<Square> OccupiedSquares = new List<Square>();
 
-        public Grid grid;
+        /// <summary>
+        /// The ship's grid.
+        /// </summary>
+        public Grid Grid;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Ship"/> class.
+        /// </summary>
+        /// <param name="grid">The ship's grid.</param>
+        /// <param name="type">The ship's type.</param>
         public Ship(Grid grid, string type)
         {
-            this.grid = grid;
-            this.type = type;
+            this.Grid = grid;
+            this.Type = type;
 
             switch (type)
             {
                 case "Carrier":
-                    this.length = 5;
+                    this.Length = 5;
                     break;
                 case "Battleship":
-                    this.length = 4;
+                    this.Length = 4;
                     break;
                 case "Cruiser":
-                    this.length = 3;
+                    this.Length = 3;
                     break;
                 case "Submarine":
-                    this.length = 3;
+                    this.Length = 3;
                     break;
                 case "Destroyer":
-                    this.length = 2;
+                    this.Length = 2;
                     break;
                 default:
                     throw new Exception("Ship type unknown.");

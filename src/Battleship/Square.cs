@@ -7,43 +7,45 @@
     /// </summary>
     public class Square
     {
-        public Grid grid;
+        /// <summary>
+        /// The square's grid.
+        /// </summary>
+        public Grid Grid;
 
         /// <summary>
-        /// Unique identification tag of the square.
+        /// The square's unique identification tag.
         /// </summary>
-        public int id;
-
-        /* 
-         * Row = floor(id / 10)
-         * Column = id % 10 (0 to 9)
-         */
+        public int ID;
 
         /// <summary>
         /// Determines whether the square has been searched.
         /// </summary>
-        public bool beenSearched;
+        public bool BeenSearched;
 
-        public bool? hadShip = null;
+        /// <summary>
+        /// Determines whether the square ever had a ship on it.
+        /// </summary>
+        public bool? HadShip = null;
 
         /// <summary>
         /// Determines whether the square has an enemy ship on it.
         /// </summary>
-        public bool? hasShip = null;
+        public bool? HasShip = null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Square"/> class.
         /// </summary>
-        /// <param name="id">The unique identification tag of the square.</param>
+        /// <param name="grid">The square's grid.</param>
+        /// <param name="id">The square's unique identification tag.</param>
         public Square(Grid grid, int id)
         {
-            if (0 > id || id > 99)
+            if (id < 0 || id > 99)
             {
                 throw new Exception("Invalid Square ID.");
             }
 
-            this.grid = grid;
-            this.id = id;
+            this.Grid = grid;
+            this.ID = id;
         }
     }
 }

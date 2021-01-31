@@ -1,126 +1,133 @@
 ﻿namespace Battleships
 {
     using System;
-    using System.Linq;
     using System.Collections.Generic;
-    using Newtonsoft.Json;
+    using System.Linq;
 
     /// <summary>
     /// Defines a grid.
     /// </summary>
     public class Grid
     {
-        public (Square, bool)[] attacked = new (Square, bool)[100];
+        /// <summary>
+        /// The ships on the grid.
+        /// </summary>
+        public List<Ship> Ships = new List<Ship>();
 
-        public List<Ship> ships = new List<Ship>();
+        /// <summary>
+        /// The grid's squares.
+        /// </summary>
+        public List<Square> Squares = new List<Square>();
 
-        public List<Square> squares = new List<Square>();
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Grid"/> class.
+        /// </summary>
         public Grid()
         {
-            AddSquares();
+            this.AddSquares();
         }
 
+        /// <summary>
+        /// Adds 100 squares to the grid.
+        /// </summary>
         public void AddSquares()
         {
             for (int i = 0; i < 100; i++)
             {
-                this.squares.Add(new Square(this, i));
+                this.Squares.Add(new Square(this, i));
             }
         }
 
+        /// <summary>
+        /// Adds a ship to the grid.
+        /// </summary>
+        /// <param name="square">The ship's starting square.</param>
+        /// <param name="ship">The ship to be added.</param>
+        /// <param name="alignment">The ship's alignment.</param>
         public void AddShip(Square square, Ship ship, bool alignment)
         {
-            // alignment: true = horizontal, false = vertical
-            // position: starting square
-
-            if (ship.grid != square.grid)
+            if (ship.Grid != square.Grid)
             {
                 throw new Exception("Attempted to add ship to non-local square.");
             }
 
-            foreach (Ship sp in ships)
+            foreach (Ship sp in this.Ships)
             {
-                if (sp.type == ship.type)
+                if (sp.Type == ship.Type)
                 {
-                    throw new Exception($"You cannot have two {ship.type}s.");
+                    throw new Exception($"You cannot have two {ship.Type}s.");
                 }
             }
 
-            int availRows = 11 - square.id % 10;
-            int availCols = 11 - (int)Math.Floor((decimal)square.id / 10);
+            int availRows = 11 - (square.ID % 10);
+            int availCols = 11 - (int)Math.Floor((decimal)square.ID / 10);
 
             // horizontal
-            if (alignment && ship.length <= availRows)
+            if (alignment && ship.Length <= availRows)
             {
-                for (int i = 0; i < ship.length; i++)
+                for (int i = 0; i < ship.Length; i++)
                 {
-                    if (this.squares[square.id + i].hasShip == true)
+                    if (this.Squares[square.ID + i].HasShip == true)
                     {
                         throw new Exception($"Square is already occupied by a {ship}.");
                     }
 
-                    this.squares[square.id + i].hasShip = true;
-                    this.squares[square.id + i].hadShip = true;
-                    ship.occupiedSquares.Add(this.squares[square.id + i]);
+                    this.Squares[square.ID + i].HasShip = true;
+                    this.Squares[square.ID + i].HadShip = true;
+                    ship.OccupiedSquares.Add(this.Squares[square.ID + i]);
                 }
 
-                this.ships.Add(ship);
+                this.Ships.Add(ship);
             }
 
             // vertical
-            else if (!alignment && ship.length <= availCols)
+            else if (!alignment && ship.Length <= availCols)
             {
-                for (int i = 0; i < ship.length; i++)
+                for (int i = 0; i < ship.Length; i++)
                 {
-                    if (this.squares[i * 10 + square.id].hasShip == true)
+                    if (this.Squares[(i * 10) + square.ID].HasShip == true)
                     {
                         throw new Exception($"Square is already occupied by a {ship}.");
                     }
 
-                    this.squares[i * 10 + square.id].hasShip = true;
-                    this.squares[i * 10 + square.id].hadShip = true;
-                    ship.occupiedSquares.Add(this.squares[i * 10 + square.id]);
+                    this.Squares[(i * 10) + square.ID].HasShip = true;
+                    this.Squares[(i * 10) + square.ID].HadShip = true;
+                    ship.OccupiedSquares.Add(this.Squares[(i * 10) + square.ID]);
                 }
 
-                this.ships.Add(ship);
+                this.Ships.Add(ship);
             }
         }
 
+        /// <summary>
+        /// Searches a square.
+        /// </summary>
+        /// <param name="sq">The square to search.</param>
         public void Search(Square sq)
         {
-            if (sq.beenSearched)
+            if (sq.BeenSearched)
             {
-                throw new Exception($"Square {sq.id} has already been searched.");
+                throw new Exception($"Square {sq.ID} has already been searched.");
             }
             else
             {
-                sq.beenSearched = true;
+                sq.BeenSearched = true;
 
-                if (sq.hasShip == true)
+                if (sq.HasShip == true)
                 {
-                    sq.hasShip = false;
+                    sq.HasShip = false;
 
-                    foreach (Ship sp in sq.grid.ships.ToList())
+                    foreach (Ship sp in sq.Grid.Ships.ToList())
                     {
-                        if (sp.occupiedSquares.Contains(sq))
+                        if (sp.OccupiedSquares.Contains(sq))
                         {
-                            sp.occupiedSquares.Remove(sq);
+                            sp.OccupiedSquares.Remove(sq);
 
-                            if (sp.occupiedSquares.Count == 0)
+                            if (sp.OccupiedSquares.Count == 0)
                             {
-                                sq.grid.ships.Remove(sp);
+                                sq.Grid.Ships.Remove(sp);
                             }
                         }
-                    }
-
-                    if (sq.grid == Game.player)
-                    {
-                        Game.update += $"Your ship has been struck at Square {sq.id}.{Environment.NewLine}";
-                    }
-                    else
-                    {
-                        Game.update += $"You have struck an enemy ship.{Environment.NewLine}";
                     }
                 }
             }
