@@ -91,7 +91,7 @@
                         isAvail1 = true;
                     }
                     catch
-                    {   }
+                    { }
                 }
 
                 bool isAvail2 = false;
@@ -123,13 +123,11 @@
         {
             if (this.Player2.Ships.Count == 0)
             {
-                Winner = true;
-                //Console.WriteLine("Player 1 won.");
+                this.Winner = true;
             }
             else if (this.Player1.Ships.Count == 0)
             {
-                Winner = false;
-                //Console.WriteLine("Player 2 won.");
+                this.Winner = false;
             }
         }
 
@@ -138,7 +136,6 @@
         /// </summary>
         private void AttackRandom()
         {
-            //this.UpdateConsole();
             Random rnd = new Random();
 
             if (this.turn)
@@ -179,66 +176,6 @@
 
                 this.turn = true;
             }
-        }
-
-        /// <summary>
-        /// Updates the console with the latest data.
-        /// </summary>
-        private void UpdateConsole()
-        {
-            string p1 = string.Empty;
-
-            foreach (Square sq in this.Player1.Squares)
-            {
-                if (sq.HasShip == true)
-                {
-                    p1 += "x";
-                }
-                else if (sq.BeenSearched)
-                {
-                    p1 += "o";
-                }
-                else
-                {
-                    p1 += ".";
-                }
-            }
-
-            string p2 = string.Empty;
-
-            foreach (Square sq in this.Player2.Squares)
-            {
-                if (sq.HasShip == true)
-                {
-                    p2 += "x";
-                }
-                else if (sq.BeenSearched)
-                {
-                    p2 += "o";
-                }
-                else
-                {
-                    p2 += ".";
-                }
-            }
-
-            List<string> player1 = (from Match m in Regex.Matches(p1, ".{1,10}")
-                                   select m.Value).ToList();
-
-            List<string> player2 = (from Match m in Regex.Matches(p2, ".{1,10}")
-                                select m.Value).ToList();
-
-            Console.Clear();
-            Console.WriteLine($"Move {this.Move}\n");
-
-            string visual = $"player 1       player 2\n{this.Player1.Ships.Count} ships        {this.Player2.Ships.Count} ships\n";
-
-            for (int i = 0; i < 10; i++)
-            {
-                visual += $"\n{player1[i]}     {player2[i]}";
-            }
-
-            Console.WriteLine(visual);
         }
     }
 }
