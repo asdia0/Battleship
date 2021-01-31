@@ -41,10 +41,10 @@
                     player2++;
                 }
 
-                using (StreamWriter outputFile = File.AppendText("games.csv"))
-                {
-                    outputFile.WriteLine($"Random,{winner},{game.Move}");
-                }
+                //using (StreamWriter outputFile = File.AppendText("games.csv"))
+                //{
+                //    outputFile.WriteLine($"Random,{winner},{game.Move}");
+                //}
 
                 Console.Clear();
                 Console.WriteLine($"Number of games: {i}\nWhite won: {player1}\nBlack won: {player2}\nAverage number of moves: {sumMoves / i}");

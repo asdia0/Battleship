@@ -20,6 +20,11 @@
         public List<Square> Squares = new List<Square>();
 
         /// <summary>
+        /// List of enemy squares to attack.
+        /// </summary>
+        public List<Square> ToAttack = new List<Square>();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Grid"/> class.
         /// </summary>
         public Grid()

@@ -47,7 +47,7 @@
             this.StartGame();
             while (this.Player1.Ships.Count > 0 && this.Player2.Ships.Count > 0)
             {
-                this.AttackRandom();
+                this.AttackHuntTarget();
             }
 
             this.EndGame();
@@ -71,9 +71,7 @@
             {
                 Random rnd = new Random();
 
-                bool isAvail1 = false;
-
-                while (isAvail1 == false)
+                while (true)
                 {
                     bool horizontal = false;
 
@@ -85,15 +83,13 @@
                     try
                     {
                         this.Player1.AddShip(this.Player1.Squares[rnd.Next(100)], new Ship(this.Player1, type), horizontal);
-                        isAvail1 = true;
+                        break;
                     }
                     catch
                     { }
                 }
 
-                bool isAvail2 = false;
-
-                while (isAvail2 == false)
+                while (true)
                 {
                     bool horizontal = false;
 
@@ -105,7 +101,7 @@
                     try
                     {
                         this.Player2.AddShip(this.Player2.Squares[rnd.Next(100)], new Ship(this.Player2, type), horizontal);
-                        isAvail2 = true;
+                        break;
                     }
                     catch
                     { }
@@ -135,44 +131,37 @@
         {
             Random rnd = new Random();
 
+            Grid P1 = new Grid();
+            Grid P2 = new Grid();
+            
             if (this.turn)
             {
-                int rannum = 0;
-
-                bool isAvail = false;
-                while (isAvail == false)
-                {
-                    rannum = rnd.Next(100);
-                    if (!this.Player2.Squares[rannum].BeenSearched)
-                    {
-                        isAvail = true;
-                    }
-                }
-
-                this.Player1.Search(this.Player2.Squares[rannum]);
+                P1 = this.Player1;
+                P2 = this.Player2;
 
                 this.turn = false;
             }
             else
             {
-                int rannum = 0;
-
-                bool isAvail = false;
-                while (isAvail == false)
-                {
-                    rannum = rnd.Next(100);
-                    if (!this.Player1.Squares[rannum].BeenSearched)
-                    {
-                        isAvail = true;
-                    }
-                }
-
-                this.Player2.Search(this.Player1.Squares[rannum]);
+                P1 = this.Player2;
+                P2 = this.Player1;
 
                 this.Move++;
-
                 this.turn = true;
             }
+
+            int rannum = 0;
+
+            while (true)
+            {
+                rannum = rnd.Next(100);
+                if (!P2.Squares[rannum].BeenSearched)
+                {
+                    break;
+                }
+            }
+
+            P1.Search(P2.Squares[rannum]);
         }
 
         /// <summary>
@@ -180,7 +169,54 @@
         /// </summary>
         private void AttackHuntTarget()
         {
+            Random rnd = new Random();
 
+            Grid P1 = new Grid();
+            Grid P2 = new Grid();
+
+            if (this.turn)
+            {
+                P1 = this.Player1;
+                P2 = this.Player2;
+
+                this.turn = false;
+            }
+            else
+            {
+                P1 = this.Player2;
+                P2 = this.Player1;
+
+                this.Move++;
+                this.turn = true;
+            }
+
+            // HUNT
+            if (P1.ToAttack.Count == 0)
+            {
+                int rannum = 0;
+
+                while (true)
+                {
+                    rannum = rnd.Next(100);
+                    if (!P2.Squares[rannum].BeenSearched)
+                    {
+                        break;
+                    }
+                }
+
+                P1.Search(P2.Squares[rannum]);
+
+                this.HTAddTargets(P1, P2, rannum);
+            }
+            // TARGET
+            else
+            {
+                P1.Search(P1.ToAttack[0]);
+
+                this.HTAddTargets(P1, P2, P1.ToAttack[0].ID);
+
+                P1.ToAttack.Remove(P1.ToAttack[0]);
+            }
         }
 
         /// <summary>
@@ -189,6 +225,39 @@
         private void AttackHuntTargetParity()
         {
 
+        }
+
+        /// <summary>
+        /// Adds squares to the target list.
+        /// </summary>
+        /// <param name="P1">Player 1</param>
+        /// <param name="P2">Player 2</param>
+        /// <param name="squareID">Square to check's ID.</param>
+        private void HTAddTargets(Grid P1, Grid P2, int squareID)
+        {
+            if (P2.Squares[squareID].HadShip == true)
+            {
+                List<int> sqID = new List<int>()
+                {
+                    squareID - 1,
+                    squareID + 1,
+                    squareID - 10,
+                    squareID + 10,
+                };
+
+                foreach (int id in sqID)
+                {
+                    try
+                    {
+                        if (!P2.Squares[id].BeenSearched && !P1.ToAttack.Contains(P2.Squares[id])) // if has not been searched AND has ship
+                        {
+                            P1.ToAttack.Add(P2.Squares[id]);
+                        }
+                    }
+                    catch
+                    { }
+                }
+            }
         }
 
         /// <summary>
