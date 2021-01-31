@@ -255,7 +255,7 @@
                 {
                     rannum = 2 * rnd.Next(50);
 
-                    if (!p2.Squares[rannum].BeenSearched)
+                    if (!p2.Squares[rannum].BeenSearched && ((rannum % 10) + ((int)Math.Floor((decimal)rannum / 10))) % 2 == 0)
                     {
                         break;
                     }
