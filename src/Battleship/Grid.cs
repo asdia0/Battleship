@@ -1,6 +1,7 @@
 ﻿namespace Battleships
 {
     using System;
+    using System.Linq;
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
@@ -38,11 +39,6 @@
                 throw new Exception("Attempted to add ship to non-local square.");
             }
 
-            if (square.hasShip == true)
-            {
-                throw new Exception($"Square is already occupied by a {ship}.");
-            }
-
             foreach (Ship sp in ships)
             {
                 if (sp.type == ship.type)
@@ -59,9 +55,14 @@
             {
                 for (int i = 0; i < ship.length; i++)
                 {
+                    if (this.squares[square.id + i].hasShip == true)
+                    {
+                        throw new Exception($"Square is already occupied by a {ship}.");
+                    }
+
                     this.squares[square.id + i].hasShip = true;
                     this.squares[square.id + i].hadShip = true;
-                    ship.occupiedSquares.Add(this.squares[i]);
+                    ship.occupiedSquares.Add(this.squares[square.id + i]);
                 }
 
                 this.ships.Add(ship);
@@ -72,6 +73,11 @@
             {
                 for (int i = 0; i < ship.length; i++)
                 {
+                    if (this.squares[i * 10 + square.id].hasShip == true)
+                    {
+                        throw new Exception($"Square is already occupied by a {ship}.");
+                    }
+
                     this.squares[i * 10 + square.id].hasShip = true;
                     this.squares[i * 10 + square.id].hadShip = true;
                     ship.occupiedSquares.Add(this.squares[i * 10 + square.id]);
@@ -95,10 +101,17 @@
                 {
                     sq.hasShip = false;
 
-
-                    foreach (Ship sp in sq.grid.ships)
+                    foreach (Ship sp in sq.grid.ships.ToList())
                     {
-                        sp.occupiedSquares.Remove(sq);
+                        if (sp.occupiedSquares.Contains(sq))
+                        {
+                            sp.occupiedSquares.Remove(sq);
+
+                            if (sp.occupiedSquares.Count == 0)
+                            {
+                                sq.grid.ships.Remove(sp);
+                            }
+                        }
                     }
 
                     if (sq.grid == Game.player)

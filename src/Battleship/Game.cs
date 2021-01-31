@@ -113,14 +113,6 @@ namespace Battleships
 
                     player.Search(opponent.squares[id]);
 
-                    foreach (Ship ship in opponent.ships.ToList())
-                    {
-                        if (ship.occupiedSquares.Count == 0)
-                        {
-                            opponent.ships.Remove(ship);
-                        }
-                    }
-
                     turn = false;
                 }
                 else
@@ -138,14 +130,6 @@ namespace Battleships
                     }
 
                     opponent.Search(player.squares[rannum]);
-
-                    foreach (Ship ship in player.ships.ToList())
-                    {
-                        if (ship.occupiedSquares.Count == 0)
-                        {
-                            player.ships.Remove(ship);
-                        }
-                    }
 
                     move++;
 
@@ -202,7 +186,7 @@ namespace Battleships
                                    select m.Value).ToList();
 
             List<string> lst = (from Match m in Regex.Matches(enem, ".{1,10}")
-                                   select m.Value).ToList();
+                                select m.Value).ToList();
 
             Console.Clear();
             Console.WriteLine($"Move {move}{Environment.NewLine}");
@@ -213,6 +197,15 @@ namespace Battleships
             Console.WriteLine(string.Join(Environment.NewLine, lst.ToArray()));
             Console.WriteLine();
             Console.WriteLine(upd);
+
+            foreach (Ship p in player.ships)
+            {
+                foreach (Square s in p.occupiedSquares)
+                {
+                    Console.Write($"{s.id} ");
+                }
+                Console.WriteLine();
+            }
         }
     }
 }
