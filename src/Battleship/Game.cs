@@ -47,7 +47,7 @@
             this.StartGame();
             while (this.Player1.Ships.Count > 0 && this.Player2.Ships.Count > 0)
             {
-                this.Random();
+                this.HuntTargetParity();
             }
 
             this.EndGame();
@@ -253,7 +253,7 @@
 
                 while (true)
                 {
-                    rannum = 2 * rnd.Next(50);
+                    rannum = rnd.Next(100);
 
                     if (!p2.Squares[rannum].BeenSearched && ((rannum % 10) + ((int)Math.Floor((decimal)rannum / 10))) % 2 == 0)
                     {
