@@ -2,9 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Timers;
 
     /// <summary>
     /// Defines a game of Battleship.
@@ -132,7 +129,7 @@
         }
 
         /// <summary>
-        /// Attacks an enemy square.
+        /// Attacks an enemy square randomly.
         /// </summary>
         private void AttackRandom()
         {
@@ -176,6 +173,38 @@
 
                 this.turn = true;
             }
+        }
+
+        /// <summary>
+        /// Attacks an enemy square that is adjacent to a hit square.
+        /// </summary>
+        private void AttackHuntTarget()
+        {
+
+        }
+
+        /// <summary>
+        /// Attacks an enmy square that is adjacent to a hit square. Implements parity.
+        /// </summary>
+        private void AttackHuntTargetParity()
+        {
+
+        }
+
+        /// <summary>
+        /// Attacks an enemy square based on previous searches. Searches for enemy ships one at a time.
+        /// </summary>
+        private void AttackProbabilityDensityEach()
+        {
+
+        }
+
+        /// <summary>
+        /// Attacks an enemy square based on previous searches. Searches for all enemy ships at the same time.
+        /// </summary>
+        private void AttackProbabilityDensityAll()
+        {
+
         }
     }
 }

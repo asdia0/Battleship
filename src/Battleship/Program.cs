@@ -1,6 +1,7 @@
 ﻿namespace Battleships
 {
     using System;
+    using System.IO;
     using System.Timers;
 
     /// <summary>
@@ -23,17 +24,26 @@
         {
             for (int i = 1; i < 10000; i++)
             {
+                string winner = string.Empty;
+
                 Game game = new Game();
 
                 game.CreateGame();
                 sumMoves += game.Move;
                 if (game.Winner == true)
                 {
+                    winner = "Player 1";
                     player1++;
                 }
                 else
                 {
+                    winner = "Player 2";
                     player2++;
+                }
+
+                using (StreamWriter outputFile = File.AppendText("games.csv"))
+                {
+                    outputFile.WriteLine($"Random,{winner},{game.Move}");
                 }
 
                 Console.Clear();
