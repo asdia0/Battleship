@@ -47,7 +47,7 @@
             this.StartGame();
             while (this.Player1.Ships.Count > 0 && this.Player2.Ships.Count > 0)
             {
-                this.AttackHuntTarget();
+                this.Random();
             }
 
             this.EndGame();
@@ -127,24 +127,24 @@
         /// <summary>
         /// Attacks an enemy square randomly.
         /// </summary>
-        private void AttackRandom()
+        private void Random()
         {
             Random rnd = new Random();
 
-            Grid P1 = new Grid();
-            Grid P2 = new Grid();
-            
+            Grid p1 = new Grid();
+            Grid p2 = new Grid();
+
             if (this.turn)
             {
-                P1 = this.Player1;
-                P2 = this.Player2;
+                p1 = this.Player1;
+                p2 = this.Player2;
 
                 this.turn = false;
             }
             else
             {
-                P1 = this.Player2;
-                P2 = this.Player1;
+                p1 = this.Player2;
+                p2 = this.Player1;
 
                 this.Move++;
                 this.turn = true;
@@ -155,87 +155,137 @@
             while (true)
             {
                 rannum = rnd.Next(100);
-                if (!P2.Squares[rannum].BeenSearched)
+                if (!p2.Squares[rannum].BeenSearched)
                 {
                     break;
                 }
             }
 
-            P1.Search(P2.Squares[rannum]);
+            p1.Search(p2.Squares[rannum]);
         }
 
         /// <summary>
         /// Attacks an enemy square that is adjacent to a hit square.
         /// </summary>
-        private void AttackHuntTarget()
+        private void HuntTarget()
         {
             Random rnd = new Random();
 
-            Grid P1 = new Grid();
-            Grid P2 = new Grid();
+            Grid p1 = new Grid();
+            Grid p2 = new Grid();
 
             if (this.turn)
             {
-                P1 = this.Player1;
-                P2 = this.Player2;
+                p1 = this.Player1;
+                p2 = this.Player2;
 
                 this.turn = false;
             }
             else
             {
-                P1 = this.Player2;
-                P2 = this.Player1;
+                p1 = this.Player2;
+                p2 = this.Player1;
 
                 this.Move++;
                 this.turn = true;
             }
 
             // HUNT
-            if (P1.ToAttack.Count == 0)
+            if (p1.ToAttack.Count == 0)
             {
                 int rannum = 0;
 
                 while (true)
                 {
                     rannum = rnd.Next(100);
-                    if (!P2.Squares[rannum].BeenSearched)
+                    if (!p2.Squares[rannum].BeenSearched)
                     {
                         break;
                     }
                 }
 
-                P1.Search(P2.Squares[rannum]);
+                p1.Search(p2.Squares[rannum]);
 
-                this.HTAddTargets(P1, P2, rannum);
+                this.HTAddTargets(p1, p2, rannum);
             }
+
             // TARGET
             else
             {
-                P1.Search(P1.ToAttack[0]);
+                p1.Search(p1.ToAttack[0]);
 
-                this.HTAddTargets(P1, P2, P1.ToAttack[0].ID);
+                this.HTAddTargets(p1, p2, p1.ToAttack[0].ID);
 
-                P1.ToAttack.Remove(P1.ToAttack[0]);
+                p1.ToAttack.Remove(p1.ToAttack[0]);
             }
         }
 
         /// <summary>
         /// Attacks an enmy square that is adjacent to a hit square. Implements parity.
         /// </summary>
-        private void AttackHuntTargetParity()
+        private void HuntTargetParity()
         {
+            Random rnd = new Random();
 
+            Grid p1 = new Grid();
+            Grid p2 = new Grid();
+
+            if (this.turn)
+            {
+                p1 = this.Player1;
+                p2 = this.Player2;
+
+                this.turn = false;
+            }
+            else
+            {
+                p1 = this.Player2;
+                p2 = this.Player1;
+
+                this.Move++;
+                this.turn = true;
+            }
+
+            // HUNT
+            if (p1.ToAttack.Count == 0)
+            {
+                int rannum = 0;
+
+                while (true)
+                {
+                    rannum = 2 * rnd.Next(50);
+
+                    if (!p2.Squares[rannum].BeenSearched)
+                    {
+                        break;
+                    }
+                }
+
+                p1.Search(p2.Squares[rannum]);
+
+                this.HTAddTargets(p1, p2, rannum);
+            }
+
+            // TARGET
+            else
+            {
+                p1.Search(p1.ToAttack[0]);
+
+                this.HTAddTargets(p1, p2, p1.ToAttack[0].ID);
+
+                p1.ToAttack.Remove(p1.ToAttack[0]);
+            }
         }
 
         /// <summary>
         /// Adds squares to the target list.
         /// </summary>
-        /// <param name="P1">Player 1</param>
-        /// <param name="P2">Player 2</param>
+        /// <param name="p1">Player 1.</param>
+        /// <param name="p2">Player 2.</param>
         /// <param name="squareID">Square to check's ID.</param>
-        private void HTAddTargets(Grid P1, Grid P2, int squareID)
+        private void HTAddTargets(Grid p1, Grid p2, int squareID)
         {
-            if (P2.Squares[squareID].HadShip == true)
+            if (p2.Squares[squareID].HadShip == true)
             {
                 List<int> sqID = new List<int>()
                 {
@@ -249,9 +299,9 @@
                 {
                     try
                     {
-                        if (!P2.Squares[id].BeenSearched && !P1.ToAttack.Contains(P2.Squares[id])) // if has not been searched AND has ship
+                        if (!p2.Squares[id].BeenSearched && !p1.ToAttack.Contains(p2.Squares[id]))
                         {
-                            P1.ToAttack.Add(P2.Squares[id]);
+                            p1.ToAttack.Add(p2.Squares[id]);
                         }
                     }
                     catch
@@ -263,7 +313,7 @@
         /// <summary>
         /// Attacks an enemy square based on previous searches. Searches for enemy ships one at a time.
         /// </summary>
-        private void AttackProbabilityDensityEach()
+        private void ProbabilityDensityOne()
         {
 
         }
@@ -271,7 +321,7 @@
         /// <summary>
         /// Attacks an enemy square based on previous searches. Searches for all enemy ships at the same time.
         /// </summary>
-        private void AttackProbabilityDensityAll()
+        private void ProbabilityDensityAll()
         {
 
         }
