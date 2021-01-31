@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using System.Timers;
 
     /// <summary>
     /// Defines a game of Battleship.
@@ -13,24 +14,32 @@
         /// <summary>
         /// Player 1's grid.
         /// </summary>
-        public static Grid Player1;
+        public Grid Player1;
 
         /// <summary>
         /// Player 2's grid.
         /// </summary>
-        public static Grid Player2;
+        public Grid Player2;
 
-        private static int move = 0;
+        /// <summary>
+        /// The winner of the game.
+        /// </summary>
+        public bool Winner;
 
-        private static bool turn = true;
+        /// <summary>
+        /// Number of moves.
+        /// </summary>
+        public int Move = 0;
+
+        private bool turn = true;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class.
         /// </summary>
         public Game()
         {
-            Player1 = new Grid();
-            Player2 = new Grid();
+            this.Player1 = new Grid();
+            this.Player2 = new Grid();
         }
 
         /// <summary>
@@ -39,108 +48,147 @@
         public void CreateGame()
         {
             this.StartGame();
-            this.Attack();
+            while (this.Player1.Ships.Count > 0 && this.Player2.Ships.Count > 0)
+            {
+                this.AttackRandom();
+            }
+
             this.EndGame();
         }
 
         /// <summary>
         /// Sets up the game.
         /// </summary>
-        public void StartGame()
+        private void StartGame()
         {
-            Random rnd = new Random();
+            List<string> shipTypes = new List<string>()
+            {
+                "Carrier",
+                "Battleship",
+                "Cruiser",
+                "Submarine",
+                "Destroyer",
+            };
 
-            // replace with rng later
-            Player2.AddShip(Player2.Squares[0], new Ship(Player2, "Carrier"), true);
-            Player2.AddShip(Player2.Squares[10], new Ship(Player2, "Battleship"), true);
-            Player2.AddShip(Player2.Squares[20], new Ship(Player2, "Cruiser"), true);
-            Player2.AddShip(Player2.Squares[30], new Ship(Player2, "Submarine"), true);
-            Player2.AddShip(Player2.Squares[40], new Ship(Player2, "Destroyer"), true);
+            foreach (string type in shipTypes)
+            {
+                Random rnd = new Random();
 
-            Player1.AddShip(Player1.Squares[0], new Ship(Player1, "Carrier"), true);
-            Player1.AddShip(Player1.Squares[10], new Ship(Player1, "Battleship"), true);
-            Player1.AddShip(Player1.Squares[20], new Ship(Player1, "Cruiser"), true);
-            Player1.AddShip(Player1.Squares[30], new Ship(Player1, "Submarine"), true);
-            Player1.AddShip(Player1.Squares[40], new Ship(Player1, "Destroyer"), true);
+                bool isAvail1 = false;
+
+                while (isAvail1 == false)
+                {
+                    bool horizontal = false;
+
+                    if (rnd.Next(2) == 0)
+                    {
+                        horizontal = true;
+                    }
+
+                    try
+                    {
+                        this.Player1.AddShip(this.Player1.Squares[rnd.Next(100)], new Ship(this.Player1, type), horizontal);
+                        isAvail1 = true;
+                    }
+                    catch
+                    {   }
+                }
+
+                bool isAvail2 = false;
+
+                while (isAvail2 == false)
+                {
+                    bool horizontal = false;
+
+                    if (rnd.Next(2) == 0)
+                    {
+                        horizontal = true;
+                    }
+
+                    try
+                    {
+                        this.Player2.AddShip(this.Player2.Squares[rnd.Next(100)], new Ship(this.Player2, type), horizontal);
+                        isAvail2 = true;
+                    }
+                    catch
+                    { }
+                }
+            }
         }
 
         /// <summary>
         /// Ends the game.
         /// </summary>
-        public void EndGame()
+        private void EndGame()
         {
-            if (Player2.Ships.Count == 0)
+            if (this.Player2.Ships.Count == 0)
             {
-                Console.WriteLine("Congratulations on winning!");
+                Winner = true;
+                //Console.WriteLine("Player 1 won.");
             }
-            else if (Player1.Ships.Count == 0)
+            else if (this.Player1.Ships.Count == 0)
             {
-                Console.WriteLine("F.");
+                Winner = false;
+                //Console.WriteLine("Player 2 won.");
             }
         }
 
         /// <summary>
         /// Attacks an enemy square.
         /// </summary>
-        public void Attack()
+        private void AttackRandom()
         {
-            while (Player1.Ships.Count > 0 && Player2.Ships.Count > 0)
+            //this.UpdateConsole();
+            Random rnd = new Random();
+
+            if (this.turn)
             {
-                this.UpdateConsole();
-                Random rnd = new Random();
+                int rannum = 0;
 
-                if (turn)
+                bool isAvail = false;
+                while (isAvail == false)
                 {
-                    bool isAvail = false;
-
-                    int id = 0;
-
-                    while (isAvail == false)
+                    rannum = rnd.Next(100);
+                    if (!this.Player2.Squares[rannum].BeenSearched)
                     {
-                        Console.WriteLine("Please select a square to attack");
-                        id = int.Parse(Console.ReadLine());
-
-                        if (!Player2.Squares[id].BeenSearched)
-                        {
-                            isAvail = true;
-                        }
+                        isAvail = true;
                     }
-
-                    Player1.Search(Player2.Squares[id]);
-
-                    turn = false;
                 }
-                else
+
+                this.Player1.Search(this.Player2.Squares[rannum]);
+
+                this.turn = false;
+            }
+            else
+            {
+                int rannum = 0;
+
+                bool isAvail = false;
+                while (isAvail == false)
                 {
-                    int rannum = 0;
-
-                    bool isAvail = false;
-                    while (isAvail == false)
+                    rannum = rnd.Next(100);
+                    if (!this.Player1.Squares[rannum].BeenSearched)
                     {
-                        rannum = rnd.Next(100);
-                        if (!Player1.Squares[rannum].BeenSearched)
-                        {
-                            isAvail = true;
-                        }
+                        isAvail = true;
                     }
-
-                    Player2.Search(Player1.Squares[rannum]);
-
-                    move++;
-
-                    turn = true;
                 }
+
+                this.Player2.Search(this.Player1.Squares[rannum]);
+
+                this.Move++;
+
+                this.turn = true;
             }
         }
 
         /// <summary>
         /// Updates the console with the latest data.
         /// </summary>
-        public void UpdateConsole()
+        private void UpdateConsole()
         {
             string p1 = string.Empty;
 
-            foreach (Square sq in Player1.Squares)
+            foreach (Square sq in this.Player1.Squares)
             {
                 if (sq.HasShip == true)
                 {
@@ -158,7 +206,7 @@
 
             string p2 = string.Empty;
 
-            foreach (Square sq in Player2.Squares)
+            foreach (Square sq in this.Player2.Squares)
             {
                 if (sq.HasShip == true)
                 {
@@ -181,9 +229,9 @@
                                 select m.Value).ToList();
 
             Console.Clear();
-            Console.WriteLine($"Move {move}\n");
+            Console.WriteLine($"Move {this.Move}\n");
 
-            string visual = $"player 1       player 2\n{Player1.Ships.Count} ships        {Player2.Ships.Count} ships\n";
+            string visual = $"player 1       player 2\n{this.Player1.Ships.Count} ships        {this.Player2.Ships.Count} ships\n";
 
             for (int i = 0; i < 10; i++)
             {
