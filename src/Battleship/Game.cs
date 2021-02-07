@@ -238,7 +238,7 @@
                         Square sq = p2.Squares[sqid];
 
                         // is impossible if is miss or a sunk ship
-                        if (sq.BeenSearched && sq.HadShip != true)
+                        if (sq.BeenSearched && (sq.HadShip == false || sq.isSunk == true))
                         {
                             failures++;
                         }
