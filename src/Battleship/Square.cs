@@ -1,4 +1,4 @@
-﻿namespace Battleships
+﻿namespace Battleship
 {
     using System;
 
@@ -32,6 +32,8 @@
         /// </summary>
         public bool? HasShip = null;
 
+        public bool? IsSunk = null;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Square"/> class.
         /// </summary>
@@ -39,7 +41,7 @@
         /// <param name="id">The square's unique identification tag.</param>
         public Square(Grid grid, int id)
         {
-            if (id < 0 || id > 99)
+            if (id < 0 || id > (Settings.gridWidth * Settings.gridHeight) - 1)
             {
                 throw new Exception("Invalid Square ID.");
             }

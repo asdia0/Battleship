@@ -1,4 +1,4 @@
-﻿namespace Battleships
+﻿namespace Battleship
 {
     using System;
     using System.Collections.Generic;
@@ -24,6 +24,10 @@
         /// </summary>
         public List<Square> ToAttack = new List<Square>();
 
+        public List<Square> UnsearchedSquares = new List<Square>();
+
+        public List<Square> UnoccupiedSquares = new List<Square>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Grid"/> class.
         /// </summary>
@@ -32,14 +36,33 @@
             this.AddSquares();
         }
 
+        public Grid(string format)
+        {
+            this.AddSquares();
+
+            for (int i = 0; i < format.Count(); i++)
+            {
+                char c = format.ToCharArray()[i];
+
+                if (c == 'O')
+                {
+                    this.Squares[i].HadShip = true;
+                    this.UnoccupiedSquares.Remove(this.Squares[i]);
+                }
+            }
+        }
+
         /// <summary>
         /// Adds 100 squares to the grid.
         /// </summary>
         public void AddSquares()
         {
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < Settings.gridWidth * Settings.gridHeight; i++)
             {
-                this.Squares.Add(new Square(this, i));
+                Square sq = new Square(this, i);
+                this.Squares.Add(sq);
+                this.UnsearchedSquares.Add(sq);
+                this.UnoccupiedSquares.Add(sq);
             }
         }
 
@@ -49,7 +72,7 @@
         /// <param name="square">The ship's starting square.</param>
         /// <param name="ship">The ship to be added.</param>
         /// <param name="alignment">The ship's alignment.</param>
-        public void AddShip(Square square, Ship ship, bool alignment)
+        public bool AddShip(Square square, Ship ship, bool alignment)
         {
             if (ship.Grid != square.Grid)
             {
@@ -64,25 +87,30 @@
                 }
             }
 
-            int availRows = 11 - (square.ID % 10);
-            int availCols = 11 - (int)Math.Floor((decimal)square.ID / 10);
+            int availRows = 11 - (square.ID % Settings.gridWidth);
+            int availCols = 11 - (int)Math.Floor((decimal)square.ID / Settings.gridHeight);
 
             // horizontal
             if (alignment && ship.Length <= availRows)
             {
                 for (int i = 0; i < ship.Length; i++)
                 {
-                    if (this.Squares[square.ID + i].HasShip == true)
+                    int sqID = i + square.ID;
+
+                    if (sqID >= this.Squares.Count || this.Squares[sqID].HasShip == true)
                     {
-                        throw new Exception($"Square is already occupied by a {ship}.");
+                        return false;
                     }
 
-                    this.Squares[square.ID + i].HasShip = true;
-                    this.Squares[square.ID + i].HadShip = true;
-                    ship.OccupiedSquares.Add(this.Squares[square.ID + i]);
+                    this.Squares[sqID].HasShip = true;
+                    this.Squares[sqID].HadShip = true;
+                    ship.OccupiedSquares.Add(this.Squares[sqID]);
+                    ship.arrangement.Add(this.Squares[sqID]);
+                    this.UnoccupiedSquares.Remove(this.Squares[sqID]);
                 }
 
                 this.Ships.Add(ship);
+                return true;
             }
 
             // vertical
@@ -90,52 +118,48 @@
             {
                 for (int i = 0; i < ship.Length; i++)
                 {
-                    if (this.Squares[(i * 10) + square.ID].HasShip == true)
+                    int sqID = (i * Settings.gridHeight) + square.ID;
+
+                    if (sqID >= this.Squares.Count || this.Squares[sqID].HasShip == true)
                     {
-                        throw new Exception($"Square is already occupied by a {ship}.");
+                        return false;
                     }
 
-                    this.Squares[(i * 10) + square.ID].HasShip = true;
-                    this.Squares[(i * 10) + square.ID].HadShip = true;
-                    ship.OccupiedSquares.Add(this.Squares[(i * 10) + square.ID]);
+                    this.Squares[sqID].HasShip = true;
+                    this.Squares[sqID].HadShip = true;
+                    ship.OccupiedSquares.Add(this.Squares[sqID]);
+                    ship.arrangement.Add(this.Squares[sqID]);
+                    this.UnoccupiedSquares.Remove(this.Squares[sqID]);
                 }
 
                 this.Ships.Add(ship);
+
+                return true;
             }
+
+            return false;
         }
 
-        /// <summary>
-        /// Searches a square.
-        /// </summary>
-        /// <param name="sq">The square to search.</param>
-        public void Search(Square sq)
+        public string ToString()
         {
-            if (sq.BeenSearched)
-            {
-                throw new Exception($"Square {sq.ID} has already been searched.");
-            }
-            else
-            {
-                sq.BeenSearched = true;
+            // . = no ship
+            // O = ship
 
-                if (sq.HasShip == true)
+            string res = string.Empty;
+
+            foreach (Square sq in this.Squares)
+            {
+                if (sq.HadShip == true)
                 {
-                    sq.HasShip = false;
-
-                    foreach (Ship sp in sq.Grid.Ships.ToList())
-                    {
-                        if (sp.OccupiedSquares.Contains(sq))
-                        {
-                            sp.OccupiedSquares.Remove(sq);
-
-                            if (sp.OccupiedSquares.Count == 0)
-                            {
-                                sq.Grid.Ships.Remove(sp);
-                            }
-                        }
-                    }
+                    res += "O";
+                }
+                else
+                {
+                    res += ".";
                 }
             }
+
+            return res;
         }
     }
 }

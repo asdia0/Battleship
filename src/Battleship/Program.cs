@@ -1,8 +1,13 @@
-﻿namespace Battleships
+﻿namespace Battleship
 {
     using System;
+    using System.Diagnostics;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Timers;
+    using System.Text.RegularExpressions;
+    using System.Text.Json;
 
     /// <summary>
     /// Main class of the project.
@@ -20,15 +25,24 @@
         /// <summary>
         /// Main method of the project.
         /// </summary>
-        public static void Main()
+        public static void Run()
         {
-            for (int i = 1; i < 10000; i++)
+            decimal totalTime = 0;
+
+            string fileContent = string.Empty;
+
+            for (int i = 0; i < 100; i++)
             {
                 string winner = string.Empty;
 
-                Game game = new Game();
+                Stopwatch elapsedTime = new Stopwatch();
+                elapsedTime.Start();
 
+                Game game = new Game();
                 game.CreateGame();
+
+                elapsedTime.Stop();
+
                 sumMoves += game.Move;
                 if (game.Winner == true)
                 {
@@ -41,14 +55,21 @@
                     player2++;
                 }
 
-                //using (StreamWriter outputFile = File.AppendText("games.csv"))
-                //{
-                //    outputFile.WriteLine($"HT Parity,{winner},{game.Move}");
-                //}
+                fileContent += $"{Settings.gridHeight},{Settings.gridWidth},Random,{winner},{game.Move}\n";
+
+                totalTime += decimal.Divide(elapsedTime.ElapsedMilliseconds, 1000);
+
+                TimeSpan avg = TimeSpan.FromSeconds((double)decimal.Divide(totalTime, i + 1));
+                TimeSpan tot = TimeSpan.FromSeconds((double)totalTime);
 
                 Console.Clear();
-                Console.WriteLine($"Number of games: {i}\nWhite won: {player1}\nBlack won: {player2}\nAverage number of moves: {sumMoves / i}");
+                Console.WriteLine($"Percent complete: {decimal.Divide(i + 1, 100) * 100}%\nCurrent Dimension: {Settings.gridHeight}x{Settings.gridWidth}\nWhite won: {player1}\nBlack won: {player2}\nAverage moves: {decimal.Divide(sumMoves, i + 1)}\nTotal time elapsed: {tot.Hours} hours {tot.Minutes} minutes {tot.Seconds} seconds {tot.Milliseconds} milliseconds\nAverage time elapsed: {avg.Hours} hours {avg.Minutes} minutes {avg.Seconds} seconds {avg.Milliseconds} milliseconds");
             }
+
+            //using (StreamWriter outputFile = File.AppendText("HTTest1.csv"))
+            //{
+            //    outputFile.WriteLine(fileContent);
+            //}
         }
 
         /// <summary>
@@ -59,7 +80,7 @@
         {
             int i = 0;
 
-            delayTimer = new System.Timers.Timer();
+            delayTimer = new Timer();
             delayTimer.Interval = time;
             delayTimer.AutoReset = false;
             delayTimer.Elapsed += (s, args) => i = 1;
@@ -67,6 +88,16 @@
 
             while (i == 0)
             { };
+        }
+
+        public static void Main()
+        {
+            Run();
+        }
+
+        public static string SpliceText(string text, int lineLength)
+        {
+            return Regex.Replace(text, "(.{" + lineLength + "})", "$1" + Environment.NewLine);
         }
     }
 }
