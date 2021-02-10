@@ -2,13 +2,17 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Defines a ship on the grid.
     /// </summary>
     public class Ship
     {
-        public List<Square> arrangement = new List<Square>();
+        /// <summary>
+        /// The squares the ship had occupied.
+        /// </summary>
+        public List<Square> OriginalOccupiedSquares = new List<Square>();
 
         /// <summary>
         /// The ship's type.
@@ -21,9 +25,9 @@
         public int Length;
 
         /// <summary>
-        /// The list of squares that the ship occupies.
+        /// The squares that the ship currently occupies.
         /// </summary>
-        public List<Square> OccupiedSquares = new List<Square>();
+        public List<Square> CurrentOccupiedSquares = new List<Square>();
 
         /// <summary>
         /// The ship's grid.
@@ -62,43 +66,73 @@
             }
         }
 
-        public List<List<int>> GetArrangements()
+        /// <summary>
+        /// Increases the probability of the squares that a ship can fit on.
+        /// </summary>
+        /// <param name="probability">The current probability dictionary.</param>
+        /// <param name="sq">Base square to place the ship on.</param>
+        /// <param name="alignment">Alignment of the ship.</param>
+        /// <returns>The new probability dictionary.</returns>
+        public Dictionary<int, int> IncreaseProbability(Dictionary<int, int> probability,  Square sq, bool alignment)
         {
-            List<List<int>> arrSq = new List<List<int>>();
+            Dictionary<int, int> res = probability;
 
-            for (int i = 0; i < (Settings.gridHeight * Settings.gridWidth); i++)
+            int availRows = Settings.GridWidth - (sq.ID % Settings.GridHeight);
+            int availCols = Settings.GridHeight - (int)Math.Floor((double)(sq.ID / Settings.GridWidth));
+
+            // horizontal
+            if (alignment && this.Length <= availRows)
             {
-                int availRows = Settings.gridWidth - (i % Settings.gridWidth);
-                int availCols = Settings.gridHeight - (int)Math.Floor((decimal)i / Settings.gridHeight);
+                int failures = 0;
 
-                // horizontal
-                if (this.Length <= availRows)
+                for (int j = 0; j < this.Length; j++)
                 {
-                    List<int> arr = new List<int>();
-
-                    for (int j = 0; j < this.Length; j++)
+                    Square square = this.Grid.Squares[j + sq.ID];
+                    if ((square.BeenSearched && square.HadShip == true) || square.IsSunk == true)
                     {
-                        arr.Add(j + i);
+                        failures++;
                     }
-
-                    arrSq.Add(arr);
                 }
 
-                // vertical
-                if (this.Length <= availCols)
+                if (failures == 0)
                 {
-                    List<int> arr = new List<int>();
-
                     for (int j = 0; j < this.Length; j++)
                     {
-                        arr.Add((j * Settings.gridWidth) + i);
+                        if (res.ContainsKey(j + sq.ID))
+                        {
+                            res[j + sq.ID]++;
+                        }
                     }
-
-                    arrSq.Add(arr);
                 }
             }
 
-            return arrSq;
+            // vertical
+            if (!alignment && this.Length <= availCols)
+            {
+                int failures = 0;
+
+                for (int j = 0; j < this.Length; j++)
+                {
+                    Square square = this.Grid.Squares[(j * Settings.GridWidth) + sq.ID];
+                    if ((square.BeenSearched && square.HadShip == true) || square.IsSunk == true)
+                    {
+                        failures++;
+                    }
+                }
+
+                if (failures == 0)
+                {
+                    for (int j = 0; j < this.Length; j++)
+                    {
+                        if (res.ContainsKey((j * Settings.GridWidth) + sq.ID))
+                        {
+                            res[(j * Settings.GridWidth) + sq.ID]++;
+                        }
+                    }
+                }
+            }
+
+            return res;
         }
     }
 }

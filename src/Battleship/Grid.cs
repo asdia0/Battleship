@@ -24,8 +24,14 @@
         /// </summary>
         public List<Square> ToAttack = new List<Square>();
 
+        /// <summary>
+        /// List of the grid's unsearched squares.
+        /// </summary>
         public List<Square> UnsearchedSquares = new List<Square>();
 
+        /// <summary>
+        /// List of the grid's unoccupied squares.
+        /// </summary>
         public List<Square> UnoccupiedSquares = new List<Square>();
 
         /// <summary>
@@ -36,6 +42,10 @@
             this.AddSquares();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Grid"/> class from a string.
+        /// </summary>
+        /// <param name="format">The string to convert the grid from.</param>
         public Grid(string format)
         {
             this.AddSquares();
@@ -57,7 +67,7 @@
         /// </summary>
         public void AddSquares()
         {
-            for (int i = 0; i < Settings.gridWidth * Settings.gridHeight; i++)
+            for (int i = 0; i < Settings.GridWidth * Settings.GridHeight; i++)
             {
                 Square sq = new Square(this, i);
                 this.Squares.Add(sq);
@@ -72,6 +82,7 @@
         /// <param name="square">The ship's starting square.</param>
         /// <param name="ship">The ship to be added.</param>
         /// <param name="alignment">The ship's alignment.</param>
+        /// <returns>The task result.</returns>
         public bool AddShip(Square square, Ship ship, bool alignment)
         {
             if (ship.Grid != square.Grid)
@@ -87,8 +98,8 @@
                 }
             }
 
-            int availRows = 11 - (square.ID % Settings.gridWidth);
-            int availCols = 11 - (int)Math.Floor((decimal)square.ID / Settings.gridHeight);
+            int availRows = 11 - (square.ID % Settings.GridWidth);
+            int availCols = 11 - (int)Math.Floor((decimal)square.ID / Settings.GridHeight);
 
             // horizontal
             if (alignment && ship.Length <= availRows)
@@ -104,8 +115,8 @@
 
                     this.Squares[sqID].HasShip = true;
                     this.Squares[sqID].HadShip = true;
-                    ship.OccupiedSquares.Add(this.Squares[sqID]);
-                    ship.arrangement.Add(this.Squares[sqID]);
+                    ship.CurrentOccupiedSquares.Add(this.Squares[sqID]);
+                    ship.OriginalOccupiedSquares.Add(this.Squares[sqID]);
                     this.UnoccupiedSquares.Remove(this.Squares[sqID]);
                 }
 
@@ -118,7 +129,7 @@
             {
                 for (int i = 0; i < ship.Length; i++)
                 {
-                    int sqID = (i * Settings.gridHeight) + square.ID;
+                    int sqID = (i * Settings.GridHeight) + square.ID;
 
                     if (sqID >= this.Squares.Count || this.Squares[sqID].HasShip == true)
                     {
@@ -127,8 +138,8 @@
 
                     this.Squares[sqID].HasShip = true;
                     this.Squares[sqID].HadShip = true;
-                    ship.OccupiedSquares.Add(this.Squares[sqID]);
-                    ship.arrangement.Add(this.Squares[sqID]);
+                    ship.CurrentOccupiedSquares.Add(this.Squares[sqID]);
+                    ship.OriginalOccupiedSquares.Add(this.Squares[sqID]);
                     this.UnoccupiedSquares.Remove(this.Squares[sqID]);
                 }
 
@@ -140,7 +151,11 @@
             return false;
         }
 
-        public string ToString()
+        /// <summary>
+        /// Converts a grid into a string.
+        /// </summary>
+        /// <returns>A string representing a grid.</returns>
+        public override string ToString()
         {
             // . = no ship
             // O = ship

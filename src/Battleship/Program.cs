@@ -2,12 +2,9 @@
 {
     using System;
     using System.Diagnostics;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
-    using System.Timers;
     using System.Text.RegularExpressions;
-    using System.Text.Json;
+    using System.Timers;
 
     /// <summary>
     /// Main class of the project.
@@ -23,15 +20,16 @@
         private static int player2 = 0;
 
         /// <summary>
-        /// Main method of the project.
+        /// Simulates a number of games.
         /// </summary>
-        public static void Run()
+        /// <param name="simulations">Number of games to simulate.</param>
+        public static void Run(int simulations)
         {
             decimal totalTime = 0;
 
             string fileContent = string.Empty;
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < simulations; i++)
             {
                 string winner = string.Empty;
 
@@ -55,7 +53,7 @@
                     player2++;
                 }
 
-                fileContent += $"{Settings.gridHeight},{Settings.gridWidth},Random,{winner},{game.Move}\n";
+                fileContent += $"{Settings.GridHeight},{Settings.GridWidth},Random,{winner},{game.Move}\n";
 
                 totalTime += decimal.Divide(elapsedTime.ElapsedMilliseconds, 1000);
 
@@ -63,7 +61,7 @@
                 TimeSpan tot = TimeSpan.FromSeconds((double)totalTime);
 
                 Console.Clear();
-                Console.WriteLine($"Percent complete: {decimal.Divide(i + 1, 100) * 100}%\nCurrent Dimension: {Settings.gridHeight}x{Settings.gridWidth}\nWhite won: {player1}\nBlack won: {player2}\nAverage moves: {decimal.Divide(sumMoves, i + 1)}\nTotal time elapsed: {tot.Hours} hours {tot.Minutes} minutes {tot.Seconds} seconds {tot.Milliseconds} milliseconds\nAverage time elapsed: {avg.Hours} hours {avg.Minutes} minutes {avg.Seconds} seconds {avg.Milliseconds} milliseconds");
+                Console.WriteLine($"Percent complete: {decimal.Divide(i + 1, simulations) * 100}%\nCurrent Dimension: {Settings.GridHeight}x{Settings.GridWidth}\nWhite won: {player1}\nBlack won: {player2}\nAverage moves: {decimal.Divide(sumMoves, i + 1)}\nTotal time elapsed: {tot.Hours} hours {tot.Minutes} minutes {tot.Seconds} seconds {tot.Milliseconds} milliseconds\nAverage time elapsed: {avg.Hours} hours {avg.Minutes} minutes {avg.Seconds} seconds {avg.Milliseconds} milliseconds");
             }
 
             //using (StreamWriter outputFile = File.AppendText("HTTest1.csv"))
@@ -90,14 +88,12 @@
             { };
         }
 
+        /// <summary>
+        /// Main method of the project.
+        /// </summary>
         public static void Main()
         {
-            Run();
-        }
-
-        public static string SpliceText(string text, int lineLength)
-        {
-            return Regex.Replace(text, "(.{" + lineLength + "})", "$1" + Environment.NewLine);
+            Run(100);
         }
     }
 }

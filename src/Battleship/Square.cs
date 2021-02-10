@@ -32,6 +32,9 @@
         /// </summary>
         public bool? HasShip = null;
 
+        /// <summary>
+        /// Determines whether the square has a sunken ship on it.
+        /// </summary>
         public bool? IsSunk = null;
 
         /// <summary>
@@ -41,7 +44,7 @@
         /// <param name="id">The square's unique identification tag.</param>
         public Square(Grid grid, int id)
         {
-            if (id < 0 || id > (Settings.gridWidth * Settings.gridHeight) - 1)
+            if (id < 0 || id > (Settings.GridWidth * Settings.GridHeight) - 1)
             {
                 throw new Exception("Invalid Square ID.");
             }

@@ -1,11 +1,23 @@
 ﻿namespace Battleship
 {
+    /// <summary>
+    /// Sets several variables for <see cref="Game"/>s.
+    /// </summary>
     public class Settings
     {
-        public static int gridWidth = 10;
+        /// <summary>
+        /// The number of columns in the grid.
+        /// </summary>
+        public static int GridWidth = 10;
 
-        public static int gridHeight = 10;
+        /// <summary>
+        /// The number of rows in the grid.
+        /// </summary>
+        public static int GridHeight = 10;
 
-        public static int shipCount = 5;
+        /// <summary>
+        /// The number of ships in the game.
+        /// </summary>
+        public static int ShipCount = 5;
     }
 }
