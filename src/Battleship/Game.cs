@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Diagnostics;
 
     /// <summary>
     /// Defines a game of Battleship.
@@ -50,7 +49,16 @@
 
             while (this.Player1.Ships.Count > 0 && this.Player2.Ships.Count > 0)
             {
-                this.ProbabilityDensity();
+                this.Random();
+
+                //if (this.turn)
+                //{
+                //    this.ProbabilityDensity();
+                //}
+                //else
+                //{
+                //    this.Random();
+                //}
             }
 
             this.EndGame();
@@ -195,8 +203,8 @@
         /// </summary>
         private void ProbabilityDensity()
         {
-            Grid p1 = new Grid();
-            Grid p2 = new Grid();
+            Grid p1;
+            Grid p2;
 
             if (this.turn)
             {
@@ -214,70 +222,61 @@
                 this.turn = true;
             }
 
-            Dictionary<Square, int> probability = new Dictionary<Square, int>();
+            // SqID : probability
+            Dictionary<int, int> probability = new Dictionary<int, int>();
 
-            foreach (Square sq in p2.UnsearchedSquares)
+            if (p1.ToAttack.Count == 0)
             {
-                probability.Add(sq, 0);
+                foreach (Square sq in p2.UnsearchedSquares)
+                {
+                    probability.Add(sq.ID, 0);
+                }
+            }
+            else
+            {
+                foreach (Square sq in p1.ToAttack)
+                {
+                    probability.Add(sq.ID, 0);
+                }
             }
 
-            foreach (Ship ship in p2.Ships)
+            if (p1.ToAttack.Count == 0)
             {
-                /*
-                    * Iterate through possible ship arrangements
-                    * It is a match if all the squares which have been searched and are in the list have ships
-                    * If it matches with previous info, increase the probability of the squares in the arr 
-                    */ 
-
-                foreach (List<int> arr in ship.GetArrangements())
+                foreach (Square sq in p2.Squares)
                 {
-                    int failures = 0;
-
-                    foreach (int sqid in arr)
+                    foreach (Ship ship in p2.Ships)
                     {
-                        Square sq = p2.Squares[sqid];
-
-                        // is impossible if is miss or a sunk ship
-                        if (sq.BeenSearched && (sq.HadShip == false || sq.isSunk == true))
-                        {
-                            failures++;
-                        }
+                        probability = ship.IncreaseProbability(probability, sq, true);
+                        probability = ship.IncreaseProbability(probability, sq, false);
                     }
-
-                    if (failures == 0)
+                }
+            }
+            else
+            {
+                foreach (Square sq in p1.ToAttack)
+                {
+                    foreach (Ship ship in p2.Ships)
                     {
-                        foreach (int sqid in arr)
-                        {
-                            Square sq = p2.Squares[sqid];
-
-                            if (p1.ToAttack.Count == 0)
-                            {
-                                if (p2.UnsearchedSquares.Contains(sq))
-                                {
-                                    probability[sq]++;
-                                }
-                            }
-
-                            else
-                            {
-                                if (p1.ToAttack.Contains(sq))
-                                {
-                                    probability[sq]++;
-                                }
-                            }
-                            
-                        }
+                        probability = ship.IncreaseProbability(probability, sq, true);
+                        probability = ship.IncreaseProbability(probability, sq, false);
                     }
                 }
             }
 
-            Square attackedSquare = probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
+            Square attackedSquare = p2.Squares[probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
+
+            //int[] source = probability.Values.ToArray();
+            //int i = 0;
+            //int chunkSize = 10;
+            //int[][] result = source.GroupBy(s => i++ / chunkSize).Select(g => g.ToArray()).ToArray();
+
+            //Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(result));
 
             this.Search(attackedSquare);
 
             if (attackedSquare.HadShip == true)
             {
-                AddTargets(p1, p2, attackedSquare.ID);
+                this.AddTargets(p1, p2, attackedSquare.ID);
             }
 
             p1.ToAttack.Remove(attackedSquare);
@@ -297,13 +296,13 @@
                 {
                     squareID - 1,
                     squareID + 1,
-                    squareID - Settings.gridWidth,
-                    squareID + Settings.gridWidth,
+                    squareID - Settings.GridWidth,
+                    squareID + Settings.GridWidth,
                 };
 
                 foreach (int id in sqID)
                 {
-                    if (id > -1 && id < (Settings.gridHeight * Settings.gridWidth))
+                    if (id > -1 && id < (Settings.GridHeight * Settings.GridWidth))
                     {
                         if (!p2.Squares[id].BeenSearched && !p1.ToAttack.Contains(p2.Squares[id]))
                         {
@@ -318,7 +317,7 @@
         /// Searches a square.
         /// </summary>
         /// <param name="sq">The square to search.</param>
-        public void Search(Square sq)
+        private void Search(Square sq)
         {
             if (sq.BeenSearched)
             {
@@ -334,15 +333,15 @@
 
                 foreach (Ship sp in sq.Grid.Ships.ToList())
                 {
-                    if (sp.OccupiedSquares.Contains(sq))
+                    if (sp.CurrentOccupiedSquares.Contains(sq))
                     {
-                        sp.OccupiedSquares.Remove(sq);
+                        sp.CurrentOccupiedSquares.Remove(sq);
 
-                        if (sp.OccupiedSquares.Count == 0)
+                        if (sp.CurrentOccupiedSquares.Count == 0)
                         {
                             sq.Grid.Ships.Remove(sp);
 
-                            foreach (Square square in sp.arrangement)
+                            foreach (Square square in sp.OriginalOccupiedSquares)
                             {
                                 square.IsSunk = true;
                             }
