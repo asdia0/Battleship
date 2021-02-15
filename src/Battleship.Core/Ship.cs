@@ -134,5 +134,74 @@
 
             return res;
         }
+
+        public bool CanFit(Square sq, bool alignment)
+        {
+            int availRows = Settings.GridWidth - (sq.ID % Settings.GridHeight);
+            int availCols = Settings.GridHeight - (int)Math.Floor((double)(sq.ID / Settings.GridWidth));
+
+            // horizontal
+            if (alignment && this.Length <= availRows)
+            {
+                for (int j = 0; j < this.Length; j++)
+                {
+                    Square square = this.Grid.Squares[j + sq.ID];
+                    if ((square.BeenSearched && square.HadShip == true) || square.IsSunk == true)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            // vertical
+            if (!alignment && this.Length <= availCols)
+            {
+                for (int j = 0; j < this.Length; j++)
+                {
+                    Square square = this.Grid.Squares[(j * Settings.GridWidth) + sq.ID];
+                    if ((square.BeenSearched && square.HadShip == true) || square.IsSunk == true)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public List<List<int>> GetArrangements()
+        {
+            List<List<int>> res = new List<List<int>>();
+
+            foreach (Square sq in this.Grid.Squares)
+            {
+                if (this.CanFit(sq, true))
+                {
+                    List<int> arr = new List<int>();
+
+                    for (int i = 0; i < this.Length; i++)
+                    {
+                        arr.Add(sq.ID + i);
+                    }
+
+                    res.Add(arr);
+                }
+                if (this.CanFit(sq, false))
+                {
+                    List<int> arr = new List<int>();
+
+                    for (int i = 0; i < this.Length; i++)
+                    {
+                        arr.Add(sq.ID + (i * Settings.GridWidth));
+                    }
+
+                    res.Add(arr);
+                }
+            }
+
+            return res;
+        }
     }
 }

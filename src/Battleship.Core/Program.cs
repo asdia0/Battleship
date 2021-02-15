@@ -93,7 +93,7 @@
         /// </summary>
         public static void Main()
         {
-            Run(10);
+            Run(1);
         }
     }
 }

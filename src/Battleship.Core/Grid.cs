@@ -20,8 +20,10 @@
         public List<Square> Squares = new List<Square>();
 
         /// <summary>
-        /// List of enemy squares to attack.
+        /// List of enemy squares to search.
         /// </summary>
+        public List<Square> ToSearch = new List<Square>();
+
         public List<Square> ToAttack = new List<Square>();
 
         /// <summary>
