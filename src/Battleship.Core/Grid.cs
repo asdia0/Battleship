@@ -1,4 +1,4 @@
-﻿namespace Battleship
+﻿namespace Battleship.Core
 {
     using System;
     using System.Collections.Generic;

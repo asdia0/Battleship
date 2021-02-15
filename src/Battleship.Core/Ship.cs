@@ -1,4 +1,4 @@
-﻿namespace Battleship
+﻿namespace Battleship.Core
 {
     using System;
     using System.Collections.Generic;
@@ -143,13 +143,26 @@
             // horizontal
             if (alignment && this.Length <= availRows)
             {
+                int hits = 0;
+
                 for (int j = 0; j < this.Length; j++)
                 {
                     Square square = this.Grid.Squares[j + sq.ID];
-                    if ((square.BeenSearched && square.HadShip == true) || square.IsSunk == true)
+
+                    // is an obstruction if it is a miss or has been sunk
+                    if (square.IsMiss == true || square.IsSunk == true)
                     {
                         return false;
                     }
+                    if (sq.IsHit == true)
+                    {
+                        hits++;
+                    }
+                }
+
+                if (hits == this.Length)
+                {
+                    return false;
                 }
 
                 return true;
@@ -158,14 +171,28 @@
             // vertical
             if (!alignment && this.Length <= availCols)
             {
+                int hits = 0;
+
                 for (int j = 0; j < this.Length; j++)
                 {
                     Square square = this.Grid.Squares[(j * Settings.GridWidth) + sq.ID];
-                    if ((square.BeenSearched && square.HadShip == true) || square.IsSunk == true)
+
+                    // is an obstruction if it is a miss or has been sunk
+                    if (square.IsMiss == true || square.IsSunk == true)
                     {
                         return false;
                     }
+                    if (sq.IsHit == true)
+                    {
+                        hits++;
+                    }
                 }
+
+                if (hits == this.Length)
+                {
+                    return false;
+                }
+
                 return true;
             }
             return false;

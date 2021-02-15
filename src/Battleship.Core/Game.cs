@@ -1,4 +1,4 @@
-﻿namespace Battleship
+﻿namespace Battleship.Core
 {
     using System;
     using System.Collections.Generic;
@@ -224,25 +224,21 @@
             }
 
             /*
- * DEFINITE
- * 1. If a 'hit' square is surrounded by misses in 3 directions, there must be a ship pointing in the fourth direction.
- * 2. If a certain spot on the board could only hold one certain ship, no other ships can cross any of those squares.
+             * DEFINITE
+             * 1. If a 'hit' square is surrounded by misses in 3 directions, there must be a ship pointing in the fourth direction.
+             * 2. If a certain spot on the board could only hold one certain ship, no other ships can cross any of those squares.
 
- * DISQUALIFY
- * 3. A 'miss' square disqualifies a bunch of intersecting locations.
- * 4. A square where a ship has been marked 'sunk' disqualifies any other ships from crossing that square.
- * 5. Sunk ships cannot cross any square that is not a 'hit'.
- * 6. Ships that are not sunk can't be located entirely on 'hit' squares.
- */
+             * DISQUALIFY
+             * 3. Misses and sunk ships are obstructions
+             * 4. Ships that are not sunk can't be located entirely on 'hit' squares.
+             */
 
             // 1.
-            foreach (Square sq in p2.UnsearchedSquares)
+            foreach (Square sq in p2.Squares)
             {
-                Square? potential = TooManyMisses(sq);
-
-                if (potential != null && !p1.ToAttack.Contains(potential))
+                if (sq.BeenSearched && sq.HadShip == true && sq.IsSunk != true)
                 {
-                    p1.ToAttack.Add(potential);
+                    this.TooManyMisses(p1, sq);
                 }
             }
 
@@ -253,11 +249,13 @@
 
                 if (arrL.Count == 1)
                 {
-                    foreach (int sqID in arrL[0])
+                    foreach (int sqID in arrL.First())
                     {
-                        if (!p2.Squares[sqID].BeenSearched && !p1.ToAttack.Contains(p2.Squares[sqID]))
+                        Square sq = p2.Squares[sqID];
+
+                        if (!sq.BeenSearched && !p1.ToAttack.Contains(sq))
                         {
-                            p1.ToAttack.Add(p2.Squares[sqID]);
+                            p1.ToAttack.Add(sq);
                         }
                     }
                 }
@@ -265,33 +263,30 @@
 
             if (p1.ToAttack.Any())
             {
-                this.Search(p1.ToAttack[0]);
+                attackedSq = p1.ToAttack.First();
             }
             else
             {
                 Dictionary<int, int> probability = new Dictionary<int, int>();
 
-                if (p1.ToSearch.Count == 0)
+                if (!p1.ToSearch.Any())
                 {
                     // domain: p2.UnsearchedSquares
 
-                    foreach (Square sq in p2.UnsearchedSquares)
+                    foreach (Square sq in p2.Squares)
                     {
                         probability.Add(sq.ID, 0);
                     }
 
-                    foreach (Square sq in p2.UnsearchedSquares)
+                    foreach (Ship ship in p2.Ships)
                     {
-                        foreach (Ship ship in p2.Ships)
+                        foreach (List<int> arr in ship.GetArrangements())
                         {
-                            foreach (List<int> arr in ship.GetArrangements())
+                            foreach (int sqID in arr)
                             {
-                                foreach (int sqID in arr)
+                                if (p2.UnsearchedSquares.Contains(p2.Squares[sqID]))
                                 {
-                                    if (p2.UnsearchedSquares.Contains(p2.Squares[sqID]))
-                                    {
-                                        probability[sqID]++;
-                                    }
+                                    probability[sqID]++;
                                 }
                             }
                         }
@@ -301,32 +296,45 @@
                 {
                     // domain: p1.toSearch
 
-                    foreach (Square sq in p1.ToSearch)
+                    foreach (Square sq in p2.Squares)
                     {
                         probability.Add(sq.ID, 0);
                     }
 
-                    foreach (Square sq in p1.ToSearch)
+                    foreach (Ship ship in p2.Ships)
                     {
-
-                        foreach (Ship ship in p2.Ships)
+                        foreach (List<int> arr in ship.GetArrangements())
                         {
-                            foreach (List<int> arr in ship.GetArrangements())
+                            foreach (int sqID in arr)
                             {
-                                foreach (int sqID in arr)
+                                if (p1.ToSearch.Contains(p2.Squares[sqID]))
                                 {
-                                    if (p1.ToSearch.Contains(p2.Squares[sqID]))
-                                    {
-                                        probability[sqID]++;
-                                    }
+                                    probability[sqID]++;
                                 }
                             }
                         }
                     }
                 }
 
-                this.Search(p2.Squares[probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key]);
+                Console.WriteLine(this.PrintProbability(probability, 10));
+
+                attackedSq = p2.Squares[probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
             }
+
+            this.Search(attackedSq);
+
+            this.AddTargets(p1, p2, attackedSq.ID);
+
+            p1.ToAttack.Remove(attackedSq);
+        }
+
+        private string PrintProbability(Dictionary<int, int> probability, int chunkSize)
+        {
+            int[] source = probability.Values.ToArray();
+            int i = 0;
+            int[][] result = source.GroupBy(s => i++ / chunkSize).Select(g => g.ToArray()).ToArray();
+
+            return System.Text.Json.JsonSerializer.Serialize(result).Replace("],[", "],\n [");
         }
 
         /// <summary>
@@ -337,7 +345,7 @@
         /// <param name="squareID">Square to check's ID.</param>
         private void AddTargets(Grid p1, Grid p2, int squareID)
         {
-            if (p2.Squares[squareID].HadShip == true && p2.Squares[squareID].IsSunk != true)
+            if (p2.Squares[squareID].BeenSearched && p2.Squares[squareID].HadShip == true && p2.Squares[squareID].IsSunk != true)
             {
                 List<int> sqID = new List<int>()
                 {
@@ -351,9 +359,11 @@
                 {
                     if (id > -1 && id < (Settings.GridHeight * Settings.GridWidth))
                     {
-                        if (!p2.Squares[id].BeenSearched && !p1.ToSearch.Contains(p2.Squares[id]))
+                        Square sq = p2.Squares[id];
+
+                        if (!sq.BeenSearched && !p1.ToSearch.Contains(sq))
                         {
-                            p1.ToSearch.Add(p2.Squares[id]);
+                            p1.ToSearch.Add(sq);
                         }
                     }
                 }
@@ -377,6 +387,7 @@
             if (sq.HasShip == true)
             {
                 sq.HasShip = false;
+                sq.IsHit = true;
 
                 foreach (Ship sp in sq.Grid.Ships.ToList())
                 {
@@ -396,9 +407,13 @@
                     }
                 }
             }
+            else
+            {
+                sq.IsMiss = true;
+            }
         }
 
-        private Square? TooManyMisses(Square sq)
+        private void TooManyMisses(Grid p1, Square sq)
         {
             if (sq.HadShip == true && sq.IsSunk != true)
             {
@@ -428,11 +443,9 @@
 
                 if (potentialSqs.Count == 1)
                 {
-                    return potentialSqs[0];
+                    p1.ToAttack.Add(potentialSqs.First());
                 }
             }
-
-            return null;
         }
     }
 }

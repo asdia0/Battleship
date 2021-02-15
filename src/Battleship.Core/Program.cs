@@ -1,4 +1,4 @@
-﻿namespace Battleship
+﻿namespace Battleship.Core
 {
     using System;
     using System.Diagnostics;
@@ -78,9 +78,11 @@
         {
             int i = 0;
 
-            delayTimer = new Timer();
-            delayTimer.Interval = time;
-            delayTimer.AutoReset = false;
+            delayTimer = new Timer
+            {
+                Interval = time,
+                AutoReset = false,
+            };
             delayTimer.Elapsed += (s, args) => i = 1;
             delayTimer.Start();
 

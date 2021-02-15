@@ -1,4 +1,4 @@
-﻿namespace Battleship
+﻿namespace Battleship.Core
 {
     /// <summary>
     /// Sets several variables for <see cref="Game"/>s.

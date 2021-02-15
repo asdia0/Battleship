@@ -1,4 +1,4 @@
-﻿namespace Battleship
+﻿namespace Battleship.Core
 {
     using System;
 
@@ -37,6 +37,9 @@
         /// </summary>
         public bool? IsSunk = null;
 
+        public bool? IsMiss = null;
+
+        public bool? IsHit = null;
         /// <summary>
         /// Initializes a new instance of the <see cref="Square"/> class.
         /// </summary>
