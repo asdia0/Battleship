@@ -1,0 +1,24 @@
+﻿<Window x:Class="Battleship.GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Battleship.GUI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Menu IsMainMenu="True">
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Cut" Command="Cut">
+                </MenuItem>
+                <MenuItem Header="_Copy" Command="Copy">
+                </MenuItem>
+                <MenuItem Header="_Paste" Command="Paste">
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Play" />
+            <MenuItem Header="_Help" />
+        </Menu>
+
+    </Grid>
+</Window>
