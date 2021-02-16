@@ -95,7 +95,7 @@
         /// </summary>
         public static void Main()
         {
-            Run(1);
+            Run(10);
         }
     }
 }

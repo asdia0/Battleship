@@ -22,9 +22,9 @@
         /// <summary>
         /// List of enemy squares to search.
         /// </summary>
-        public List<Square> ToSearch = new List<Square>();
+        public HashSet<Square> ToSearch = new HashSet<Square>();
 
-        public List<Square> ToAttack = new List<Square>();
+        public HashSet<Square> ToAttack = new HashSet<Square>();
 
         /// <summary>
         /// List of the grid's unsearched squares.

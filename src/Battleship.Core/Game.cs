@@ -134,23 +134,26 @@
         /// </summary>
         private void Random()
         {
+            Grid p1;
             Grid p2;
 
             if (this.turn)
             {
+                p1 = this.player1;
                 p2 = this.player2;
 
                 this.turn = false;
             }
             else
             {
+                p1 = this.player2;
                 p2 = this.player1;
 
                 this.Move++;
                 this.turn = true;
             }
 
-            this.Search(p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)]);
+            this.Search(p1, p2, p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)]);
         }
 
         /// <summary>
@@ -182,7 +185,7 @@
             {
                 Square sq = p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
 
-                this.Search(sq);
+                this.Search(p1, p2, sq);
 
                 this.AddTargets(p1, p2, sq.ID);
             }
@@ -190,11 +193,11 @@
             // TARGET
             else
             {
-                this.Search(p1.ToSearch[0]);
+                this.Search(p1, p2, p1.ToSearch.First());
 
-                this.AddTargets(p1, p2, p1.ToSearch[0].ID);
+                this.AddTargets(p1, p2, p1.ToSearch.First().ID);
 
-                p1.ToSearch.Remove(p1.ToSearch[0]);
+                p1.ToSearch.Remove(p1.ToSearch.First());
             }
         }
 
@@ -212,6 +215,7 @@
                 p1 = this.player1;
                 p2 = this.player2;
 
+                this.Move++;
                 this.turn = false;
             }
             else
@@ -219,7 +223,6 @@
                 p1 = this.player2;
                 p2 = this.player1;
 
-                this.Move++;
                 this.turn = true;
             }
 
@@ -273,7 +276,7 @@
                 {
                     // domain: p2.UnsearchedSquares
 
-                    foreach (Square sq in p2.Squares)
+                    foreach (Square sq in p2.UnsearchedSquares)
                     {
                         probability.Add(sq.ID, 0);
                     }
@@ -284,7 +287,7 @@
                         {
                             foreach (int sqID in arr)
                             {
-                                if (p2.UnsearchedSquares.Contains(p2.Squares[sqID]))
+                                if (!p2.Squares[sqID].BeenSearched)
                                 {
                                     probability[sqID]++;
                                 }
@@ -296,7 +299,7 @@
                 {
                     // domain: p1.toSearch
 
-                    foreach (Square sq in p2.Squares)
+                    foreach (Square sq in p1.ToSearch)
                     {
                         probability.Add(sq.ID, 0);
                     }
@@ -316,16 +319,10 @@
                     }
                 }
 
-                Console.WriteLine(this.PrintProbability(probability, 10));
-
                 attackedSq = p2.Squares[probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
             }
 
-            this.Search(attackedSq);
-
-            this.AddTargets(p1, p2, attackedSq.ID);
-
-            p1.ToAttack.Remove(attackedSq);
+            this.Search(p1, p2, attackedSq);
         }
 
         private string PrintProbability(Dictionary<int, int> probability, int chunkSize)
@@ -335,6 +332,22 @@
             int[][] result = source.GroupBy(s => i++ / chunkSize).Select(g => g.ToArray()).ToArray();
 
             return System.Text.Json.JsonSerializer.Serialize(result).Replace("],[", "],\n [");
+        }
+
+        private string PrintLists(Grid player, string playerName)
+        {
+            string text = "\n  Attack: ";
+            foreach (Square sq in player.ToAttack)
+            {
+                text += $"{sq.ID} ";
+            }
+            text += "\n  Search: ";
+            foreach (Square sq in player.ToSearch)
+            {
+                text += $"{sq.ID} ";
+            }
+
+            return $"{playerName} Move {Move}: {text}";
         }
 
         /// <summary>
@@ -374,7 +387,7 @@
         /// Searches a square.
         /// </summary>
         /// <param name="sq">The square to search.</param>
-        private void Search(Square sq)
+        private void Search(Grid p1, Grid p2, Square sq)
         {
             if (sq.BeenSearched)
             {
@@ -382,10 +395,14 @@
             }
 
             sq.BeenSearched = true;
-            sq.Grid.UnsearchedSquares.Remove(sq);
+            p2.UnsearchedSquares.Remove(sq);
+            p1.ToAttack.Remove(sq);
+            p1.ToSearch.Remove(sq);
 
             if (sq.HasShip == true)
             {
+                this.AddTargets(p1, p2, sq.ID);
+
                 sq.HasShip = false;
                 sq.IsHit = true;
 
@@ -397,7 +414,7 @@
 
                         if (sp.CurrentOccupiedSquares.Count == 0)
                         {
-                            sq.Grid.Ships.Remove(sp);
+                            p2.Ships.Remove(sp);
 
                             foreach (Square square in sp.OriginalOccupiedSquares)
                             {
