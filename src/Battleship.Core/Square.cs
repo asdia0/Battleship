@@ -37,9 +37,16 @@
         /// </summary>
         public bool? IsSunk = null;
 
+        /// <summary>
+        /// Determines whether the square has been searched and does not have a ship on it.
+        /// </summary>
         public bool? IsMiss = null;
 
+        /// <summary>
+        /// Determines whether the square has been searched and does has a ship on it.
+        /// </summary>
         public bool? IsHit = null;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Square"/> class.
         /// </summary>

@@ -24,6 +24,9 @@
         /// </summary>
         public HashSet<Square> ToSearch = new HashSet<Square>();
 
+        /// <summary>
+        /// List of enemy squares to attack.
+        /// </summary>
         public HashSet<Square> ToAttack = new HashSet<Square>();
 
         /// <summary>
@@ -159,9 +162,6 @@
         /// <returns>A string representing a grid.</returns>
         public override string ToString()
         {
-            // . = no ship
-            // O = ship
-
             string res = string.Empty;
 
             foreach (Square sq in this.Squares)

@@ -135,6 +135,12 @@
             return res;
         }
 
+        /// <summary>
+        /// Determines whether the ship can fit on the grid.
+        /// </summary>
+        /// <param name="sq">The starting square where the ship will be "placed".</param>
+        /// <param name="alignment">The alignment of the ship. True means horizontal and false means vertical.</param>
+        /// <returns>A boolean.</returns>
         public bool CanFit(Square sq, bool alignment)
         {
             int availRows = Settings.GridWidth - (sq.ID % Settings.GridHeight);
@@ -154,6 +160,7 @@
                     {
                         return false;
                     }
+
                     if (sq.IsHit == true)
                     {
                         hits++;
@@ -182,6 +189,7 @@
                     {
                         return false;
                     }
+
                     if (sq.IsHit == true)
                     {
                         hits++;
@@ -195,9 +203,14 @@
 
                 return true;
             }
+
             return false;
         }
 
+        /// <summary>
+        /// Gets all possible arrangements of the ship.
+        /// </summary>
+        /// <returns>A list of lists of <see cref="Square"/> IDs.</returns>
         public List<List<int>> GetArrangements()
         {
             List<List<int>> res = new List<List<int>>();
@@ -215,6 +228,7 @@
 
                     res.Add(arr);
                 }
+
                 if (this.CanFit(sq, false))
                 {
                     List<int> arr = new List<int>();

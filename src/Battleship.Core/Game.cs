@@ -137,23 +137,27 @@
             Grid p1;
             Grid p2;
 
+            this.Move++;
+
             if (this.turn)
             {
                 p1 = this.player1;
                 p2 = this.player2;
-
-                this.turn = false;
             }
             else
             {
                 p1 = this.player2;
                 p2 = this.player1;
-
-                this.Move++;
-                this.turn = true;
             }
 
-            this.Search(p1, p2, p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)]);
+            Square attackedSq = p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
+
+            this.Search(p1, p2, attackedSq);
+
+            if (attackedSq.HadShip == false)
+            {
+                this.turn ^= true;
+            }
         }
 
         /// <summary>
@@ -164,40 +168,43 @@
             Grid p1;
             Grid p2;
 
+            this.Move++;
+
             if (this.turn)
             {
                 p1 = this.player1;
                 p2 = this.player2;
-
-                this.turn = false;
             }
             else
             {
                 p1 = this.player2;
                 p2 = this.player1;
-
-                this.Move++;
-                this.turn = true;
             }
 
             // HUNT
             if (p1.ToSearch.Count == 0)
             {
-                Square sq = p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
+                Square attackedSq = p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
 
-                this.Search(p1, p2, sq);
+                this.Search(p1, p2, attackedSq);
 
-                this.AddTargets(p1, p2, sq.ID);
+                if (attackedSq.HadShip == false)
+                {
+                    this.turn ^= true;
+                }
             }
 
             // TARGET
             else
             {
-                this.Search(p1, p2, p1.ToSearch.First());
+                Square attackedSq = p1.ToSearch.First();
 
-                this.AddTargets(p1, p2, p1.ToSearch.First().ID);
+                this.Search(p1, p2, attackedSq);
 
-                p1.ToSearch.Remove(p1.ToSearch.First());
+                if (attackedSq.HadShip == false)
+                {
+                    this.turn ^= true;
+                }
             }
         }
 
@@ -274,8 +281,6 @@
 
                 if (!p1.ToSearch.Any())
                 {
-                    // domain: p2.UnsearchedSquares
-
                     foreach (Square sq in p2.UnsearchedSquares)
                     {
                         probability.Add(sq.ID, 0);
@@ -297,8 +302,6 @@
                 }
                 else
                 {
-                    // domain: p1.toSearch
-
                     foreach (Square sq in p1.ToSearch)
                     {
                         probability.Add(sq.ID, 0);
@@ -323,6 +326,11 @@
             }
 
             this.Search(p1, p2, attackedSq);
+
+            if (attackedSq.HadShip == false)
+            {
+                this.turn ^= true;
+            }
         }
 
         private string PrintProbability(Dictionary<int, int> probability, int chunkSize)
@@ -341,13 +349,14 @@
             {
                 text += $"{sq.ID} ";
             }
+
             text += "\n  Search: ";
             foreach (Square sq in player.ToSearch)
             {
                 text += $"{sq.ID} ";
             }
 
-            return $"{playerName} Move {Move}: {text}";
+            return $"{playerName} Move {this.Move}: {text}";
         }
 
         /// <summary>
@@ -386,6 +395,8 @@
         /// <summary>
         /// Searches a square.
         /// </summary>
+        /// <param name="p1">Player 1's grid.</param>
+        /// <param name="p2">Player 2's grid.</param>
         /// <param name="sq">The square to search.</param>
         private void Search(Grid p1, Grid p2, Square sq)
         {
@@ -444,7 +455,6 @@
 
                 List<Square> potentialSqs = new List<Square>();
 
-
                 foreach (int id in sqID)
                 {
                     if (id > -1 && id < (Settings.GridHeight * Settings.GridWidth))
@@ -456,7 +466,6 @@
                         }
                     }
                 }
-
 
                 if (potentialSqs.Count == 1)
                 {
