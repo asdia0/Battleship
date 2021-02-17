@@ -76,12 +76,9 @@
             //}
         }
 
-        public static (Square, int) FindBestSquare(Grid player)
+        public static (Square, decimal) FindBestSquare(Grid player)
         {
-            int prob = 0;
-
-            List<Square> ToSearch = new List<Square>();
-            List<Square> ToAttack = new List<Square>();
+            decimal prob = 0;
 
             int sunkSquares = 0;
             int sunkShips = 0;
@@ -148,7 +145,7 @@
 
                     if (potentialSqs.Count == 1)
                     {
-                        ToAttack.Add(potentialSqs.First());
+                        player.ToAttack.Add(potentialSqs.First());
                     }
                 }
             }
@@ -164,72 +161,84 @@
                     {
                         Square sq = player.Squares[sqID];
 
-                        if (!sq.BeenSearched && !ToAttack.Contains(sq))
+                        if (!sq.BeenSearched && !player.ToAttack.Contains(sq))
                         {
-                            ToAttack.Add(sq);
+                            player.ToAttack.Add(sq);
                         }
                     }
                 }
             }
 
-            if (ToAttack.Any())
+            if (player.ToAttack.Any())
             {
-                attackedSq = ToAttack.First();
+                attackedSq = player.ToAttack.First();
                 prob = 100;
             }
             else
             {
-                Dictionary<int, int> probability = new Dictionary<int, int>();
+                int arrSum = 0;
 
-                if (!ToSearch.Any())
+                Dictionary<int, decimal> probability = new Dictionary<int, decimal>();
+
+                // domain: unsearched squares
+                if (!player.ToSearch.Any())
                 {
-                    foreach (Square sq in player.UnsearchedSquares)
+                    foreach (Square sq in player.Squares)
                     {
-                        probability.Add(sq.ID, 0);
+                        if (!sq.BeenSearched)
+                        {
+                            probability.Add(sq.ID, 0);
+                        }
                     }
 
                     foreach (Ship ship in player.Ships)
                     {
-                        foreach (List<int> arr in ship.GetArrangements())
+                        List<List<int>> arrL = ship.GetArrangements();
+                        foreach (List<int> arr in arrL)
                         {
+                            arrSum++;
+
                             foreach (int sqID in arr)
                             {
                                 if (!player.Squares[sqID].BeenSearched)
                                 {
-                                    probability[sqID]++;
+                                    probability[sqID] += decimal.Divide(1, arrL.Count);
                                 }
                             }
                         }
                     }
                 }
+                
+                // domain: squares adjacent to hit squares
                 else
                 {
-                    foreach (Square sq in ToSearch)
+                    foreach (Square sq in player.ToSearch)
                     {
                         probability.Add(sq.ID, 0);
                     }
 
                     foreach (Ship ship in player.Ships)
                     {
-                        foreach (List<int> arr in ship.GetArrangements())
+                        List<List<int>> arrL = ship.GetArrangements();
+                        foreach (List<int> arr in arrL)
                         {
                             foreach (int sqID in arr)
                             {
-                                if (ToSearch.Contains(player.Squares[sqID]))
+                                if (player.ToSearch.Contains(player.Squares[sqID]))
                                 {
-                                    probability[sqID]++;
+                                    probability[sqID] += decimal.Divide(1, arrL.Count);
                                 }
                             }
                         }
                     }
                 }
 
-                int[] source = probability.Values.ToArray();
+                decimal[] source = probability.Values.ToArray();
                 int i = 0;
-                int[][] result = source.GroupBy(s => i++ / 10).Select(g => g.ToArray()).ToArray();
+                decimal[][] result = source.GroupBy(s => i++ / 10).Select(g => g.ToArray()).ToArray();
 
-                attackedSq = player.Squares[probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
-                prob = probability[attackedSq.ID] / probability.Values.ToList().Sum() * 100;
+                attackedSq = player.Squares[(int)probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
+                prob = decimal.Divide((decimal)probability[attackedSq.ID], arrSum) * 100;
             }
 
             return (attackedSq, prob);
@@ -281,7 +290,8 @@
             while (player.Ships.Count > 0)
             {
                 Console.Clear();
-                (Square sq, int e) = FindBestSquare(player);
+                (Square sq, decimal e) = FindBestSquare(player);
+                player.UnsearchedSquares.Remove(sq);
                 Console.WriteLine($"Square Coordinates: {sq.ToCoor()}");
                 Console.WriteLine($"Probability: {e}%");
                 Console.WriteLine("M / H / S");
@@ -293,6 +303,28 @@
                         player.Squares[sq.ID].BeenSearched = true;
                         break;
                     case "H":
+
+                        List<int> sqID = new List<int>()
+                        {
+                            sq.ID - 1,
+                            sq.ID + 1,
+                            sq.ID - Settings.GridWidth,
+                            sq.ID + Settings.GridWidth,
+                        };
+
+                        foreach (int id1 in sqID)
+                        {
+                            if (id1 > -1 && id1 < (Settings.GridHeight * Settings.GridWidth))
+                            {
+                                Square sq1 = player.Squares[id1];
+
+                                if (!sq1.BeenSearched && !player.ToSearch.Contains(sq))
+                                {
+                                    player.ToSearch.Add(sq);
+                                }
+                            }
+                        }
+
                         player.Squares[sq.ID].IsHit = true;
                         player.Squares[sq.ID].BeenSearched = true;
                         break;
@@ -312,9 +344,9 @@
                                     int x = int.Parse(s.Split(",")[0]);
                                     int y = int.Parse(s.Split(",")[1]);
 
-                                    int sqID = ((y - 1) * Settings.GridWidth) + x - 1;
+                                    int sqID1 = ((y - 1) * Settings.GridWidth) + x - 1;
 
-                                    ship.OriginalOccupiedSquares.Add(player.Squares[sqID]);
+                                    ship.OriginalOccupiedSquares.Add(player.Squares[sqID1]);
                                 }
                                 foreach (Square square in ship.OriginalOccupiedSquares)
                                 {
