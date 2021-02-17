@@ -14,10 +14,5 @@
         /// The number of rows in the grid.
         /// </summary>
         public static int GridHeight = 10;
-
-        /// <summary>
-        /// The number of ships in the game.
-        /// </summary>
-        public static int ShipCount = 5;
     }
 }

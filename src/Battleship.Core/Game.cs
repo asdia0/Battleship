@@ -69,16 +69,16 @@
         /// </summary>
         private void StartGame()
         {
-            List<string> shipTypes = new List<string>()
+            List<int> shipTypes = new List<int>()
             {
-                "Carrier",
-                "Battleship",
-                "Cruiser",
-                "Submarine",
-                "Destroyer",
+                5,
+                4,
+                3,
+                3,
+                2,
             };
 
-            foreach (string type in shipTypes)
+            foreach (int length in shipTypes)
             {
                 Random rnd = new Random();
 
@@ -91,7 +91,7 @@
                         horizontal = true;
                     }
 
-                    if (this.player1.AddShip(this.player1.UnoccupiedSquares[rnd.Next(this.player1.UnoccupiedSquares.Count)], new Ship(this.player1, type), horizontal))
+                    if (this.player1.AddShip(this.player1.UnoccupiedSquares[rnd.Next(this.player1.UnoccupiedSquares.Count)], new Ship(this.player1, length), horizontal))
                     {
                         break;
                     }
@@ -106,7 +106,7 @@
                         horizontal = true;
                     }
 
-                    if (this.player2.AddShip(this.player2.UnoccupiedSquares[rnd.Next(this.player2.UnoccupiedSquares.Count)], new Ship(this.player2, type), horizontal))
+                    if (this.player2.AddShip(this.player2.UnoccupiedSquares[rnd.Next(this.player2.UnoccupiedSquares.Count)], new Ship(this.player2, length), horizontal))
                     {
                         break;
                     }
@@ -426,6 +426,8 @@
                         if (sp.CurrentOccupiedSquares.Count == 0)
                         {
                             p2.Ships.Remove(sp);
+
+                            sp.IsSunk = true;
 
                             foreach (Square square in sp.OriginalOccupiedSquares)
                             {

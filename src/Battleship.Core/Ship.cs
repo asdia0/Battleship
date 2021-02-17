@@ -17,7 +17,7 @@
         /// <summary>
         /// The ship's type.
         /// </summary>
-        public string Type;
+        public int ID;
 
         /// <summary>
         /// The ship's length.
@@ -34,36 +34,24 @@
         /// </summary>
         public Grid Grid;
 
+        public bool IsSunk = false;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Ship"/> class.
         /// </summary>
         /// <param name="grid">The ship's grid.</param>
         /// <param name="type">The ship's type.</param>
-        public Ship(Grid grid, string type)
+        public Ship(Grid grid, int length)
         {
+            this.Length = length;
             this.Grid = grid;
-            this.Type = type;
+            this.ID = grid.Ships.Count;
+        }
 
-            switch (type)
-            {
-                case "Carrier":
-                    this.Length = 5;
-                    break;
-                case "Battleship":
-                    this.Length = 4;
-                    break;
-                case "Cruiser":
-                    this.Length = 3;
-                    break;
-                case "Submarine":
-                    this.Length = 3;
-                    break;
-                case "Destroyer":
-                    this.Length = 2;
-                    break;
-                default:
-                    throw new Exception("Ship type unknown.");
-            }
+        public Ship(int id,  int length)
+        {
+            this.Length = length;
+            this.ID = id;
         }
 
         /// <summary>

@@ -62,5 +62,14 @@
             this.Grid = grid;
             this.ID = id;
         }
+
+        public (int, int) ToCoor()
+        {
+            int xCoor = this.ID % Settings.GridWidth + 1;
+            int yCoor = (int)Math.Floor((double)(this.ID / Settings.GridWidth)) + 1;
+
+            return (xCoor, yCoor);
+        }
+
     }
 }

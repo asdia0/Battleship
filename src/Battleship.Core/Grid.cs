@@ -9,6 +9,8 @@
     /// </summary>
     public class Grid
     {
+        public List<Ship> OriginalShips = new List<Ship>();
+
         /// <summary>
         /// The ships on the grid.
         /// </summary>
@@ -53,16 +55,32 @@
         /// <param name="format">The string to convert the grid from.</param>
         public Grid(string format)
         {
+            // . = unsearched
+            // ' = miss
+            // O = hit
+            // @ = sunk
             this.AddSquares();
 
             for (int i = 0; i < format.Count(); i++)
             {
                 char c = format.ToCharArray()[i];
 
-                if (c == 'O')
+                switch (c)
                 {
-                    this.Squares[i].HadShip = true;
-                    this.UnoccupiedSquares.Remove(this.Squares[i]);
+                    case 'O':
+                        this.Squares[i].HadShip = true;
+                        this.Squares[i].BeenSearched = true;
+                        this.UnoccupiedSquares.Remove(this.Squares[i]);
+                        break;
+                    case '\'':
+                        this.Squares[i].BeenSearched = true;
+                        this.UnoccupiedSquares.Remove(this.Squares[i]);
+                        break;
+                    case '@':
+                        this.Squares[i].IsSunk = true;
+                        this.Squares[i].BeenSearched = true;
+                        this.UnoccupiedSquares.Remove(this.Squares[i]);
+                        break;
                 }
             }
         }
@@ -97,9 +115,9 @@
 
             foreach (Ship sp in this.Ships)
             {
-                if (sp.Type == ship.Type)
+                if (sp.ID == ship.ID)
                 {
-                    throw new Exception($"You cannot have two {ship.Type}s.");
+                    throw new Exception($"You cannot have two {ship.ID}s.");
                 }
             }
 
@@ -126,6 +144,7 @@
                 }
 
                 this.Ships.Add(ship);
+                this.OriginalShips.Add(ship);
                 return true;
             }
 
@@ -148,6 +167,7 @@
                     this.UnoccupiedSquares.Remove(this.Squares[sqID]);
                 }
 
+                this.OriginalShips.Add(ship);
                 this.Ships.Add(ship);
 
                 return true;
