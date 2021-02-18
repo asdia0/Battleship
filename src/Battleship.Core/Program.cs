@@ -171,24 +171,23 @@
 
             if (player.ToAttack.Any())
             {
-                attackedSq = player.ToAttack.First();
+                attackedSq = HighestHCS(player.ToAttack.ToList()).First();
                 prob = 100;
             }
             else
             {
                 int arrSum = 0;
 
-                Dictionary<int, decimal> probability = new Dictionary<int, decimal>();
+                Dictionary<int, double> probability = new Dictionary<int, double>();
 
                 // domain: unsearched squares
                 if (!player.ToSearch.Any())
                 {
-                    foreach (Square sq in player.Squares)
+                    List<Square> l = HighestHCS(player.UnsearchedSquares);
+
+                    foreach (Square sq in l)
                     {
-                        if (!sq.BeenSearched)
-                        {
-                            probability.Add(sq.ID, 0);
-                        }
+                        probability.Add(sq.ID, 0);
                     }
 
                     foreach (Ship ship in player.Ships)
@@ -200,9 +199,9 @@
 
                             foreach (int sqID in arr)
                             {
-                                if (!player.Squares[sqID].BeenSearched)
+                                if (l.Contains(player.Squares[sqID]))
                                 {
-                                    probability[sqID] += decimal.Divide(1, arrL.Count);
+                                    probability[sqID] += (double)decimal.Divide(1, arrL.Count);
                                 }
                             }
                         }
@@ -212,7 +211,9 @@
                 // domain: squares adjacent to hit squares
                 else
                 {
-                    foreach (Square sq in player.ToSearch)
+                    List<Square> l = HighestHCS(player.ToSearch.ToList());
+
+                    foreach (Square sq in l)
                     {
                         probability.Add(sq.ID, 0);
                     }
@@ -224,22 +225,32 @@
                         {
                             foreach (int sqID in arr)
                             {
-                                if (player.ToSearch.Contains(player.Squares[sqID]))
+                                arrSum++;
+
+                                Square sq = player.Squares[sqID];
+
+                                if (l.Contains(sq))
                                 {
-                                    probability[sqID] += decimal.Divide(1, arrL.Count);
+                                    probability[sqID] += 1;
                                 }
                             }
                         }
                     }
                 }
 
-                decimal[] source = probability.Values.ToArray();
+                double[] source = probability.Values.ToArray();
                 int i = 0;
-                decimal[][] result = source.GroupBy(s => i++ / 10).Select(g => g.ToArray()).ToArray();
+                double[][] result = source.GroupBy(s => i++ / 10).Select(g => g.ToArray()).ToArray();
 
                 attackedSq = player.Squares[(int)probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
                 prob = decimal.Divide((decimal)probability[attackedSq.ID], arrSum) * 100;
             }
+
+
+            player.SearchedSquares.Add(attackedSq);
+            player.ToAttack.Remove(attackedSq);
+            player.ToSearch.Remove(attackedSq);
+            attackedSq.BeenSearched = true;
 
             return (attackedSq, prob);
         }
@@ -300,33 +311,18 @@
                 {
                     case "M":
                         player.Squares[sq.ID].IsMiss = true;
-                        player.Squares[sq.ID].BeenSearched = true;
                         break;
                     case "H":
-
-                        List<int> sqID = new List<int>()
+                        foreach (Square sq1 in sq.GetAdjacentSquares())
                         {
-                            sq.ID - 1,
-                            sq.ID + 1,
-                            sq.ID - Settings.GridWidth,
-                            sq.ID + Settings.GridWidth,
-                        };
-
-                        foreach (int id1 in sqID)
-                        {
-                            if (id1 > -1 && id1 < (Settings.GridHeight * Settings.GridWidth))
+                            if (!sq1.BeenSearched && !player.SearchedSquares.Contains(sq1))
                             {
-                                Square sq1 = player.Squares[id1];
-
-                                if (!sq1.BeenSearched && !player.ToSearch.Contains(sq))
-                                {
-                                    player.ToSearch.Add(sq);
-                                }
+                                player.ToSearch.Add(sq1);
                             }
                         }
 
                         player.Squares[sq.ID].IsHit = true;
-                        player.Squares[sq.ID].BeenSearched = true;
+                        player.Squares[sq.ID].HadShip = true;
                         break;
                     case "S":
                         Console.Write("ID of ship: ");
@@ -346,12 +342,15 @@
 
                                     int sqID1 = ((y - 1) * Settings.GridWidth) + x - 1;
 
+                                    Console.WriteLine($"{x},{y}: {sqID1}");
+
                                     ship.OriginalOccupiedSquares.Add(player.Squares[sqID1]);
                                 }
                                 foreach (Square square in ship.OriginalOccupiedSquares)
                                 {
                                     square.IsSunk = true;
-                                    square.BeenSearched = true;
+                                    square.HadShip = true;
+                                    square.IsHit = false;
                                 }
 
                                 ship.IsSunk = true;
@@ -377,6 +376,19 @@
             var ys = xs.OrderBy(x => x).ToList();
             double mid = (ys.Count - 1) / 2.0;
             return (ys[(int)(mid)] + ys[(int)(mid + 0.5)]) / 2;
+        }
+
+        public static List<Square> HighestHCS(List<Square> l)
+        {
+            Dictionary<Square, int> d = new Dictionary<Square, int>();
+
+            foreach (Square sq in l)
+            {
+                d.Add(sq, sq.GetNumberOfHitConnectedSquares());
+            }
+
+            return d.Where(pair => pair.Value == d.Values.Max())
+                 .Select(pair => pair.Key).ToList();
         }
     }
 }

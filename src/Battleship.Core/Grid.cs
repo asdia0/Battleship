@@ -9,6 +9,8 @@
     /// </summary>
     public class Grid
     {
+        public List<Square> SearchedSquares = new List<Square>();
+
         public List<Ship> OriginalShips = new List<Ship>();
 
         /// <summary>

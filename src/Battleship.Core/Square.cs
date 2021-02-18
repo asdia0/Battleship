@@ -1,6 +1,7 @@
 ﻿namespace Battleship.Core
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Defines a square on the grid.
@@ -69,6 +70,85 @@
             int yCoor = (int)Math.Floor((double)(this.ID / Settings.GridWidth)) + 1;
 
             return (xCoor, yCoor);
+        }
+
+        public List<Square> GetAdjacentSquares()
+        {
+            List<Square> res = new List<Square>();
+
+            List<int> sqID = new List<int>()
+            {
+                this.ID - 1,
+                this.ID + 1,
+                this.ID - Settings.GridWidth,
+                this.ID + Settings.GridWidth,
+            };
+
+            foreach (int id1 in sqID)
+            {
+                if (id1 > -1 && id1 < (Settings.GridHeight * Settings.GridWidth))
+                {
+                    res.Add(this.Grid.Squares[id1]);
+                }
+            }
+
+            return res;
+        }
+
+        public int GetNumberOfHitAdjacentSquares()
+        {
+            int numberOfAdjacentHitSquares = 0;
+            foreach (Square sq in this.GetAdjacentSquares())
+            {
+                if (sq.HadShip == true)
+                {
+                    numberOfAdjacentHitSquares++;
+                }
+            }
+
+            return numberOfAdjacentHitSquares;
+        }
+
+        public int GetNumberOfHitConnectedSquares()
+        {
+            int res = 0;
+            for (int x = 1; x <= (10 - this.ToCoor().Item1); x++)
+            {
+                Square sq = this.Grid.Squares[this.ID + x];
+                if (sq.IsHit == true)
+                {
+                    res++;
+                }
+            }
+
+            for (int x = 1; x <= (this.ToCoor().Item1 - 1); x++)
+            {
+                Square sq = this.Grid.Squares[this.ID - x];
+                if (sq.IsHit == true)
+                {
+                    res++;
+                }
+            }
+
+            for (int y = 1; y <= (10 - this.ToCoor().Item2); y++)
+            {
+                Square sq = this.Grid.Squares[this.ID + (y * Settings.GridWidth)];
+                if (sq.IsHit == true)
+                {
+                    res++;
+                }
+            }
+
+            for (int y = 1; y < (this.ToCoor().Item2 - 1); y++)
+            {
+                Square sq = this.Grid.Squares[this.ID - (y * Settings.GridWidth)];
+                if (sq.IsHit == true)
+                {
+                    res++;
+                }
+            }
+
+            return res;
         }
 
     }
