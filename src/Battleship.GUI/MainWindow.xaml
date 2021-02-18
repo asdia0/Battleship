@@ -5,19 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Battleship.GUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Battleship" Height="450" Width="800">
     <Grid>
         <Menu IsMainMenu="True">
-            <MenuItem Header="_Edit">
-                <MenuItem Header="_Cut" Command="Cut">
+            <MenuItem Header="File">
+                <MenuItem Header="New game">
                 </MenuItem>
-                <MenuItem Header="_Copy" Command="Copy">
+                <MenuItem Header="Load game">
                 </MenuItem>
-                <MenuItem Header="_Paste" Command="Paste">
+                <MenuItem Header="Save game">
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="_Play" />
-            <MenuItem Header="_Help" />
+            <MenuItem Header="_Edit">
+                <MenuItem Header="Ship editor" Click="Click_ShipEditor">
+                </MenuItem>
+                <MenuItem Header="Grid editor">
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Mode">
+                <MenuItem Header="Play against computer">
+                </MenuItem>
+                <MenuItem Header="Find best move">
+                </MenuItem>
+                <MenuItem Header="Simulate">
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About">
+                </MenuItem>
+                <MenuItem Header="Controls">
+                </MenuItem>
+            </MenuItem>
         </Menu>
 
     </Grid>

@@ -10,26 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Battleship.GUI
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ShipEditor : Window
     {
-        public MainWindow()
+        public ShipEditor()
         {
             InitializeComponent();
-            Application.Current.MainWindow.WindowState = WindowState.Maximized;
-        }
-
-        public void Click_ShipEditor(object sender, RoutedEventArgs e)
-        {
-            Window shipeditor = new ShipEditor();
-            shipeditor.Show();
         }
     }
 }
