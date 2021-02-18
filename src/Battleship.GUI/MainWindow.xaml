@@ -19,7 +19,7 @@
             <MenuItem Header="_Edit">
                 <MenuItem Header="Ship editor" Click="Click_ShipEditor">
                 </MenuItem>
-                <MenuItem Header="Grid editor">
+                <MenuItem Header="Grid editor" Click="Click_GridEditor">
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Mode">
