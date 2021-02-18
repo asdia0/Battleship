@@ -30,12 +30,6 @@
                 <MenuItem Header="Simulate" Click="Click_Simulate">
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="Help">
-                <MenuItem Header="About" Click="Click_About">
-                </MenuItem>
-                <MenuItem Header="Controls" Click="Click_Controls">
-                </MenuItem>
-            </MenuItem>
         </Menu>
 
     </Grid>

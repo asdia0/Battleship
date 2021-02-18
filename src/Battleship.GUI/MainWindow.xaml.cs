@@ -77,17 +77,5 @@ namespace Battleship.GUI
         {
 
         }
-
-
-        // HELP
-        public void Click_About(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        public void Click_Controls(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
