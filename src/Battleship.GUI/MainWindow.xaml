@@ -9,11 +9,11 @@
     <Grid>
         <Menu IsMainMenu="True">
             <MenuItem Header="File">
-                <MenuItem Header="New game">
+                <MenuItem Header="New game" Click="Click_New">
                 </MenuItem>
-                <MenuItem Header="Load game">
+                <MenuItem Header="Load game" Click="Click_Load">
                 </MenuItem>
-                <MenuItem Header="Save game">
+                <MenuItem Header="Save game" Click="Click_Save">
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Edit">
@@ -23,17 +23,17 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Mode">
-                <MenuItem Header="Play against computer">
+                <MenuItem Header="Play against computer" Click="Click_Play">
                 </MenuItem>
-                <MenuItem Header="Find best move">
+                <MenuItem Header="Find best move" Click="Click_Find">
                 </MenuItem>
-                <MenuItem Header="Simulate">
+                <MenuItem Header="Simulate" Click="Click_Simulate">
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Help">
-                <MenuItem Header="About">
+                <MenuItem Header="About" Click="Click_About">
                 </MenuItem>
-                <MenuItem Header="Controls">
+                <MenuItem Header="Controls" Click="Click_Controls">
                 </MenuItem>
             </MenuItem>
         </Menu>
