@@ -13,7 +13,7 @@
                 </MenuItem>
                 <MenuItem Header="Load game" Click="Click_Load">
                 </MenuItem>
-                <MenuItem Header="Save game" Click="Click_Save">
+                <MenuItem Name="SaveGame" Header="Save game" Click="Click_Save">
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Edit">

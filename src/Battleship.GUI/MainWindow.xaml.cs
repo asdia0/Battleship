@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.IO;
+using Microsoft.Win32;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -13,6 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using Battleship.Core;
+
 namespace Battleship.GUI
 {
     /// <summary>
@@ -20,10 +24,15 @@ namespace Battleship.GUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        public Game currentGame = new Game();
+
+        public bool IsInPlayMode = false;
+
         public MainWindow()
         {
             InitializeComponent();
             Application.Current.MainWindow.WindowState = WindowState.Maximized;
+            this.UpdateSaveGame();
         }
 
         protected override void OnClosed(EventArgs e)
@@ -33,6 +42,8 @@ namespace Battleship.GUI
             Application.Current.Shutdown();
         }
 
+        // CONTROLS
+        #region
         // FILE
         public void Click_New(object sender, RoutedEventArgs e)
         {
@@ -46,7 +57,9 @@ namespace Battleship.GUI
 
         public void Click_Save(object sender, RoutedEventArgs e)
         {
-
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            if (saveFileDialog.ShowDialog() == true)
+                File.WriteAllText(saveFileDialog.FileName, "placeholder");
         }
 
         // EDIT
@@ -65,17 +78,27 @@ namespace Battleship.GUI
         // MODE
         public void Click_Play(object sender, RoutedEventArgs e)
         {
-
+            this.IsInPlayMode = true;
+            this.UpdateSaveGame();
         }
 
         public void Click_Simulate(object sender, RoutedEventArgs e)
         {
-
+            this.IsInPlayMode = false;
+            this.UpdateSaveGame();
         }
 
         public void Click_Find(object sender, RoutedEventArgs e)
         {
+            this.IsInPlayMode = false;
+            this.UpdateSaveGame();
+        }
+        #endregion
 
+        //METHODS
+        public void UpdateSaveGame()
+        {
+            SaveGame.IsEnabled = this.IsInPlayMode;
         }
     }
 }
