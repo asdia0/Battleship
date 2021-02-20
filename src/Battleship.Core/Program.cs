@@ -25,7 +25,7 @@
         /// Simulates a number of games.
         /// </summary>
         /// <param name="numberOfGames">Number of games to simulate.</param>
-        public static void Simulation(int numberOfGames)
+        public static void Simulate(int numberOfGames)
         {
             decimal totalTime = 0;
 
@@ -46,6 +46,7 @@
                 elapsedTime.Stop();
 
                 gameMoves.Add(game.Move);
+                string moves = game.ToString();
 
                 sumMoves += game.Move;
                 if (game.Winner == true)
@@ -176,8 +177,6 @@
             }
             else
             {
-                int arrSum = 0;
-
                 Dictionary<int, double> probability = new Dictionary<int, double>();
 
                 // domain: unsearched squares
@@ -195,8 +194,6 @@
                         List<List<int>> arrL = ship.GetArrangements();
                         foreach (List<int> arr in arrL)
                         {
-                            arrSum++;
-
                             foreach (int sqID in arr)
                             {
                                 if (l.Contains(player.Squares[sqID]))
@@ -225,13 +222,9 @@
                         {
                             foreach (int sqID in arr)
                             {
-                                arrSum++;
-
-                                Square sq = player.Squares[sqID];
-
-                                if (l.Contains(sq))
+                                if (l.Contains(player.Squares[sqID]))
                                 {
-                                    probability[sqID] += 1;
+                                    probability[sqID]++;
                                 }
                             }
                         }
@@ -243,7 +236,7 @@
                 double[][] result = source.GroupBy(s => i++ / 10).Select(g => g.ToArray()).ToArray();
 
                 attackedSq = player.Squares[(int)probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
-                prob = decimal.Divide((decimal)probability[attackedSq.ID], arrSum) * 100;
+                prob = decimal.Divide((decimal)probability[attackedSq.ID], (decimal)probability.Values.Sum()) * 100;
             }
 
 
@@ -276,9 +269,9 @@
         }
 
         /// <summary>
-        /// Main method of the project.
+        /// Finds best square.
         /// </summary>
-        public static void Main()
+        public static void Find()
         {
             List<Ship> shipList = new List<Ship>
             {
@@ -301,6 +294,7 @@
             while (player.Ships.Count > 0)
             {
                 Console.Clear();
+                Console.WriteLine($"{player.Squares[45].ToCoor()} {player.Squares[45].GetNumberOfHitConnectedSquares()}");
                 (Square sq, decimal e) = FindBestSquare(player);
                 player.UnsearchedSquares.Remove(sq);
                 Console.WriteLine($"Square Coordinates: {sq.ToCoor()}");
@@ -342,8 +336,6 @@
 
                                     int sqID1 = ((y - 1) * Settings.GridWidth) + x - 1;
 
-                                    Console.WriteLine($"{x},{y}: {sqID1}");
-
                                     ship.OriginalOccupiedSquares.Add(player.Squares[sqID1]);
                                 }
                                 foreach (Square square in ship.OriginalOccupiedSquares)
@@ -360,6 +352,11 @@
                         break;
                 }
             }
+        }
+
+        public static void Main()
+        {
+            Simulate(100);
         }
 
         public static dynamic? Mode(List<dynamic> list)

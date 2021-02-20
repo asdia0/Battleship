@@ -66,7 +66,7 @@
 
         public (int, int) ToCoor()
         {
-            int xCoor = this.ID % Settings.GridWidth + 1;
+            int xCoor = (this.ID % Settings.GridWidth) + 1;
             int yCoor = (int)Math.Floor((double)(this.ID / Settings.GridWidth)) + 1;
 
             return (xCoor, yCoor);
@@ -112,12 +112,16 @@
         public int GetNumberOfHitConnectedSquares()
         {
             int res = 0;
-            for (int x = 1; x <= (10 - this.ToCoor().Item1); x++)
+            for (int x = 1; x <= (9 - this.ToCoor().Item1); x++)
             {
                 Square sq = this.Grid.Squares[this.ID + x];
                 if (sq.IsHit == true)
                 {
                     res++;
+                }
+                else
+                {
+                    break;
                 }
             }
 
@@ -128,14 +132,22 @@
                 {
                     res++;
                 }
+                else
+                {
+                    break;
+                }
             }
 
-            for (int y = 1; y <= (10 - this.ToCoor().Item2); y++)
+            for (int y = 1; y <= (9 - this.ToCoor().Item2); y++)
             {
                 Square sq = this.Grid.Squares[this.ID + (y * Settings.GridWidth)];
                 if (sq.IsHit == true)
                 {
                     res++;
+                }
+                else
+                {
+                    break;
                 }
             }
 
@@ -145,6 +157,10 @@
                 if (sq.IsHit == true)
                 {
                     res++;
+                }
+                else
+                {
+                    break;
                 }
             }
 
