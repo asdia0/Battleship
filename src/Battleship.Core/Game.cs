@@ -19,7 +19,7 @@
         /// <summary>
         /// Number of moves.
         /// </summary>
-        public int Move = 0;
+        public int Move;
 
         /// <summary>
         /// Player 1's grid.
@@ -93,7 +93,7 @@
                         horizontal = true;
                     }
 
-                    if (this.player1.AddShip(this.player1.UnoccupiedSquares[rnd.Next(this.player1.UnoccupiedSquares.Count)], new Ship(this.player1, length), horizontal))
+                    if (this.player1.AddShip(this.player1.UnoccupiedSquares[rnd.Next(this.player1.UnoccupiedSquares.Count)], new Ship(this.player1, length, 1), horizontal))
                     {
                         break;
                     }
@@ -108,7 +108,7 @@
                         horizontal = true;
                     }
 
-                    if (this.player2.AddShip(this.player2.UnoccupiedSquares[rnd.Next(this.player2.UnoccupiedSquares.Count)], new Ship(this.player2, length), horizontal))
+                    if (this.player2.AddShip(this.player2.UnoccupiedSquares[rnd.Next(this.player2.UnoccupiedSquares.Count)], new Ship(this.player2, length, 1), horizontal))
                     {
                         break;
                     }

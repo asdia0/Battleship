@@ -43,7 +43,7 @@
             </StackPanel.Resources>
 
             <ComboBox Name="ID" Height="26" Margin="0,10,0,0" DropDownClosed="ID_DropDownClosed"/>
-            <TextBox Name="Name"/>
+            <TextBox Name="Name_"/>
             <TextBox Name="OccupiedSqs" />
             <TextBox Name="Length" />
             <TextBox Name="Breadth" />

@@ -64,6 +64,10 @@
             this.ID = id;
         }
 
+        /// <summary>
+        /// Returns the x- and y-coordinates of a square.
+        /// </summary>
+        /// <returns></returns>
         public (int, int) ToCoor()
         {
             int xCoor = (this.ID % Settings.GridWidth) + 1;
@@ -166,6 +170,5 @@
 
             return res;
         }
-
     }
 }

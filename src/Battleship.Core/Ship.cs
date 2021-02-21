@@ -2,13 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// Defines a ship on the grid.
     /// </summary>
     public class Ship
     {
+        public string Name;
+
         /// <summary>
         /// The squares the ship had occupied.
         /// </summary>
@@ -18,6 +19,8 @@
         /// The ship's type.
         /// </summary>
         public int ID;
+
+        public int Breadth = 1;
 
         /// <summary>
         /// The ship's length.
@@ -41,17 +44,19 @@
         /// </summary>
         /// <param name="grid">The ship's grid.</param>
         /// <param name="type">The ship's type.</param>
-        public Ship(Grid grid, int length)
+        public Ship(Grid grid, int length, int breadth)
         {
             this.Length = length;
             this.Grid = grid;
-            this.ID = grid.Ships.Count;
+            this.ID = grid.OriginalShips.Count;
+            this.Breadth = breadth;
         }
 
-        public Ship(int id,  int length)
+        public Ship(int id, int length, int breadth)
         {
             this.Length = length;
             this.ID = id;
+            this.Breadth = breadth;
         }
 
         /// <summary>
@@ -61,7 +66,7 @@
         /// <param name="sq">Base square to place the ship on.</param>
         /// <param name="alignment">Alignment of the ship.</param>
         /// <returns>The new probability dictionary.</returns>
-        public Dictionary<int, int> IncreaseProbability(Dictionary<int, int> probability,  Square sq, bool alignment)
+        public Dictionary<int, int> IncreaseProbability(Dictionary<int, int> probability, Square sq, bool alignment)
         {
             Dictionary<int, int> res = probability;
 

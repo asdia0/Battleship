@@ -1,55 +1,66 @@
-﻿using System.Windows;
-using Battleship.Core;
-
-namespace Battleship.GUI
+﻿namespace Battleship.GUI
 {
+    using System.Windows;
+    using Battleship.Core;
+
     /// <summary>
-    /// Interaction logic for Grid.xaml
+    /// Interaction logic for Grid.xaml.
     /// </summary>
     public partial class GridEditor : Window
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridEditor"/> class.
+        /// </summary>
         public GridEditor()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.UpdateText();
         }
 
+        /// <summary>
+        /// Updates the screen.
+        /// </summary>
         public void UpdateText()
         {
-            Height.Text = Settings.GridHeight.ToString();
-            Width.Text = Settings.GridWidth.ToString();
+            this.Height_.Text = Settings.GridHeight.ToString();
+            this.Width_.Text = Settings.GridWidth.ToString();
         }
 
-        public void Click_Update(object e, RoutedEventArgs args)
+        /// <summary>
+        /// Fired when the Update button is clicked.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
+        public void Click_Update(object sender, RoutedEventArgs e)
         {
-            Status.Content = string.Empty;
+            this.Status.Content = string.Empty;
 
-            string _heightS = Height.Text;
-            string _widthS = Width.Text;
+            string heightS = this.Height_.Text;
+            string widthS = this.Width_.Text;
 
-            int _height = 0;
-            int _width = 0;
+            int heightN = 0;
+            int widthN = 0;
 
-            bool _heightB = int.TryParse(_heightS, out _height);
-            bool _widthB = int.TryParse(_widthS, out _width);
+            bool heightB = int.TryParse(heightS, out heightN);
+            bool widthB = int.TryParse(widthS, out widthN);
 
-            if ((!_heightB || !_widthB) || (_height <= 0 || _width <= 0) || (_height % 1 != 0 || _width % 1 != 0))
+            if ((!heightB || !widthB) || (heightN <= 0 || widthN <= 0) || (heightN % 1 != 0 || widthN % 1 != 0))
             {
-                Status.Content = "Error: Height and Width must be positive integers.";
+                this.Status.Content = "Error: Height and Width must be positive integers.";
             }
             else
             {
                 MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure? Changing the grid dimensions will reset all ships and squares.", "Confirmation", MessageBoxButton.YesNo);
                 if (messageBoxResult == MessageBoxResult.Yes)
                 {
-                    Settings.GridHeight = _height;
-                    Settings.GridWidth = _width;
-                    Core.Settings.GridHeight = _height;
-                    Core.Settings.GridWidth = _width;
+                    Settings.GridHeight = heightN;
+                    Settings.GridWidth = widthN;
+                    Core.Settings.GridHeight = heightN;
+                    Core.Settings.GridWidth = widthN;
 
                     Settings.Player = new Grid();
 
-                    Status.Content = "Successfully edited grid.";
+                    this.Status.Content = "Successfully edited grid.";
 
                     this.UpdateText();
                 }

@@ -1,61 +1,76 @@
-﻿using Battleship.Core;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
-
-namespace Battleship.GUI
+﻿namespace Battleship.GUI
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Windows;
+
+    using Battleship.Core;
+
     /// <summary>
-    /// Interaction logic for Ship.xaml
+    /// Interaction logic for Ship.xaml.
     /// </summary>
     public partial class ShipEditor : Window
     {
-        ObservableCollection<dynamic> IDSource = new ObservableCollection<dynamic>();
+        /// <summary>
+        /// ID options.
+        /// </summary>
+        public ObservableCollection<dynamic> IDSource = new ObservableCollection<dynamic>();
 
-        Ship currentShip;
+        /// <summary>
+        /// Current ship selected.
+        /// </summary>
+        public Ship CurrentShip;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShipEditor"/> class.
+        /// </summary>
         public ShipEditor()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             Settings.Player.AddShip(Settings.Player.Squares[0], new Ship(Settings.Player, 5, 1), true);
 
-            ID.SelectedIndex = 1;
+            this.ID.SelectedIndex = 1;
 
-            IDSource.Add("");
+            this.IDSource.Add(string.Empty);
 
             foreach (Ship sp in Settings.Player.Ships)
             {
-                IDSource.Add(sp.ID);
+                this.IDSource.Add(sp.ID);
             }
 
-            ID.ItemsSource = IDSource;
+            this.ID.ItemsSource = this.IDSource;
 
-            currentShip = Settings.Player.Ships[0];
+            this.CurrentShip = Settings.Player.Ships[0];
 
-            Add.IsEnabled = false;
-            Remove.IsEnabled = false;
-            Update.IsEnabled = true;
+            this.Add.IsEnabled = false;
+            this.Remove.IsEnabled = false;
+            this.Update.IsEnabled = true;
 
             this.UpdateText();
         }
 
-        public void Click_Update(object e, EventArgs args)
+        /// <summary>
+        /// Fired when the Update button is clicked.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
+        public void Click_Update(object sender, EventArgs e)
         {
-            Status.Content = string.Empty;
+            this.Status.Content = string.Empty;
 
-            string _name = Name.Text;
-            bool _isSunk = (bool)IsSunk.IsChecked;
+            string name = this.Name_.Text;
+            bool isSunk = (bool)this.IsSunk.IsChecked;
 
-            (bool, List<Square>, int, int) res = AbleToProceed(currentShip, true);
+            (bool, List<Square>, int, int) res = this.AbleToProceed(this.CurrentShip, true);
             if (res.Item1)
             {
                 foreach (Square sq in res.Item2)
                 {
-                    currentShip.OriginalOccupiedSquares.Add(sq);
-                    currentShip.CurrentOccupiedSquares.Add(sq);
+                    this.CurrentShip.OriginalOccupiedSquares.Add(sq);
+                    this.CurrentShip.CurrentOccupiedSquares.Add(sq);
                     Settings.Player.UnoccupiedSquares.Remove(sq);
 
                     sq.HadShip = true;
@@ -64,34 +79,40 @@ namespace Battleship.GUI
                     {
                         sq.HasShip = true;
                     }
+
                     if (sq.IsSunk == true)
                     {
-                        currentShip.CurrentOccupiedSquares.Remove(sq);
+                        this.CurrentShip.CurrentOccupiedSquares.Remove(sq);
                     }
                 }
 
-                currentShip.Name = _name;
-                currentShip.Length = res.Item3;
-                currentShip.Breadth = res.Item4;
-                currentShip.IsSunk = _isSunk;
+                this.CurrentShip.Name = name;
+                this.CurrentShip.Length = res.Item3;
+                this.CurrentShip.Breadth = res.Item4;
+                this.CurrentShip.IsSunk = isSunk;
 
-                Status.Content = $"Successfully updated {currentShip.Name}.";
+                this.Status.Content = $"Successfully updated {this.CurrentShip.Name}.";
             }
         }
 
+        /// <summary>
+        /// Fired when the Add button is clicked.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
         private void Click_Add(object sender, EventArgs e)
         {
-            Status.Content = string.Empty;
+            this.Status.Content = string.Empty;
 
-            string _name = Name.Text;
-            bool _isSunk = (bool)IsSunk.IsChecked;
+            string nameS = this.Name_.Text;
+            bool isSunk = (bool)this.IsSunk.IsChecked;
 
-            int _breadth = 0;
-            int _length = 0;
+            int breadthN = 0;
+            int lengthN = 0;
 
-            Ship ship = new Ship(Settings.Player, _length, _breadth);
+            Ship ship = new Ship(Settings.Player, lengthN, breadthN);
 
-            (bool, List<Square>, int, int) res = AbleToProceed(ship, false);
+            (bool, List<Square>, int, int) res = this.AbleToProceed(ship, false);
 
             if (res.Item1)
             {
@@ -107,6 +128,7 @@ namespace Battleship.GUI
                     {
                         sq.HasShip = true;
                     }
+
                     if (sq.IsSunk == true)
                     {
                         ship.CurrentOccupiedSquares.Remove(sq);
@@ -115,23 +137,28 @@ namespace Battleship.GUI
 
                 ship.Length = res.Item3;
                 ship.Breadth = res.Item4;
-                ship.Name = _name;
-                ship.IsSunk = _isSunk;
+                ship.Name = nameS;
+                ship.IsSunk = isSunk;
 
                 Settings.Player.Ships.Add(ship);
                 Settings.Player.OriginalShips.Add(ship);
 
-                IDSource.Add(ship.ID);
-                Status.Content = $"Successfully added {ship.Name}.";
+                this.IDSource.Add(ship.ID);
+                this.Status.Content = $"Successfully added {ship.Name}.";
             }
         }
 
+        /// <summary>
+        /// Fired when the Remove button is clicked.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
         private void Click_Remove(object sender, EventArgs e)
         {
-            int shipID = currentShip.ID;
+            int shipID = this.CurrentShip.ID;
 
-            Settings.Player.Ships.Remove(currentShip);
-            Settings.Player.OriginalShips.Remove(currentShip);
+            Settings.Player.Ships.Remove(this.CurrentShip);
+            Settings.Player.OriginalShips.Remove(this.CurrentShip);
 
             int id = 0;
 
@@ -141,83 +168,96 @@ namespace Battleship.GUI
                 id++;
             }
 
-            ID.SelectedIndex--;
+            this.ID.SelectedIndex--;
             this.UpdateText();
-            IDSource.Remove(IDSource[IDSource.Count - 1]);
+            this.IDSource.Remove(this.IDSource[this.IDSource.Count - 1]);
         }
 
+        /// <summary>
+        /// Fired when the ID Combobox closes.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
         private void ID_DropDownClosed(object sender, EventArgs e)
         {
-            Status.Content = string.Empty;
+            this.Status.Content = string.Empty;
 
-            if (ID.SelectedIndex == 0)
+            if (this.ID.SelectedIndex == 0)
             {
-                Add.IsEnabled = true;
-                Remove.IsEnabled = false;
-                Update.IsEnabled = false;
+                this.Add.IsEnabled = true;
+                this.Remove.IsEnabled = false;
+                this.Update.IsEnabled = false;
 
-                Name.Text = string.Empty;
-                OccupiedSqs.Text = string.Empty;
-                Length.Text = string.Empty;
-                Breadth.Text = string.Empty;
-                IsSunk.IsChecked = false;
+                this.Name_.Text = string.Empty;
+                this.OccupiedSqs.Text = string.Empty;
+                this.Length.Text = string.Empty;
+                this.Breadth.Text = string.Empty;
+                this.IsSunk.IsChecked = false;
             }
             else
             {
-                Add.IsEnabled = false;
-                Remove.IsEnabled = true;
-                Update.IsEnabled = true;
+                this.Add.IsEnabled = false;
+                this.Remove.IsEnabled = true;
+                this.Update.IsEnabled = true;
 
-                if (ID.SelectedIndex == 1)
+                if (this.ID.SelectedIndex == 1)
                 {
-                    Remove.IsEnabled = false;
+                    this.Remove.IsEnabled = false;
                 }
 
                 this.UpdateText();
             }
         }
 
+        /// <summary>
+        /// Updates the screen.
+        /// </summary>
         private void UpdateText()
         {
-            currentShip = Settings.Player.OriginalShips[ID.SelectedIndex - 1];
+            this.CurrentShip = Settings.Player.OriginalShips[this.ID.SelectedIndex - 1];
 
-            Status.Content = string.Empty;
+            this.Status.Content = string.Empty;
 
-            Name.Text = currentShip.Name;
-            Length.Text = currentShip.Length.ToString();
-            Breadth.Text = currentShip.Breadth.ToString();
-            IsSunk.IsChecked = currentShip.IsSunk;
+            this.Name_.Text = this.CurrentShip.Name;
+            this.Length.Text = this.CurrentShip.Length.ToString();
+            this.Breadth.Text = this.CurrentShip.Breadth.ToString();
+            this.IsSunk.IsChecked = this.CurrentShip.IsSunk;
 
             string text = string.Empty;
-            foreach (Square sq in currentShip.OriginalOccupiedSquares)
+            foreach (Square sq in this.CurrentShip.OriginalOccupiedSquares)
             {
                 text += $",{sq.ToCoor()}";
             }
 
-            OccupiedSqs.Text = text.Remove(0, 1).Replace(" ", "");
+            this.OccupiedSqs.Text = text.Remove(0, 1).Replace(" ", string.Empty);
         }
 
+        /// <summary>
+        /// Determines if the inputs are valid.
+        /// </summary>
+        /// <param name="ship">Ship.</param>
+        /// <param name="isUpdate">Is fired from Click_Update().</param>
+        /// <returns>A boolean determining if the inputs are valid.</returns>
         private (bool, List<Square>, int, int) AbleToProceed(Ship ship, bool isUpdate)
         {
             (bool, List<Square>, int, int) res = (true, new List<Square>(), 0, 0);
 
-            Status.Content = string.Empty;
+            this.Status.Content = string.Empty;
 
-            string _occupiedSqs = OccupiedSqs.Text;
-            string _lengthS = Length.Text;
-            string _breadthS = Breadth.Text;
+            string occupiedSqs = this.OccupiedSqs.Text;
+            string lengthS = this.Length.Text;
+            string breadthS = this.Breadth.Text;
 
-            int _breadth = 0;
-            int _length = 0;
+            int breadthN = 0;
+            int lengthN = 0;
 
             List<string> sqs = new List<string>();
             try
             {
-                sqs = _occupiedSqs.Remove(0, 1).Remove(_occupiedSqs.Length - 2).Split("),(").ToList();
+                sqs = occupiedSqs.Remove(0, 1).Remove(occupiedSqs.Length - 2).Split("),(").ToList();
             }
             catch
             {
-
             }
 
             ship.OriginalOccupiedSquares.Clear();
@@ -236,13 +276,13 @@ namespace Battleship.GUI
 
                     if (!xBool1 || !yBool1)
                     {
-                        Status.Content = "Error: Squares must be represented in the following format: (x1,y1),(x2,y2) etc.";
+                        this.Status.Content = "Error: Squares must be represented in the following format: (x1,y1),(x2,y2) etc.";
                         res.Item1 = false;
                     }
                 }
                 catch
                 {
-                    Status.Content = "Error: Squares must be represented in the following format: (x1,y1),(x2,y2) etc.";
+                    this.Status.Content = "Error: Squares must be represented in the following format: (x1,y1),(x2,y2) etc.";
                     res.Item1 = false;
                 }
 
@@ -254,7 +294,7 @@ namespace Battleship.GUI
                 }
                 catch
                 {
-                    Status.Content = $"Error: {id} is an invalid ID";
+                    this.Status.Content = $"Error: {id} is an invalid ID";
                     res.Item1 = false;
                 }
             }
@@ -267,46 +307,53 @@ namespace Battleship.GUI
                 {
                     if (ship1.OriginalOccupiedSquares.Contains(sq))
                     {
-                        Status.Content = "Error: Ship cannot overlap another ship.";
+                        this.Status.Content = "Error: Ship cannot overlap another ship.";
                         res.Item1 = false;
                     }
                 }
             }
 
-            if (ID.SelectedIndex == 0 && isUpdate == true)
+            if (this.ID.SelectedIndex == 0 && isUpdate == true)
             {
-                Status.Content = "Error: ID must be an integer";
+                this.Status.Content = "Error: ID must be an integer";
                 res.Item1 = false;
             }
 
-            bool xBool = int.TryParse(_breadthS, out _breadth);
-            bool yBool = int.TryParse(_lengthS, out _length);
+            bool xBool = int.TryParse(breadthS, out breadthN);
+            bool yBool = int.TryParse(lengthS, out lengthN);
 
             if (!xBool || !yBool)
             {
-                Status.Content = "Error: Height and Width property must be an integer!";
+                this.Status.Content = "Error: Height and Width property must be an integer!";
                 res.Item1 = false;
             }
 
-            if (_length * _breadth != potentialSqs.Count)
+            if (lengthN * breadthN != potentialSqs.Count)
             {
-                Status.Content = "Error: Number of squares must be equal to length * breadth.";
+                this.Status.Content = "Error: Number of squares must be equal to length * breadth.";
                 res.Item1 = false;
             }
 
             res.Item2 = potentialSqs;
-            res.Item3 = _length;
-            res.Item4 = _breadth;
+            res.Item3 = lengthN;
+            res.Item4 = breadthN;
 
             if (!this.ValidShipSquares(res.Item3, res.Item4, res.Item2))
             {
-                Status.Content = "Error: Squares must be arranged together.";
+                this.Status.Content = "Error: Squares must be arranged together.";
                 res.Item1 = false;
             }
 
             return res;
         }
 
+        /// <summary>
+        /// Determines if the inputted squares match up with the ship's dimensions.
+        /// </summary>
+        /// <param name="length">Length of ship.</param>
+        /// <param name="breadth">Breadth of ship.</param>
+        /// <param name="squares">List of squares inputted by user.</param>
+        /// <returns>A boolean determining if the inputted squares match up with the ship's dimensions.</returns>
         private bool ValidShipSquares(int length, int breadth, List<Square> squares)
         {
             Ship ship = new Ship(new Grid(), length, breadth);

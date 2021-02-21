@@ -38,8 +38,8 @@
                 </Style>
             </StackPanel.Resources>
 
-            <TextBox Name="Height"/>
-            <TextBox Name="Width" />
+            <TextBox Name="Height_"/>
+            <TextBox Name="Width_" />
         </StackPanel>
 
         <Label Name="Status" Height="26" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>

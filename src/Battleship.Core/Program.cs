@@ -1,11 +1,9 @@
 ﻿namespace Battleship.Core
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Text.RegularExpressions;
     using System.Timers;
 
     /// <summary>
@@ -204,7 +202,7 @@
                         }
                     }
                 }
-                
+
                 // domain: squares adjacent to hit squares
                 else
                 {
@@ -275,18 +273,18 @@
         {
             List<Ship> shipList = new List<Ship>
             {
-                new Ship(5, 0),
-                new Ship(4, 1),
-                new Ship(3, 2),
-                new Ship(3, 3),
-                new Ship(2, 4),
+                new Ship(0, 5, 1),
+                new Ship(1, 4, 1),
+                new Ship(2, 3, 1),
+                new Ship(3, 3, 1),
+                new Ship(4, 2, 1),
 
             };
 
             Grid player = new Grid();
             foreach (Ship ship in shipList)
             {
-                Ship sp = new Ship(player, ship.ID);
+                Ship sp = new Ship(player, ship.Length, ship.Breadth);
                 player.Ships.Add(sp);
                 player.OriginalShips.Add(sp);
             }
