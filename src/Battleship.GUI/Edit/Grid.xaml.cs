@@ -56,6 +56,7 @@
                     Core.Settings.GridWidth = widthN;
 
                     Settings.Player = new Grid();
+                    Settings.Computer = new Grid();
 
                     this.Status.Content = "Successfully edited grid.";
 
