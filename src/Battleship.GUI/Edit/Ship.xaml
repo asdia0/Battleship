@@ -30,8 +30,8 @@
             <Label Content="ID" Target="{Binding ElementName=ID}"></Label>
             <Label Content="Name" Target="{Binding ElementName=Name}"></Label>
             <Label Content="Occupied Squares" Target="{Binding ElementName=OccupiedSqs}"></Label>
-            <Label Content="Height" Target="{Binding ElementName=Length}"></Label>
-            <Label Content="Width" Target="{Binding ElementName=Width}"></Label>
+            <Label Content="Length" Target="{Binding ElementName=Length}"></Label>
+            <Label Content="Breadth" Target="{Binding ElementName=Breadth}"></Label>
             <Label Content="Is Sunk" Target="{Binding ElementName=IsSunk}"></Label>
         </StackPanel>
         <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Margin="178,21,0,0" Grid.RowSpan="2">
@@ -42,12 +42,12 @@
                 </Style>
             </StackPanel.Resources>
 
-            <ComboBox Name="Name" Height="26" Margin="0,10,0,0"/>
-            <TextBox Name="ID"/>
+            <ComboBox Name="ID" Height="26" Margin="0,10,0,0" DropDownClosed="ID_DropDownClosed"/>
+            <TextBox Name="Name"/>
             <TextBox Name="OccupiedSqs" />
             <TextBox Name="Length" />
-            <TextBox Name="Width" />
-            <TextBox Name="IsSunk" />
+            <TextBox Name="Breadth" />
+            <CheckBox Name="IsSunk" Margin="0,16,0,0"/>
 
         </StackPanel>
         <StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Center" Grid.Column="1" Height="20" Width="180">
@@ -56,10 +56,11 @@
                     <Setter Property="Margin" Value="10,0,0,0"/>
                 </Style>
             </StackPanel.Resources>
-            <Button Content="Update" Width="50"/>
-            <Button Content="Add" Width="50"/>
-            <Button Content="Remove" Width="50"/>
+            <Button Name="Update" Content="Update" Width="50" Click="Click_Update"/>
+            <Button Name="Add" Content="Add" Width="50" Click="Click_Add"/>
+            <Button Name="Remove" Content="Remove" Width="50" Click="Click_Remove"/>
         </StackPanel>
+        <Label Name="Status" Content="" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Width="Auto" Grid.Column="1" HorizontalContentAlignment="Center"/>
     </Grid>
 
 </Window>

@@ -1,21 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.IO;
+﻿using Battleship.Core;
 using Microsoft.Win32;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-using Battleship.Core;
+using System;
+using System.IO;
+using System.Windows;
 
 namespace Battleship.GUI
 {
@@ -24,6 +11,8 @@ namespace Battleship.GUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        public string gameString;
+
         public Game currentGame = new Game();
 
         public bool IsInPlayMode = false;
@@ -79,6 +68,7 @@ namespace Battleship.GUI
         public void Click_Play(object sender, RoutedEventArgs e)
         {
             this.IsInPlayMode = true;
+            this.gameString = string.Empty;
             this.UpdateSaveGame();
         }
 
@@ -86,6 +76,8 @@ namespace Battleship.GUI
         {
             this.IsInPlayMode = false;
             this.UpdateSaveGame();
+
+
         }
 
         public void Click_Find(object sender, RoutedEventArgs e)
@@ -96,9 +88,11 @@ namespace Battleship.GUI
         #endregion
 
         //METHODS
+        #region
         public void UpdateSaveGame()
         {
             SaveGame.IsEnabled = this.IsInPlayMode;
         }
+        #endregion
     }
 }
