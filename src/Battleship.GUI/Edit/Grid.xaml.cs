@@ -34,14 +34,18 @@ namespace Battleship.GUI
             }
             else
             {
-                Settings.GridHeight = _height;
-                Settings.GridWidth = _width;
-                Core.Settings.GridHeight = _height;
-                Core.Settings.GridWidth = _width;
+                MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure? Changing the grid dimensions will reset all ships and squares.", "Confirmation", MessageBoxButton.YesNo);
+                if (messageBoxResult == MessageBoxResult.Yes)
+                {
+                    Settings.GridHeight = _height;
+                    Settings.GridWidth = _width;
+                    Core.Settings.GridHeight = _height;
+                    Core.Settings.GridWidth = _width;
 
-                Settings.Player = new Grid();
+                    Settings.Player = new Grid();
 
-                Status.Content = "Successfully edited grid.";
+                    Status.Content = "Successfully edited grid.";
+                }
             }
         }
     }
