@@ -28,4 +28,4 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 See also the list of [contributors](https://github.com/asdia0/Battleship/contributors) who participated in this project.
 
 ## License
-This project is licensed under the GNU General Public License v3.0 - see [LICENSE.md](LICENSE.md) for more details.
+This project is licensed under the GNU General Public License v3.0 - see [LICENSE.md](https://github.com/asdia0/Battleship/blob/main/LICENSE.md) for more details.
