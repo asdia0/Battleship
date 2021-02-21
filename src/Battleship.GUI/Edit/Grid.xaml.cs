@@ -11,6 +11,11 @@ namespace Battleship.GUI
         public GridEditor()
         {
             InitializeComponent();
+            this.UpdateText();
+        }
+
+        public void UpdateText()
+        {
             Height.Text = Settings.GridHeight.ToString();
             Width.Text = Settings.GridWidth.ToString();
         }
@@ -45,6 +50,8 @@ namespace Battleship.GUI
                     Settings.Player = new Grid();
 
                     Status.Content = "Successfully edited grid.";
+
+                    this.UpdateText();
                 }
             }
         }
