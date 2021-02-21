@@ -9,6 +9,9 @@
     /// </summary>
     public class Game
     {
+        /// <summary>
+        /// List of moves made.
+        /// </summary>
         public List<Move> MoveList = new List<Move>();
 
         /// <summary>
@@ -64,6 +67,22 @@
             }
 
             this.EndGame();
+        }
+
+        /// <summary>
+        /// Converts a <see cref="Game"/> to a <see cref="string"/>.
+        /// </summary>
+        /// <returns>The stringified version of the game.</returns>
+        public override string ToString()
+        {
+            string res = $"[Player 1 \"{this.player1}\"]\n[Player 2 \"{this.player2}\"]\n\n";
+
+            foreach (Move move in this.MoveList)
+            {
+                res += $"{move.Player}: ({move.X},{move.Y})\n";
+            }
+
+            return res;
         }
 
         /// <summary>
@@ -159,7 +178,7 @@
 
             this.Search(p1, p2, attackedSq);
 
-            MoveList.Add(new Move(playername, attackedSq.ToCoor()));
+            this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
 
             if (attackedSq.HadShip == false)
             {
@@ -198,7 +217,7 @@
 
                 this.Search(p1, p2, attackedSq);
 
-                MoveList.Add(new Move(playername, attackedSq.ToCoor()));
+                this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
 
                 if (attackedSq.HadShip == false)
                 {
@@ -213,7 +232,7 @@
 
                 this.Search(p1, p2, attackedSq);
 
-                MoveList.Add(new Move(playername, attackedSq.ToCoor()));
+                this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
 
                 if (attackedSq.HadShip == false)
                 {
@@ -261,14 +280,14 @@
             {
                 if (sq.BeenSearched && sq.HadShip == true && sq.IsSunk != true)
                 {
-                    TooManyMisses(p1, sq);
+                    this.TooManyMisses(p1, sq);
                 }
             }
 
             // 2.
             foreach (Ship ship in p2.Ships)
             {
-                OnlyOneArrangement(p1, p2);
+                this.OnlyOneArrangement(p1, p2);
             }
 
             if (p1.ToAttack.Any())
@@ -489,18 +508,6 @@
                     p1.ToAttack.Add(potentialSqs.First());
                 }
             }
-        }
-
-        public override string ToString()
-        {
-            string res = $"[Player 1 \"{this.player1.ToString()}\"]\n[Player 2 \"{this.player2.ToString()}\"]\n\n";
-
-            foreach (Move move in MoveList)
-            {
-                res += $"{move.player}: ({move.x},{move.y})\n";
-            }
-
-            return res;
         }
 
         private void OnlyOneArrangement(Grid p1, Grid p2)

@@ -9,12 +9,18 @@
     /// </summary>
     public class Grid
     {
+        /// <summary>
+        /// List of squares searched by opponent.
+        /// </summary>
         public List<Square> SearchedSquares = new List<Square>();
 
+        /// <summary>
+        /// List of all the ships.
+        /// </summary>
         public List<Ship> OriginalShips = new List<Ship>();
 
         /// <summary>
-        /// The ships on the grid.
+        /// The active ships on the grid.
         /// </summary>
         public List<Ship> Ships = new List<Ship>();
 

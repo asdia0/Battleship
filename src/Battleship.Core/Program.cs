@@ -44,7 +44,6 @@
                 elapsedTime.Stop();
 
                 gameMoves.Add(game.Move);
-                string moves = game.ToString();
 
                 sumMoves += game.Move;
                 if (game.Winner == true)
@@ -75,6 +74,11 @@
             //}
         }
 
+        /// <summary>
+        /// Finds the best square to search.
+        /// </summary>
+        /// <param name="player">The grid to analyse.</param>
+        /// <returns>The square to search and the probability of it having a ship on it.</returns>
         public static (Square, decimal) FindBestSquare(Grid player)
         {
             decimal prob = 0;
@@ -237,7 +241,6 @@
                 prob = decimal.Divide((decimal)probability[attackedSq.ID], (decimal)probability.Values.Sum()) * 100;
             }
 
-
             player.SearchedSquares.Add(attackedSq);
             player.ToAttack.Remove(attackedSq);
             player.ToSearch.Remove(attackedSq);
@@ -278,7 +281,6 @@
                 new Ship(2, 3, 1),
                 new Ship(3, 3, 1),
                 new Ship(4, 2, 1),
-
             };
 
             Grid player = new Grid();
@@ -321,14 +323,14 @@
                         int id = int.Parse(Console.ReadLine());
                         Console.WriteLine("Squares sunk: ");
                         string raw = Console.ReadLine();
-                        string[] xy = raw.Replace(")", "").Split(",(");
+                        string[] xy = raw.Replace(")", string.Empty).Split(",(");
                         foreach (Ship ship in player.Ships.ToList())
                         {
                             if (ship.ID == id)
                             {
                                 foreach (string xys in xy)
                                 {
-                                    string s = xys.Replace("(", "");
+                                    string s = xys.Replace("(", string.Empty);
                                     int x = int.Parse(s.Split(",")[0]);
                                     int y = int.Parse(s.Split(",")[1]);
 
@@ -336,6 +338,7 @@
 
                                     ship.OriginalOccupiedSquares.Add(player.Squares[sqID1]);
                                 }
+
                                 foreach (Square square in ship.OriginalOccupiedSquares)
                                 {
                                     square.IsSunk = true;
@@ -347,16 +350,26 @@
                                 player.Ships.Remove(ship);
                             }
                         }
+
                         break;
                 }
             }
         }
 
+        /// <summary>
+        /// The entry point of the program.
+        /// </summary>
         public static void Main()
         {
             Simulate(100);
         }
 
+#nullable enable
+        /// <summary>
+        /// Gets the mode of a list.
+        /// </summary>
+        /// <param name="list">A list.</param>
+        /// <returns>The mode of the list.</returns>
         public static dynamic? Mode(List<dynamic> list)
         {
             return list
@@ -365,19 +378,30 @@
                 .Select(x => (int?)x.Key)
                 .FirstOrDefault();
         }
+#nullable disable
 
-        public static decimal Median(List<dynamic> xs)
+        /// <summary>
+        /// Gets the median of a list.
+        /// </summary>
+        /// <param name="list">A list.</param>
+        /// <returns>The median of the list.</returns>
+        public static decimal Median(List<dynamic> list)
         {
-            var ys = xs.OrderBy(x => x).ToList();
+            var ys = list.OrderBy(x => x).ToList();
             double mid = (ys.Count - 1) / 2.0;
-            return (ys[(int)(mid)] + ys[(int)(mid + 0.5)]) / 2;
+            return (ys[(int)mid] + ys[(int)(mid + 0.5)]) / 2;
         }
 
-        public static List<Square> HighestHCS(List<Square> l)
+        /// <summary>
+        /// Gets the square with the most hit connected squares (HCS) from a list.
+        /// </summary>
+        /// <param name="list">The list of squares.</param>
+        /// <returns>The square with the highest HCS.</returns>
+        public static List<Square> HighestHCS(List<Square> list)
         {
             Dictionary<Square, int> d = new Dictionary<Square, int>();
 
-            foreach (Square sq in l)
+            foreach (Square sq in list)
             {
                 d.Add(sq, sq.GetNumberOfHitConnectedSquares());
             }

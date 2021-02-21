@@ -38,11 +38,8 @@
             string heightS = this.Height_.Text;
             string widthS = this.Width_.Text;
 
-            int heightN = 0;
-            int widthN = 0;
-
-            bool heightB = int.TryParse(heightS, out heightN);
-            bool widthB = int.TryParse(widthS, out widthN);
+            bool heightB = int.TryParse(heightS, out int heightN);
+            bool widthB = int.TryParse(widthS, out int widthN);
 
             if ((!heightB || !widthB) || (heightN <= 0 || widthN <= 0) || (heightN % 1 != 0 || widthN % 1 != 0))
             {

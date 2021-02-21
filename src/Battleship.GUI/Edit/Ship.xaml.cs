@@ -155,8 +155,6 @@
         /// <param name="e">Event.</param>
         private void Click_Remove(object sender, EventArgs e)
         {
-            int shipID = this.CurrentShip.ID;
-
             Settings.Player.Ships.Remove(this.CurrentShip);
             Settings.Player.OriginalShips.Remove(this.CurrentShip);
 
@@ -170,7 +168,7 @@
 
             this.ID.SelectedIndex--;
             this.UpdateText();
-            this.IDSource.Remove(this.IDSource[this.IDSource.Count - 1]);
+            this.IDSource.Remove(this.IDSource[^1]);
         }
 
         /// <summary>
@@ -248,9 +246,6 @@
             string lengthS = this.Length.Text;
             string breadthS = this.Breadth.Text;
 
-            int breadthN = 0;
-            int lengthN = 0;
-
             List<string> sqs = new List<string>();
             try
             {
@@ -319,8 +314,8 @@
                 res.Item1 = false;
             }
 
-            bool xBool = int.TryParse(breadthS, out breadthN);
-            bool yBool = int.TryParse(lengthS, out lengthN);
+            bool xBool = int.TryParse(breadthS, out int breadthN);
+            bool yBool = int.TryParse(lengthS, out int lengthN);
 
             if (!xBool || !yBool)
             {

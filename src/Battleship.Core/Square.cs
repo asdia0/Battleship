@@ -65,9 +65,9 @@
         }
 
         /// <summary>
-        /// Returns the x- and y-coordinates of a square.
+        /// Gets the x- and y-coordinates.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The x- and y-coordinates.</returns>
         public (int, int) ToCoor()
         {
             int xCoor = (this.ID % Settings.GridWidth) + 1;
@@ -76,6 +76,10 @@
             return (xCoor, yCoor);
         }
 
+        /// <summary>
+        /// Gets a list of adjacent squares.
+        /// </summary>
+        /// <returns>A list of adjacent squares.</returns>
         public List<Square> GetAdjacentSquares()
         {
             List<Square> res = new List<Square>();
@@ -99,6 +103,10 @@
             return res;
         }
 
+        /// <summary>
+        /// Gets the number of hit adjacent squares (HAS).
+        /// </summary>
+        /// <returns>The number of HAS.</returns>
         public int GetNumberOfHitAdjacentSquares()
         {
             int numberOfAdjacentHitSquares = 0;
@@ -113,6 +121,10 @@
             return numberOfAdjacentHitSquares;
         }
 
+        /// <summary>
+        /// Gets the number of hit connected squares (HCS).
+        /// </summary>
+        /// <returns>The number of HCS.</returns>
         public int GetNumberOfHitConnectedSquares()
         {
             int res = 0;
