@@ -64,6 +64,12 @@ namespace Battleship.GUI
             gridEditor.Show();
         }
 
+        public void Click_SquareEditor(object sender, RoutedEventArgs e)
+        {
+            Window squareEditor = new SquareEditor();
+            squareEditor.Show();
+        }
+
         // MODE
         public void Click_Play(object sender, RoutedEventArgs e)
         {

@@ -3,11 +3,11 @@
 namespace Battleship.GUI
 {
     /// <summary>
-    /// Interaction logic for Grid.xaml
+    /// Interaction logic for Square.xaml
     /// </summary>
-    public partial class GridEditor : Window
+    public partial class SquareEditor : Window
     {
-        public GridEditor()
+        public SquareEditor()
         {
             InitializeComponent();
         }

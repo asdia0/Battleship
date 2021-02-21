@@ -8,7 +8,7 @@ using System.Windows;
 namespace Battleship.GUI
 {
     /// <summary>
-    /// Interaction logic for Window1.xaml
+    /// Interaction logic for Ship.xaml
     /// </summary>
     public partial class ShipEditor : Window
     {
