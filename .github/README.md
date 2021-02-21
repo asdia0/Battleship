@@ -25,7 +25,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 ## Authors
 **Asdia** - *Main developer* - [asdia0](https://github.com/asdia0)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/asdia0/Battleship/contributors) who participated in this project.
 
 ## License
 This project is licensed under the GNU General Public License v3.0 - see [LICENSE.md](LICENSE.md) for more details.
