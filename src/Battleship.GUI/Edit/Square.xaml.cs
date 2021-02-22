@@ -1,7 +1,7 @@
 ﻿namespace Battleship.GUI
 {
-    using System.Collections.ObjectModel;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Windows;
 
     using Battleship.Core;
@@ -11,8 +11,14 @@
     /// </summary>
     public partial class SquareEditor : Window
     {
+        /// <summary>
+        /// Square options.
+        /// </summary>
         public ObservableCollection<int> SqSource = new ObservableCollection<int>();
 
+        /// <summary>
+        /// State options.
+        /// </summary>
         public List<string> States = new List<string>()
         {
             "Unsearched",
@@ -40,22 +46,23 @@
             this.UpdateText();
         }
 
+        /// <summary>
+        /// Fired when the Update button is clicked.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
         public void Click_Update(object sender, RoutedEventArgs e)
         {
             Square sq = Settings.Player.Squares[this.Square.SelectedIndex];
-            (bool, Ship?) res = this.ShipsContainSquare(sq);
 
             switch (this.State.SelectedIndex)
             {
                 case 0:
-                    if (res.Item1 && !res.Item2.IsSunk)
+                    if (sq.Ship != null && !sq.Ship.IsSunk)
                     {
                         sq.BeenSearched = false;
-                        if (res.Item1 == true)
-                        {
-                            sq.HadShip = true;
-                            sq.HasShip = true;
-                        }
+                        sq.HadShip = true;
+                        sq.HasShip = true;
                         sq.Ship.CurrentOccupiedSquares.Add(sq);
                         sq.IsSunk = false;
                         sq.IsMiss = false;
@@ -67,9 +74,10 @@
                     {
                         this.Status.Content = "Error: Ship is sunk.";
                     }
+
                     break;
                 case 1:
-                    if (res.Item1 == true)
+                    if (sq.Ship != null)
                     {
                         this.Status.Content = "Error: Square has a ship.";
                     }
@@ -87,13 +95,13 @@
 
                     break;
                 case 2:
-                    if (res.Item1 == true)
+                    if (sq.Ship != null)
                     {
-                        if (res.Item2.IsSunk)
+                        if (sq.Ship.IsSunk)
                         {
                             this.Status.Content = "Error: Ship is sunk.";
                         }
-                        else if (res.Item2.CurrentOccupiedSquares.Count == 1)
+                        else if (sq.Ship.CurrentOccupiedSquares.Count == 1)
                         {
                             this.Status.Content = "Error: Active ship cannot have squares that are all hit.";
                         }
@@ -117,9 +125,9 @@
 
                     break;
                 case 3:
-                    if (res.Item1 == true)
+                    if (sq.Ship != null)
                     {
-                        if (!res.Item2.IsSunk)
+                        if (!sq.Ship.IsSunk)
                         {
                             this.Status.Content = "Error: Ship is not sunk.";
                         }
@@ -144,19 +152,9 @@
             }
         }
 
-        public (bool, Ship?) ShipsContainSquare(Square sq)
-        {
-            foreach (Ship ship in Settings.Player.OriginalShips)
-            {
-                if (ship.OriginalOccupiedSquares.Contains(sq))
-                {
-                    return (true, ship);
-                }
-            }
-
-            return (false, null);
-        }
-
+        /// <summary>
+        /// Updates the screen.
+        /// </summary>
         public void UpdateText()
         {
             this.Status.Content = string.Empty;
@@ -186,10 +184,9 @@
                 this.State.SelectedIndex = 0;
             }
 
-            (bool, Ship?) res = this.ShipsContainSquare(sq);
-            if (res.Item1)
+            if (sq.Ship != null)
             {
-                this.Ship.Text = res.Item2.ID.ToString();
+                this.Ship.Text = sq.Ship.ID.ToString();
             }
             else
             {
@@ -200,11 +197,6 @@
         private void Square_DropDownClosed(object sender, System.EventArgs e)
         {
             this.UpdateText();
-        }
-
-        private void InputIsValid()
-        {
-
         }
     }
 }

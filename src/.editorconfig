@@ -17,3 +17,9 @@ dotnet_diagnostic.SA1501.severity = none
 
 # SA1124: Do not use regions
 dotnet_diagnostic.SA1124.severity = none
+
+# CS8632: The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+dotnet_diagnostic.CS8632.severity = none
+
+# SA1005: Single line comments should begin with single space
+dotnet_diagnostic.SA1005.severity = none

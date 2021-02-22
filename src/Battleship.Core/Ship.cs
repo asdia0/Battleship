@@ -8,6 +8,9 @@
     /// </summary>
     public class Ship
     {
+        /// <summary>
+        /// The ship's name.
+        /// </summary>
         public string Name;
 
         /// <summary>
@@ -20,6 +23,9 @@
         /// </summary>
         public int ID;
 
+        /// <summary>
+        /// The ship's breadth.
+        /// </summary>
         public int Breadth = 1;
 
         /// <summary>
@@ -37,13 +43,17 @@
         /// </summary>
         public Grid Grid;
 
+        /// <summary>
+        /// Determines whether the ship is sunk.
+        /// </summary>
         public bool IsSunk = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Ship"/> class.
         /// </summary>
         /// <param name="grid">The ship's grid.</param>
-        /// <param name="type">The ship's type.</param>
+        /// <param name="length">The ship's length.</param>
+        /// <param name="breadth">The ship's breadth.</param>
         public Ship(Grid grid, int length, int breadth)
         {
             this.Length = length;
@@ -52,6 +62,12 @@
             this.Breadth = breadth;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Ship"/> class.
+        /// </summary>
+        /// <param name="id">The ship's ID.</param>
+        /// <param name="length">The ship's length.</param>
+        /// <param name="breadth">The ship's breadth.</param>
         public Ship(int id, int length, int breadth)
         {
             this.Length = length;

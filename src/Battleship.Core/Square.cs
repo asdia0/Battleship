@@ -48,7 +48,10 @@
         /// </summary>
         public bool? IsHit = null;
 
-        public Ship Ship;
+        /// <summary>
+        /// The ship on the square.
+        /// </summary>
+        public Ship? Ship;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Square"/> class.

@@ -65,19 +65,19 @@
             {
                 (bool?, Square) hoz = this.HorizontalOrVertical(res.Item3, res.Item4, res.Item2);
 
-                CurrentShip.Name = this.Name_.Text;
-                CurrentShip.IsSunk = (bool)this.IsSunk.IsChecked;
-                CurrentShip.OriginalOccupiedSquares = res.Item2;
+                this.CurrentShip.Name = this.Name_.Text;
+                this.CurrentShip.IsSunk = (bool)this.IsSunk.IsChecked;
+                this.CurrentShip.OriginalOccupiedSquares = res.Item2;
 
                 foreach (Square square in res.Item2)
                 {
                     if (!square.BeenSearched)
                     {
-                        CurrentShip.CurrentOccupiedSquares.Add(square);
+                        this.CurrentShip.CurrentOccupiedSquares.Add(square);
                     }
                 }
 
-                this.Status.Content = $"Successfully edited Ship {CurrentShip.ID}.";
+                this.Status.Content = $"Successfully edited Ship {this.CurrentShip.ID}.";
             }
         }
 

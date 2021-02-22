@@ -364,7 +364,6 @@
             Simulate(100);
         }
 
-#nullable enable
         /// <summary>
         /// Gets the mode of a list.
         /// </summary>
@@ -378,7 +377,6 @@
                 .Select(x => (int?)x.Key)
                 .FirstOrDefault();
         }
-#nullable disable
 
         /// <summary>
         /// Gets the median of a list.
