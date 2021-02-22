@@ -144,6 +144,7 @@
                         return false;
                     }
 
+                    this.Squares[sqID].Ship = ship;
                     this.Squares[sqID].HasShip = true;
                     this.Squares[sqID].HadShip = true;
                     ship.CurrentOccupiedSquares.Add(this.Squares[sqID]);
@@ -168,6 +169,7 @@
                         return false;
                     }
 
+                    this.Squares[sqID].Ship = ship;
                     this.Squares[sqID].HasShip = true;
                     this.Squares[sqID].HadShip = true;
                     ship.CurrentOccupiedSquares.Add(this.Squares[sqID]);

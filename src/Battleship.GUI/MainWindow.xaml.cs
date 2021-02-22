@@ -35,6 +35,8 @@
             this.InitializeComponent();
             Application.Current.MainWindow.WindowState = WindowState.Maximized;
             this.UpdateSaveGame();
+
+            Settings.Player.AddShip(Settings.Player.Squares[0], new Ship(Settings.Player, 5, 1), true);
         }
 
         // CONTROLS

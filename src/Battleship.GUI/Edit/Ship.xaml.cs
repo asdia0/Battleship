@@ -30,8 +30,6 @@
         {
             this.InitializeComponent();
 
-            Settings.Player.AddShip(Settings.Player.Squares[0], new Ship(Settings.Player, 5, 1), true);
-
             this.ID.SelectedIndex = 1;
 
             this.IDSource.Add(string.Empty);
@@ -61,37 +59,25 @@
         {
             this.Status.Content = string.Empty;
 
-            string name = this.Name_.Text;
-            bool isSunk = (bool)this.IsSunk.IsChecked;
-
             (bool, List<Square>, int, int) res = this.AbleToProceed(this.CurrentShip, true);
+
             if (res.Item1)
             {
-                foreach (Square sq in res.Item2)
+                (bool?, Square) hoz = this.HorizontalOrVertical(res.Item3, res.Item4, res.Item2);
+
+                CurrentShip.Name = this.Name_.Text;
+                CurrentShip.IsSunk = (bool)this.IsSunk.IsChecked;
+                CurrentShip.OriginalOccupiedSquares = res.Item2;
+
+                foreach (Square square in res.Item2)
                 {
-                    this.CurrentShip.OriginalOccupiedSquares.Add(sq);
-                    this.CurrentShip.CurrentOccupiedSquares.Add(sq);
-                    Settings.Player.UnoccupiedSquares.Remove(sq);
-
-                    sq.HadShip = true;
-
-                    if (!sq.BeenSearched)
+                    if (!square.BeenSearched)
                     {
-                        sq.HasShip = true;
-                    }
-
-                    if (sq.IsSunk == true)
-                    {
-                        this.CurrentShip.CurrentOccupiedSquares.Remove(sq);
+                        CurrentShip.CurrentOccupiedSquares.Add(square);
                     }
                 }
 
-                this.CurrentShip.Name = name;
-                this.CurrentShip.Length = res.Item3;
-                this.CurrentShip.Breadth = res.Item4;
-                this.CurrentShip.IsSunk = isSunk;
-
-                this.Status.Content = $"Successfully updated {this.CurrentShip.Name}.";
+                this.Status.Content = $"Successfully edited Ship {CurrentShip.ID}.";
             }
         }
 
@@ -116,35 +102,39 @@
 
             if (res.Item1)
             {
-                foreach (Square sq in res.Item2)
+                (bool?, Square) hoz = this.HorizontalOrVertical(res.Item3, res.Item4, res.Item2);
+
+                if (hoz.Item1 != null)
                 {
-                    ship.OriginalOccupiedSquares.Add(sq);
-                    ship.CurrentOccupiedSquares.Add(sq);
-                    Settings.Player.UnoccupiedSquares.Remove(sq);
-
-                    sq.HadShip = true;
-
-                    if (!sq.BeenSearched)
-                    {
-                        sq.HasShip = true;
-                    }
-
-                    if (sq.IsSunk == true)
-                    {
-                        ship.CurrentOccupiedSquares.Remove(sq);
-                    }
+                    Settings.Player.AddShip(hoz.Item2, new Ship(Settings.Player, res.Item3, res.Item4), (bool)hoz.Item1);
                 }
-
-                ship.Length = res.Item3;
-                ship.Breadth = res.Item4;
-                ship.Name = nameS;
-                ship.IsSunk = isSunk;
-
-                Settings.Player.Ships.Add(ship);
-                Settings.Player.OriginalShips.Add(ship);
 
                 this.IDSource.Add(ship.ID);
                 this.Status.Content = $"Successfully added {ship.Name}.";
+            }
+        }
+
+        private (bool?, Square) HorizontalOrVertical(int length, int breadth, List<Square> list)
+        {
+            List<int> sqIDs = new List<int>();
+            foreach (Square sq in list)
+            {
+                sqIDs.Add(sq.ID);
+            }
+
+            sqIDs.Sort();
+
+            if ((sqIDs.First() % Settings.GridWidth) - length == (sqIDs.Last() % Settings.GridWidth))
+            {
+                return (true, Settings.Player.Squares[sqIDs.First()]);
+            }
+            else if ((sqIDs.First() % Settings.GridWidth) - breadth == (sqIDs.Last() % Settings.GridWidth))
+            {
+                return (false, Settings.Player.Squares[sqIDs.First()]);
+            }
+            else
+            {
+                return (null, Settings.Player.Squares[sqIDs.First()]);
             }
         }
 
@@ -298,7 +288,7 @@
             {
                 res.Item2.Add(sq);
 
-                foreach (Ship ship1 in Settings.Player.Ships)
+                foreach (Ship ship1 in Settings.Player.OriginalShips)
                 {
                     if (ship1.OriginalOccupiedSquares.Contains(sq))
                     {
@@ -332,6 +322,9 @@
             res.Item2 = potentialSqs;
             res.Item3 = lengthN;
             res.Item4 = breadthN;
+
+            ship.Length = res.Item3;
+            ship.Breadth = res.Item4;
 
             if (!this.ValidShipSquares(res.Item3, res.Item4, res.Item2))
             {

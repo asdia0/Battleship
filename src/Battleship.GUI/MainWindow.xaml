@@ -16,8 +16,8 @@
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Header="Ship editor" Click="Click_ShipEditor"/>
-                <MenuItem Header="Grid editor" Click="Click_GridEditor"/>
                 <MenuItem Header="Square editor" Click="Click_SquareEditor"/>
+                <MenuItem Header="Grid editor" Click="Click_GridEditor"/>
             </MenuItem>
             <MenuItem Header="Mode">
                 <MenuItem Header="Play against computer" Click="Click_Play"/>

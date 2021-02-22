@@ -28,7 +28,7 @@
                 </Style>
             </StackPanel.Resources>
             <Label Content="ID" Target="{Binding ElementName=ID}"></Label>
-            <Label Content="Name" Target="{Binding ElementName=Name}"></Label>
+            <Label Content="Name" Target="{Binding ElementName=Name_}"></Label>
             <Label Content="Occupied Squares" Target="{Binding ElementName=OccupiedSqs}"></Label>
             <Label Content="Length" Target="{Binding ElementName=Length}"></Label>
             <Label Content="Breadth" Target="{Binding ElementName=Breadth}"></Label>
