@@ -1,8 +1,10 @@
 ﻿namespace Battleship.GUI
 {
     using System;
+    using System.Drawing;
     using System.IO;
     using System.Windows;
+    using System.Windows.Media.Imaging;
 
     using Battleship.Core;
     using Microsoft.Win32;
@@ -12,16 +14,6 @@
     /// </summary>
     public partial class MainWindow : Window
     {
-        /// <summary>
-        /// The string version of <see cref="MainWindow.CurrentGame"/>.
-        /// </summary>
-        public string GameString;
-
-        /// <summary>
-        /// The current game.
-        /// </summary>
-        public Game CurrentGame = new Game();
-
         /// <summary>
         /// Determines whether the user is in play mode.
         /// </summary>
@@ -145,11 +137,38 @@
         {
             this.IsInPlayMode = false;
             this.UpdateSaveGame();
+            this.Find();
         }
         #endregion
 
         // METHODS
         #region
+        public BitmapImage BitmapToImageSource(Bitmap bitmap)
+        {
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+                memory.Position = 0;
+                BitmapImage bitmapimage = new BitmapImage();
+                bitmapimage.BeginInit();
+                bitmapimage.StreamSource = memory;
+                bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapimage.EndInit();
+
+                return bitmapimage;
+            }
+        }
+
+        public Bitmap ResizeBitmap(Bitmap bmp, int width, int height)
+        {
+            Bitmap result = new Bitmap(width, height);
+            using (Graphics g = Graphics.FromImage(result))
+            {
+                g.DrawImage(bmp, 0, 0, width, height);
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// Enables or disables the Save Game button depending on whether the user in Play mode.
