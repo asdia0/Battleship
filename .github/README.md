@@ -8,6 +8,7 @@ For prebuilt binary releases, see the [Releases](https://github.com/asdia0/Battl
 * Play against the computer from any position
 * Find the best square to search
 * Probability heat map
+* Singleplayer and Multiplayer
 * Add and edit ships
 * Edit grid dimensions
 * Edit square states
