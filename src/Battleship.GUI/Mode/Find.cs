@@ -63,7 +63,7 @@
             }
 
             string[] xy = raw.Replace(")", string.Empty).Split(",(");
-            Ship ship = grid.Ships[shipID];
+            Ship ship = grid.OriginalShips[shipID];
 
             ship.OriginalOccupiedSquares.Clear();
 
@@ -87,6 +87,9 @@
 
             ship.IsSunk = true;
             grid.Ships.Remove(ship);
+
+            this.Find_Sunk_ShipText.Clear();
+            this.Find_Sunk_SquaresText.Clear();
 
             this.Find();
         }
