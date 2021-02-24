@@ -24,7 +24,7 @@
         /// Initializes a new instance of the <see cref="Move"/> class.
         /// </summary>
         /// <param name="player">The player who made the move.</param>
-        /// <param name="tuple">The coordinates of the square moved.</param>
+        /// <param name="tuple">The coordinates of the square changed.</param>
         public Move(string player, (int, int) tuple)
         {
             this.Player = player;

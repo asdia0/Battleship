@@ -16,9 +16,19 @@
     public partial class MainWindow : Window
     {
         /// <summary>
+        /// Number of moves so far.
+        /// </summary>
+        public int MoveCount = 0;
+
+        /// <summary>
         /// Square to search.
         /// </summary>
         public Square RecommendedSq;
+
+        /// <summary>
+        /// The <see cref="MainWindow.Grid"/> one move back.
+        /// </summary>
+        public Grid PreviousGrid;
 
         /// <summary>
         /// List of searched squares.
@@ -32,6 +42,15 @@
         /// <param name="e">Event.</param>
         public void Click_Find_Button(object sender, RoutedEventArgs e)
         {
+            this.MoveCount++;
+
+            if (this.MoveCount > 0)
+            {
+                this.Find_Undo.IsEnabled = true;
+            }
+
+            this.PreviousGrid = new Grid(Grid);
+
             Grid.ToSearch.Remove(this.RecommendedSq);
             Grid.ToAttack.Remove(this.RecommendedSq);
             Grid.UnsearchedSquares.Remove(this.RecommendedSq);
@@ -116,10 +135,31 @@
         }
 
         /// <summary>
+        /// Fired when the Find Undo Button button is clicked.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
+        public void Click_Find_Undo(object sender, RoutedEventArgs e)
+        {
+            Grid = this.PreviousGrid;
+
+            this.Find_Undo.IsEnabled = false;
+
+            this.MoveCount--;
+
+            this.Find();
+        }
+
+        /// <summary>
         /// Gets the best square to search.
         /// </summary>
         public void Find()
         {
+            if (this.MoveCount == 0)
+            {
+                this.Find_Undo.IsEnabled = false;
+            }
+
             Grid.ToSearch.Clear();
             foreach (Square sq1 in Grid.Squares)
             {
