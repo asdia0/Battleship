@@ -15,7 +15,10 @@
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static Grid grid;
+        /// <summary>
+        /// The current grid to work with. Cloned from <see cref="Settings.Grid"/>.
+        /// </summary>
+        public static Grid Grid;
 
         /// <summary>
         /// Determines whether the user is in play mode.
@@ -42,7 +45,7 @@
             this.UpdateSaveGame();
 
             Settings.Grid.AddDefaultShips();
-            grid = new Grid(Settings.Grid);
+            Grid = new Grid(Settings.Grid);
 
             this.Find_Combo.ItemsSource = this.States;
 
@@ -62,9 +65,10 @@
         /// <param name="e">Event.</param>
         public void Click_New(object sender, RoutedEventArgs e)
         {
-            grid = new Grid(Settings.Grid);
+            Grid = new Grid(Settings.Grid);
 
-            this.searchedSquares.Clear();
+            this.SearchedSquares.Clear();
+
             // if current mode == find:
             this.Find();
         }
@@ -167,6 +171,20 @@
 
         // METHODS
         #region
+
+        /// <summary>
+        /// Enables or disables the Save Game button depending on whether the user in Play mode.
+        /// </summary>
+        public void UpdateSaveGame()
+        {
+            this.SaveGame.IsEnabled = this.IsInPlayMode;
+        }
+
+        /// <summary>
+        /// Converts a Bitmap to an Image Source.
+        /// </summary>
+        /// <param name="bitmap">Bitmap to convert.</param>
+        /// <returns>An Image Source.</returns>
         public BitmapImage BitmapToImageSource(Bitmap bitmap)
         {
             using (MemoryStream memory = new MemoryStream())
@@ -183,27 +201,6 @@
             }
         }
 
-        private Bitmap ResizeBitmap(Bitmap sourceBMP, int width, int height)
-        {
-            Bitmap result = new Bitmap(width, height);
-            using (Graphics g = Graphics.FromImage(result))
-            {
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                g.DrawImage(sourceBMP, 0, 0, width, height);
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// Enables or disables the Save Game button depending on whether the user in Play mode.
-        /// </summary>
-        public void UpdateSaveGame()
-        {
-            this.SaveGame.IsEnabled = this.IsInPlayMode;
-        }
-        #endregion
-
         /// <summary>
         /// Kills the application when the <see cref="MainWindow"/> is closed.
         /// </summary>
@@ -214,5 +211,19 @@
 
             Application.Current.Shutdown();
         }
+
+        private Bitmap ResizeBitmap(Bitmap sourceBMP, int width, int height)
+        {
+            Bitmap result = new Bitmap(width, height);
+            using (Graphics g = Graphics.FromImage(result))
+            {
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                g.DrawImage(sourceBMP, 0, 0, width, height);
+            }
+
+            return result;
+        }
+        #endregion
     }
 }

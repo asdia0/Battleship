@@ -58,8 +58,7 @@
                     Settings.Grid = new Grid();
                     Settings.Grid.AddDefaultShips();
 
-                    MainWindow.grid = new Grid(Settings.Grid);
-
+                    MainWindow.Grid = new Grid(Settings.Grid);
 
                     this.Status.Content = "Successfully edited grid.";
 

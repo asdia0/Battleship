@@ -57,6 +57,10 @@
             this.AddSquares();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Grid"/> class.
+        /// </summary>
+        /// <param name="grid">Grid to clone from.</param>
         public Grid(Grid grid)
         {
             this.AddSquares();
@@ -238,6 +242,9 @@
             return res;
         }
 
+        /// <summary>
+        /// Adds the default ships in the original version of Battleship to the grid.
+        /// </summary>
         public void AddDefaultShips()
         {
             this.AddShip(this.Squares[0], new Ship(this, 5, 1), true);
@@ -246,6 +253,5 @@
             this.AddShip(this.Squares[30], new Ship(this, 3, 1), true);
             this.AddShip(this.Squares[40], new Ship(this, 2, 1), true);
         }
-
     }
 }

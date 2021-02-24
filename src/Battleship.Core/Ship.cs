@@ -8,6 +8,9 @@
     /// </summary>
     public class Ship
     {
+        /// <summary>
+        /// The alignment of the ship. True = horizontal.
+        /// </summary>
         public bool? Alignment = null;
 
         /// <summary>

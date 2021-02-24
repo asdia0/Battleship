@@ -9,11 +9,13 @@
 
     using Battleship.Core;
 
+    /// <summary>
+    /// Simulate method.
+    /// </summary>
     public partial class MainWindow : Window
     {
         private void Simulate()
         {
-
         }
     }
 }

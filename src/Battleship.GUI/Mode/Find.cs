@@ -10,35 +10,51 @@
 
     using Battleship.Core;
 
+    /// <summary>
+    /// Find method.
+    /// </summary>
     public partial class MainWindow : Window
     {
-        Square recommendedSq;
+        /// <summary>
+        /// Square to search.
+        /// </summary>
+        public Square RecommendedSq;
 
-        List<Square> searchedSquares = new List<Square>();
+        /// <summary>
+        /// List of searched squares.
+        /// </summary>
+        public List<Square> SearchedSquares = new List<Square>();
 
-        public void Click_Find_Button(object sender, RoutedEventArgs args)
+        /// <summary>
+        /// Fired when the Find Button button is clicked.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
+        public void Click_Find_Button(object sender, RoutedEventArgs e)
         {
-            grid.ToSearch.Remove(recommendedSq);
-            grid.ToAttack.Remove(recommendedSq);
-            grid.UnsearchedSquares.Remove(recommendedSq);
+            Grid.ToSearch.Remove(this.RecommendedSq);
+            Grid.ToAttack.Remove(this.RecommendedSq);
+            Grid.UnsearchedSquares.Remove(this.RecommendedSq);
 
-            recommendedSq.BeenSearched = true;
-            searchedSquares.Add(recommendedSq);
+            this.RecommendedSq.BeenSearched = true;
+            this.SearchedSquares.Add(this.RecommendedSq);
 
             switch (this.Find_Combo.SelectedIndex)
             {
                 // MISS
                 case 0:
-                    recommendedSq.BeenSearched = true;
-                    recommendedSq.IsMiss = true;
+                    this.RecommendedSq.BeenSearched = true;
+                    this.RecommendedSq.IsMiss = true;
                     this.Find();
                     break;
+
                 // HIT
                 case 1:
-                    recommendedSq.IsHit = true;
-                    recommendedSq.HadShip = true;
+                    this.RecommendedSq.IsHit = true;
+                    this.RecommendedSq.HadShip = true;
                     this.Find();
                     break;
+
                 // SINK
                 case 2:
                     this.SP_A.Visibility = Visibility.Collapsed;
@@ -47,7 +63,12 @@
             }
         }
 
-        public void Click_Find_Sunk_Button(object sender, RoutedEventArgs args)
+        /// <summary>
+        /// Fired when the Find Sunk Button button is clicked.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
+        public void Click_Find_Sunk_Button(object sender, RoutedEventArgs e)
         {
             string raw = this.Find_Sunk_SquaresText.Text;
             string shipIDS = this.Find_Sunk_ShipText.Text;
@@ -57,13 +78,13 @@
                 this.Find_Sunk_Label.Content = "Error: Ship ID should be an integer.";
             }
 
-            if (grid.OriginalShips.Count - 1 < shipID)
+            if (Grid.OriginalShips.Count - 1 < shipID)
             {
                 this.Find_Sunk_Label.Content = "Error: No ship was found.";
             }
 
             string[] xy = raw.Replace(")", string.Empty).Split(",(");
-            Ship ship = grid.OriginalShips[shipID];
+            Ship ship = Grid.OriginalShips[shipID];
 
             ship.OriginalOccupiedSquares.Clear();
 
@@ -75,7 +96,7 @@
 
                 int sqID1 = ((y - 1) * Settings.GridWidth) + x - 1;
 
-                ship.OriginalOccupiedSquares.Add(grid.Squares[sqID1]);
+                ship.OriginalOccupiedSquares.Add(Grid.Squares[sqID1]);
             }
 
             foreach (Square square in ship.OriginalOccupiedSquares)
@@ -86,7 +107,7 @@
             }
 
             ship.IsSunk = true;
-            grid.Ships.Remove(ship);
+            Grid.Ships.Remove(ship);
 
             this.Find_Sunk_ShipText.Clear();
             this.Find_Sunk_SquaresText.Clear();
@@ -94,18 +115,21 @@
             this.Find();
         }
 
-        private void Find()
+        /// <summary>
+        /// Gets the best square to search.
+        /// </summary>
+        public void Find()
         {
-            grid.ToSearch.Clear();
-            foreach (Square sq1 in grid.Squares)
+            Grid.ToSearch.Clear();
+            foreach (Square sq1 in Grid.Squares)
             {
-                if (!sq1.BeenSearched)
+                if (!this.SearchedSquares.Contains(sq1))
                 {
                     foreach (Square adjSq in sq1.GetAdjacentSquares())
                     {
                         if (adjSq.IsHit == true)
                         {
-                            grid.ToSearch.Add(sq1);
+                            Grid.ToSearch.Add(sq1);
                             break;
                         }
                     }
@@ -116,13 +140,13 @@
             this.SP_B.Visibility = Visibility.Collapsed;
 
             // Find Best Square
-            (Square sq, Dictionary<int, int> prob) = Program.FindBestSquare(grid);
+            (Square sq, Dictionary<int, int> prob) = Program.FindBestSquare(Grid);
 
-            this.recommendedSq = sq;
+            this.RecommendedSq = sq;
 
             // Update Screen
             string text = "Dimensions || ID || Is Sunk";
-            foreach (Ship ship in grid.OriginalShips)
+            foreach (Ship ship in Grid.OriginalShips)
             {
                 text += $"\n{ship.Length}x{ship.Breadth} || {ship.ID} || {ship.IsSunk}";
             }
@@ -138,21 +162,17 @@
             {
                 for (var y = 0; y < bitmap.Height; y++)
                 {
-                    Color color = default(Color);
                     double percentage = (double)decimal.Divide(prob[x + (y * Settings.GridWidth)], prob.Values.Max());
 
-                    Color Start = Color.FromArgb(1, 84, 90);
-                    Color Center = Color.FromArgb(57, 122, 126);
-                    Color End = Color.FromArgb(255, 255, 255);
+                    Color start = Color.FromArgb(1, 84, 90);
+                    Color center = Color.FromArgb(57, 122, 126);
+                    Color end = Color.FromArgb(255, 255, 255);
 
-                    Color Pick = GradientPick(1 - percentage, Start, Center, End);
-
-                    color = Pick;
-                    bitmap.SetPixel(x, y, color);
+                    bitmap.SetPixel(x, y, this.GradientPick(1 - percentage, start, center, end));
                 }
             }
 
-            foreach (Square square in this.searchedSquares)
+            foreach (Square square in this.SearchedSquares)
             {
                 int x = square.ToCoor().Item1 - 1;
                 int y = square.ToCoor().Item2 - 1;
@@ -161,136 +181,88 @@
                 {
                     bitmap.SetPixel(x, y, Color.FromArgb(128, 128, 128));
                 }
+
                 if (square.IsHit == true)
                 {
                     bitmap.SetPixel(x, y, Color.FromArgb(158, 80, 79));
                 }
+
                 if (square.IsSunk == true)
                 {
                     bitmap.SetPixel(x, y, Color.Black);
                 }
             }
 
-            bitmap.SetPixel(this.recommendedSq.ToCoor().Item1 - 1, this.recommendedSq.ToCoor().Item2 - 1, Color.FromArgb(66, 155, 66));
+            bitmap.SetPixel(this.RecommendedSq.ToCoor().Item1 - 1, this.RecommendedSq.ToCoor().Item2 - 1, Color.FromArgb(66, 155, 66));
 
             this.Image2.Source = this.BitmapToImageSource(this.ResizeBitmap(bitmap, 500, 500));
         }
 
-        void HsvToRgb(double h, double S, double V, out int r, out int g, out int b)
-        {
-            double H = h;
-            while (H < 0) { H += 360; };
-            while (H >= 360) { H -= 360; };
-            double R, G, B;
-            if (V <= 0)
-            { R = G = B = 0; }
-            else if (S <= 0)
-            {
-                R = G = B = V;
-            }
-            else
-            {
-                double hf = H / 60.0;
-                int i = (int)Math.Floor(hf);
-                double f = hf - i;
-                double pv = V * (1 - S);
-                double qv = V * (1 - S * f);
-                double tv = V * (1 - S * (1 - f));
-                switch (i)
-                {
-
-                    // Red is the dominant color
-
-                    case 0:
-                        R = V;
-                        G = tv;
-                        B = pv;
-                        break;
-
-                    // Green is the dominant color
-
-                    case 1:
-                        R = qv;
-                        G = V;
-                        B = pv;
-                        break;
-                    case 2:
-                        R = pv;
-                        G = V;
-                        B = tv;
-                        break;
-
-                    // Blue is the dominant color
-
-                    case 3:
-                        R = pv;
-                        G = qv;
-                        B = V;
-                        break;
-                    case 4:
-                        R = tv;
-                        G = pv;
-                        B = V;
-                        break;
-
-                    // Red is the dominant color
-
-                    case 5:
-                        R = V;
-                        G = pv;
-                        B = qv;
-                        break;
-
-                    // Just in case we overshoot on our math by a little, we put these here. Since its a switch it won't slow us down at all to put these here.
-
-                    case 6:
-                        R = V;
-                        G = tv;
-                        B = pv;
-                        break;
-                    case -1:
-                        R = V;
-                        G = pv;
-                        B = qv;
-                        break;
-
-                    // The color is not defined, we should throw an error.
-
-                    default:
-                        //LFATAL("i Value error in Pixel conversion, Value is %d", i);
-                        R = G = B = V; // Just pretend its black/white
-                        break;
-                }
-            }
-            r = Clamp((int)(R * 255.0));
-            g = Clamp((int)(G * 255.0));
-            b = Clamp((int)(B * 255.0));
-        }
-
         /// <summary>
-        /// Clamp a value to 0-255
+        /// Clamp a value to 0-255.
         /// </summary>
-        int Clamp(int i)
+        /// <param name="i">Integer to clamp.</param>
+        /// <returns>An integer from 0 to 255.</returns>
+        public int Clamp(int i)
         {
-            if (i < 0) return 0;
-            if (i > 255) return 255;
+            if (i < 0)
+            {
+                return 0;
+            }
+
+            if (i > 255)
+            {
+                return 255;
+            }
+
             return i;
         }
 
+        /// <summary>
+        /// Gets the linear intercept.
+        /// </summary>
+        /// <param name="start">First number.</param>
+        /// <param name="end">Second number.</param>
+        /// <param name="percentage">Percentage of line.</param>
+        /// <returns>The linear intercept.</returns>
         public int LinearInterp(int start, int end, double percentage) => start + (int)Math.Round(percentage * (end - start));
+
+        /// <summary>
+        /// Gets the colour intercept.
+        /// </summary>
+        /// <param name="start">Start colour.</param>
+        /// <param name="end">End colour.</param>
+        /// <param name="percentage">Percentage of line.</param>
+        /// <returns>The colour intercept.</returns>
         public Color ColorInterp(Color start, Color end, double percentage) =>
-            Color.FromArgb(LinearInterp(start.A, end.A, percentage),
-                           LinearInterp(start.R, end.R, percentage),
-                           LinearInterp(start.G, end.G, percentage),
-                           LinearInterp(start.B, end.B, percentage));
-        public Color GradientPick(double percentage, Color Start, Color Center, Color End)
+            Color.FromArgb(
+                this.LinearInterp(start.A, end.A, percentage),
+                this.LinearInterp(start.R, end.R, percentage),
+                this.LinearInterp(start.G, end.G, percentage),
+                this.LinearInterp(start.B, end.B, percentage));
+
+        /// <summary>
+        /// Gets a colour from the n-th% of a gradient.
+        /// </summary>
+        /// <param name="percentage">Percentage of gradient to get colour from.</param>
+        /// <param name="start">Starting colour of gradient.</param>
+        /// <param name="center">Center colour of gradient.</param>
+        /// <param name="end">Ending colour of gradient.</param>
+        /// <returns>A colour.</returns>
+        public Color GradientPick(double percentage, Color start, Color center, Color end)
         {
             if (percentage < 0.5)
-                return ColorInterp(Start, Center, percentage / 0.5);
+            {
+                return this.ColorInterp(start, center, percentage / 0.5);
+            }
             else if (percentage == 0.5)
-                return Center;
+            {
+                return center;
+            }
             else
-                return ColorInterp(Center, End, (percentage - 0.5) / 0.5);
+            {
+                return this.ColorInterp(center, end, (percentage - 0.5) / 0.5);
+            }
         }
     }
 }

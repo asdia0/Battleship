@@ -9,6 +9,9 @@
 
     using Battleship.Core;
 
+    /// <summary>
+    /// Main file.
+    /// </summary>
     public partial class MainWindow : Window
     {
         /// <summary>
@@ -23,7 +26,6 @@
 
         private void Play()
         {
-
         }
     }
 }
