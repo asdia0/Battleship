@@ -25,6 +25,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 **Asdia** - *Main developer* - [asdia0](https://github.com/asdia0)
+**Jhas** - *Emotional support* - [T-Eason](https://github.com/T-Eason)
 
 See also the list of [contributors](https://github.com/asdia0/Battleship/contributors) who participated in this project.
 
