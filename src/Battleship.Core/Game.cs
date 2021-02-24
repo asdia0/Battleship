@@ -55,15 +55,54 @@
             while (this.player1.Ships.Count > 0 && this.player2.Ships.Count > 0)
             {
                 this.ProbabilityDensity();
+            }
 
-                //if (this.turn)
-                //{
-                //    this.ProbabilityDensity();
-                //}
-                //else
-                //{
-                //    this.Random();
-                //}
+            this.EndGame();
+        }
+
+        public void CreateGame(int algo1, int algo2)
+        {
+            List<string> Algorithms = new List<string>()
+            {
+                "Random",
+                "Hunt Target",
+                "Probability Density",
+            };
+
+            this.StartGame();
+
+            while (this.player1.Ships.Count > 0 && this.player2.Ships.Count > 0)
+            {
+                if (this.turn)
+                {
+                    switch (algo1)
+                    {
+                        case 0:
+                            this.Random();
+                            break;
+                        case 1:
+                            this.HuntTarget();
+                            break;
+                        case 2:
+                            this.ProbabilityDensity();
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (algo2)
+                    {
+                        case 0:
+                            this.Random();
+                            break;
+                        case 1:
+                            this.HuntTarget();
+                            break;
+                        case 2:
+                            this.ProbabilityDensity();
+                            break;
+                    }
+                }
             }
 
             this.EndGame();

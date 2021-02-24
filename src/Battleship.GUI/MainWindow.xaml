@@ -53,5 +53,17 @@
                 <Button x:Name="Find_Undo" Height="26" Content="Undo" Click="Click_Find_Undo" Margin="0,30,0,0"/>
             </StackPanel>
         </StackPanel>
+
+        <TextBlock x:Name="Sim_Stats" Height="Auto" Width="Auto" Grid.Column="1" VerticalAlignment="Center"/>
+        
+        <StackPanel Name="Sim_SP" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="0,30,0,0">
+            <ComboBox Name="Sim_Algo1" Height="26" Margin="0,10,0,0" Text="Player 1 Algorithm" IsEditable="True" IsReadOnly="True" Focusable="False"/>
+            <ComboBox Name="Sim_Algo2" Height="26" Margin="0,10,0,0" Text="Player 2 Algorithm" IsEditable="True" IsReadOnly="True" Focusable="False"/>
+            <TextBox Name="Sim_Games" Height="26" Margin="0,10,0,0"/>
+            <Button x:Name="Sim_Button" Height="26" Content="Update" Margin="0,10,0,0" Click="Click_Sim_Button"/>
+        </StackPanel>
+        <Label Name="Sim_Status" Grid.Column="1" VerticalAlignment="Top" Margin="0,296,0,0" Height="26" HorizontalContentAlignment="Center" Width="Auto"/>
+
+
     </Grid>
 </Window>

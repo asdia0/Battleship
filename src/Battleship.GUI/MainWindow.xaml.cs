@@ -36,17 +36,39 @@
         };
 
         /// <summary>
+        /// Algorithm options.
+        /// </summary>
+        public List<string> Algorithms = new List<string>()
+        {
+            "Random",
+            "Hunt Target",
+            "Probability Density",
+        };
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
         /// </summary>
         public MainWindow()
         {
             this.InitializeComponent();
+
             Application.Current.MainWindow.WindowState = WindowState.Maximized;
             this.UpdateSaveGame();
 
             Settings.Grid.AddDefaultShips();
             Grid = new Grid(Settings.Grid);
 
+            // SIMULATE
+            this.Sim_Games.Foreground = System.Windows.Media.Brushes.Gray;
+            this.Sim_Games.Text = "Number of games to simulate";
+
+            this.Sim_Games.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.tb_GotKeyboardFocus);
+            this.Sim_Games.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.tb_LostKeyboardFocus);
+
+            this.Sim_Algo1.ItemsSource = this.Algorithms;
+            this.Sim_Algo2.ItemsSource = this.Algorithms;
+
+            // FIND
             this.Find_Combo.ItemsSource = this.States;
 
             this.SP_A.Visibility = Visibility.Collapsed;
@@ -224,6 +246,34 @@
 
             return result;
         }
+
+        private void tb_LostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
+        {
+            //Make sure sender is the correct Control.
+            if (sender is System.Windows.Controls.TextBox)
+            {
+                //If nothing was entered, reset default text.
+                if (((System.Windows.Controls.TextBox)sender).Text.Trim().Equals(string.Empty))
+                {
+                    ((System.Windows.Controls.TextBox)sender).Foreground = System.Windows.Media.Brushes.Gray;
+                    ((System.Windows.Controls.TextBox)sender).Text = "Number of games to simulate";
+                }
+            }
+        }
+
+        private void tb_GotKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
+        {
+            if (sender is System.Windows.Controls.TextBox)
+            {
+                //If nothing has been entered yet.
+                if (((System.Windows.Controls.TextBox)sender).Foreground == System.Windows.Media.Brushes.Gray)
+                {
+                    ((System.Windows.Controls.TextBox)sender).Text = string.Empty;
+                    ((System.Windows.Controls.TextBox)sender).Foreground = System.Windows.Media.Brushes.Black;
+                }
+            }
+        }
+
         #endregion
     }
 }
