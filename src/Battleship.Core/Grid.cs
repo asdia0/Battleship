@@ -54,23 +54,23 @@
         /// </summary>
         public Grid()
         {
-            this.AddSquares();
+            AddSquares();
         }
 
         public Grid(Grid grid)
         {
-            this.AddSquares();
+            AddSquares();
 
             foreach (Ship ship in grid.OriginalShips)
             {
-                Square sq = this.Squares[ship.OriginalOccupiedSquares[0].ID];
+                Square sq = Squares[ship.OriginalOccupiedSquares[0].ID];
                 Ship ship1 = new Ship(this, ship.Length, ship.Breadth);
-                this.AddShip(sq, ship1, (bool)ship.Alignment);
+                AddShip(sq, ship1, (bool)ship.Alignment);
             }
 
             foreach (Square square in grid.Squares)
             {
-                Square sq = this.Squares[square.ID];
+                Square sq = Squares[square.ID];
 
                 sq.HadShip = square.HadShip;
                 sq.HasShip = square.HasShip;
@@ -79,7 +79,7 @@
                 sq.IsSunk = square.IsSunk;
                 if (square.Ship != null)
                 {
-                    sq.Ship = this.Ships[square.Ship.ID];
+                    sq.Ship = Ships[square.Ship.ID];
                 }
             }
         }
@@ -94,7 +94,7 @@
             // ' = miss
             // O = hit
             // @ = sunk
-            this.AddSquares();
+            AddSquares();
 
             for (int i = 0; i < format.Count(); i++)
             {
@@ -103,18 +103,18 @@
                 switch (c)
                 {
                     case 'O':
-                        this.Squares[i].HadShip = true;
-                        this.Squares[i].BeenSearched = true;
-                        this.UnoccupiedSquares.Remove(this.Squares[i]);
+                        Squares[i].HadShip = true;
+                        Squares[i].BeenSearched = true;
+                        UnoccupiedSquares.Remove(Squares[i]);
                         break;
                     case '\'':
-                        this.Squares[i].BeenSearched = true;
-                        this.UnoccupiedSquares.Remove(this.Squares[i]);
+                        Squares[i].BeenSearched = true;
+                        UnoccupiedSquares.Remove(Squares[i]);
                         break;
                     case '@':
-                        this.Squares[i].IsSunk = true;
-                        this.Squares[i].BeenSearched = true;
-                        this.UnoccupiedSquares.Remove(this.Squares[i]);
+                        Squares[i].IsSunk = true;
+                        Squares[i].BeenSearched = true;
+                        UnoccupiedSquares.Remove(Squares[i]);
                         break;
                 }
             }
@@ -128,9 +128,9 @@
             for (int i = 0; i < Settings.GridWidth * Settings.GridHeight; i++)
             {
                 Square sq = new Square(this, i);
-                this.Squares.Add(sq);
-                this.UnsearchedSquares.Add(sq);
-                this.UnoccupiedSquares.Add(sq);
+                Squares.Add(sq);
+                UnsearchedSquares.Add(sq);
+                UnoccupiedSquares.Add(sq);
             }
         }
 
@@ -148,7 +148,7 @@
                 throw new Exception("Attempted to add ship to non-local square.");
             }
 
-            foreach (Ship sp in this.Ships)
+            foreach (Ship sp in Ships)
             {
                 if (sp.ID == ship.ID)
                 {
@@ -166,21 +166,21 @@
                 {
                     int sqID = i + square.ID;
 
-                    if (sqID >= this.Squares.Count || this.Squares[sqID].HasShip == true)
+                    if (sqID >= Squares.Count || Squares[sqID].HasShip == true)
                     {
                         return false;
                     }
 
-                    this.Squares[sqID].Ship = ship;
-                    this.Squares[sqID].HasShip = true;
-                    this.Squares[sqID].HadShip = true;
-                    ship.CurrentOccupiedSquares.Add(this.Squares[sqID]);
-                    ship.OriginalOccupiedSquares.Add(this.Squares[sqID]);
-                    this.UnoccupiedSquares.Remove(this.Squares[sqID]);
+                    Squares[sqID].Ship = ship;
+                    Squares[sqID].HasShip = true;
+                    Squares[sqID].HadShip = true;
+                    ship.CurrentOccupiedSquares.Add(Squares[sqID]);
+                    ship.OriginalOccupiedSquares.Add(Squares[sqID]);
+                    UnoccupiedSquares.Remove(Squares[sqID]);
                 }
 
-                this.Ships.Add(ship);
-                this.OriginalShips.Add(ship);
+                Ships.Add(ship);
+                OriginalShips.Add(ship);
                 ship.Alignment = true;
                 return true;
             }
@@ -192,21 +192,21 @@
                 {
                     int sqID = (i * Settings.GridHeight) + square.ID;
 
-                    if (sqID >= this.Squares.Count || this.Squares[sqID].HasShip == true)
+                    if (sqID >= Squares.Count || Squares[sqID].HasShip == true)
                     {
                         return false;
                     }
 
-                    this.Squares[sqID].Ship = ship;
-                    this.Squares[sqID].HasShip = true;
-                    this.Squares[sqID].HadShip = true;
-                    ship.CurrentOccupiedSquares.Add(this.Squares[sqID]);
-                    ship.OriginalOccupiedSquares.Add(this.Squares[sqID]);
-                    this.UnoccupiedSquares.Remove(this.Squares[sqID]);
+                    Squares[sqID].Ship = ship;
+                    Squares[sqID].HasShip = true;
+                    Squares[sqID].HadShip = true;
+                    ship.CurrentOccupiedSquares.Add(Squares[sqID]);
+                    ship.OriginalOccupiedSquares.Add(Squares[sqID]);
+                    UnoccupiedSquares.Remove(Squares[sqID]);
                 }
 
-                this.OriginalShips.Add(ship);
-                this.Ships.Add(ship);
+                OriginalShips.Add(ship);
+                Ships.Add(ship);
                 ship.Alignment = false;
 
                 return true;
@@ -223,7 +223,7 @@
         {
             string res = string.Empty;
 
-            foreach (Square sq in this.Squares)
+            foreach (Square sq in Squares)
             {
                 if (sq.HadShip == true)
                 {
@@ -240,11 +240,11 @@
 
         public void AddDefaultShips()
         {
-            this.AddShip(this.Squares[0], new Ship(this, 5, 1), true);
-            this.AddShip(this.Squares[10], new Ship(this, 4, 1), true);
-            this.AddShip(this.Squares[20], new Ship(this, 3, 1), true);
-            this.AddShip(this.Squares[30], new Ship(this, 3, 1), true);
-            this.AddShip(this.Squares[40], new Ship(this, 2, 1), true);
+            AddShip(Squares[0], new Ship(this, 5, 1), true);
+            AddShip(Squares[10], new Ship(this, 4, 1), true);
+            AddShip(Squares[20], new Ship(this, 3, 1), true);
+            AddShip(Squares[30], new Ship(this, 3, 1), true);
+            AddShip(Squares[40], new Ship(this, 2, 1), true);
         }
 
     }

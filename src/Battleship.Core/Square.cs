@@ -65,8 +65,8 @@
                 throw new Exception("Invalid Square ID.");
             }
 
-            this.Grid = grid;
-            this.ID = id;
+            Grid = grid;
+            ID = id;
         }
 
         /// <summary>
@@ -75,8 +75,8 @@
         /// <returns>The x- and y-coordinates.</returns>
         public (int, int) ToCoor()
         {
-            int xCoor = (this.ID % Settings.GridWidth) + 1;
-            int yCoor = (int)Math.Floor((double)(this.ID / Settings.GridWidth)) + 1;
+            int xCoor = (ID % Settings.GridWidth) + 1;
+            int yCoor = (int)Math.Floor((double)(ID / Settings.GridWidth)) + 1;
 
             return (xCoor, yCoor);
         }
@@ -91,17 +91,17 @@
 
             List<int> sqID = new List<int>()
             {
-                this.ID - 1,
-                this.ID + 1,
-                this.ID - Settings.GridWidth,
-                this.ID + Settings.GridWidth,
+                ID - 1,
+                ID + 1,
+                ID - Settings.GridWidth,
+                ID + Settings.GridWidth,
             };
 
             foreach (int id1 in sqID)
             {
                 if (id1 > -1 && id1 < (Settings.GridHeight * Settings.GridWidth))
                 {
-                    res.Add(this.Grid.Squares[id1]);
+                    res.Add(Grid.Squares[id1]);
                 }
             }
 
@@ -115,7 +115,7 @@
         public int GetNumberOfHitAdjacentSquares()
         {
             int numberOfAdjacentHitSquares = 0;
-            foreach (Square sq in this.GetAdjacentSquares())
+            foreach (Square sq in GetAdjacentSquares())
             {
                 if (sq.HadShip == true)
                 {
@@ -133,9 +133,9 @@
         public int GetNumberOfHitConnectedSquares()
         {
             int res = 0;
-            for (int x = 1; x <= (9 - this.ToCoor().Item1); x++)
+            for (int x = 1; x <= (9 - ToCoor().Item1); x++)
             {
-                Square sq = this.Grid.Squares[this.ID + x];
+                Square sq = Grid.Squares[ID + x];
                 if (sq.IsHit == true)
                 {
                     res++;
@@ -146,9 +146,9 @@
                 }
             }
 
-            for (int x = 1; x <= (this.ToCoor().Item1 - 1); x++)
+            for (int x = 1; x <= (ToCoor().Item1 - 1); x++)
             {
-                Square sq = this.Grid.Squares[this.ID - x];
+                Square sq = Grid.Squares[ID - x];
                 if (sq.IsHit == true)
                 {
                     res++;
@@ -159,9 +159,9 @@
                 }
             }
 
-            for (int y = 1; y <= (9 - this.ToCoor().Item2); y++)
+            for (int y = 1; y <= (9 - ToCoor().Item2); y++)
             {
-                Square sq = this.Grid.Squares[this.ID + (y * Settings.GridWidth)];
+                Square sq = Grid.Squares[ID + (y * Settings.GridWidth)];
                 if (sq.IsHit == true)
                 {
                     res++;
@@ -172,9 +172,9 @@
                 }
             }
 
-            for (int y = 1; y < (this.ToCoor().Item2 - 1); y++)
+            for (int y = 1; y < (ToCoor().Item2 - 1); y++)
             {
-                Square sq = this.Grid.Squares[this.ID - (y * Settings.GridWidth)];
+                Square sq = Grid.Squares[ID - (y * Settings.GridWidth)];
                 if (sq.IsHit == true)
                 {
                     res++;

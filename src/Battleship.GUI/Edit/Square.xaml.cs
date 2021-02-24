@@ -1,10 +1,9 @@
 ﻿namespace Battleship.GUI
 {
+    using Battleship.Core;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Windows;
-
-    using Battleship.Core;
 
     /// <summary>
     /// Interaction logic for Square.xaml.
@@ -32,18 +31,18 @@
         /// </summary>
         public SquareEditor()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
-            this.Square.ItemsSource = this.SqSource;
-            this.State.ItemsSource = this.States;
-            this.Square.SelectedIndex = 0;
+            Square.ItemsSource = SqSource;
+            State.ItemsSource = States;
+            Square.SelectedIndex = 0;
 
             for (int i = 0; i < (Settings.GridHeight * Settings.GridWidth); i++)
             {
-                this.SqSource.Add(i);
+                SqSource.Add(i);
             }
 
-            this.UpdateText();
+            UpdateText();
         }
 
         /// <summary>
@@ -53,9 +52,9 @@
         /// <param name="e">Event.</param>
         public void Click_Update(object sender, RoutedEventArgs e)
         {
-            Square sq = Settings.Grid.Squares[this.Square.SelectedIndex];
+            Square sq = Settings.Grid.Squares[Square.SelectedIndex];
 
-            switch (this.State.SelectedIndex)
+            switch (State.SelectedIndex)
             {
                 case 0:
                     if (sq.Ship != null && !sq.Ship.IsSunk)
@@ -68,18 +67,18 @@
                         sq.IsMiss = false;
                         sq.IsHit = false;
 
-                        this.Status.Content = $"Successfully edited Square {this.Square.SelectedIndex}.";
+                        Status.Content = $"Successfully edited Square {Square.SelectedIndex}.";
                     }
                     else
                     {
-                        this.Status.Content = "Error: Ship is sunk.";
+                        Status.Content = "Error: Ship is sunk.";
                     }
 
                     break;
                 case 1:
                     if (sq.Ship != null)
                     {
-                        this.Status.Content = "Error: Square has a ship.";
+                        Status.Content = "Error: Square has a ship.";
                     }
                     else
                     {
@@ -90,7 +89,7 @@
                         sq.IsMiss = true;
                         sq.IsHit = false;
 
-                        this.Status.Content = $"Successfully edited Square {this.Square.SelectedIndex}.";
+                        Status.Content = $"Successfully edited Square {Square.SelectedIndex}.";
                     }
 
                     break;
@@ -99,11 +98,11 @@
                     {
                         if (sq.Ship.IsSunk)
                         {
-                            this.Status.Content = "Error: Ship is sunk.";
+                            Status.Content = "Error: Ship is sunk.";
                         }
                         else if (sq.Ship.CurrentOccupiedSquares.Count == 1)
                         {
-                            this.Status.Content = "Error: Active ship cannot have squares that are all hit.";
+                            Status.Content = "Error: Active ship cannot have squares that are all hit.";
                         }
                         else
                         {
@@ -115,12 +114,12 @@
                             sq.IsMiss = false;
                             sq.Ship.CurrentOccupiedSquares.Remove(sq);
 
-                            this.Status.Content = $"Successfully edited Square {this.Square.SelectedIndex}.";
+                            Status.Content = $"Successfully edited Square {Square.SelectedIndex}.";
                         }
                     }
                     else
                     {
-                        this.Status.Content = "Error: Square does not have a ship.";
+                        Status.Content = "Error: Square does not have a ship.";
                     }
 
                     break;
@@ -129,7 +128,7 @@
                     {
                         if (!sq.Ship.IsSunk)
                         {
-                            this.Status.Content = "Error: Ship is not sunk.";
+                            Status.Content = "Error: Ship is not sunk.";
                         }
                         else
                         {
@@ -140,12 +139,12 @@
                             sq.IsHit = false;
                             sq.IsMiss = false;
 
-                            this.Status.Content = $"Successfully edited Square {this.Square.SelectedIndex}.";
+                            Status.Content = $"Successfully edited Square {Square.SelectedIndex}.";
                         }
                     }
                     else
                     {
-                        this.Status.Content = "Error: Square does not have a ship.";
+                        Status.Content = "Error: Square does not have a ship.";
                     }
 
                     break;
@@ -157,46 +156,46 @@
         /// </summary>
         public void UpdateText()
         {
-            this.Status.Content = string.Empty;
+            Status.Content = string.Empty;
 
-            Square sq = Settings.Grid.Squares[this.Square.SelectedIndex];
+            Square sq = Settings.Grid.Squares[Square.SelectedIndex];
 
             if (sq.BeenSearched)
             {
                 if (sq.IsMiss == true)
                 {
-                    this.State.SelectedIndex = 1;
+                    State.SelectedIndex = 1;
                 }
                 else
                 {
                     if (sq.IsHit == true)
                     {
-                        this.State.SelectedIndex = 2;
+                        State.SelectedIndex = 2;
                     }
                     else
                     {
-                        this.State.SelectedIndex = 3;
+                        State.SelectedIndex = 3;
                     }
                 }
             }
             else
             {
-                this.State.SelectedIndex = 0;
+                State.SelectedIndex = 0;
             }
 
             if (sq.Ship != null)
             {
-                this.Ship.Text = sq.Ship.ID.ToString();
+                Ship.Text = sq.Ship.ID.ToString();
             }
             else
             {
-                this.Ship.Clear();
+                Ship.Clear();
             }
         }
 
         private void Square_DropDownClosed(object sender, System.EventArgs e)
         {
-            this.UpdateText();
+            UpdateText();
         }
     }
 }

@@ -1,12 +1,11 @@
 ﻿namespace Battleship.GUI
 {
+    using Battleship.Core;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows;
-
-    using Battleship.Core;
 
     /// <summary>
     /// Interaction logic for Ship.xaml.
@@ -28,26 +27,26 @@
         /// </summary>
         public ShipEditor()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
-            this.ID.SelectedIndex = 1;
+            ID.SelectedIndex = 1;
 
-            this.IDSource.Add(string.Empty);
+            IDSource.Add(string.Empty);
 
             foreach (Ship sp in Settings.Grid.Ships)
             {
-                this.IDSource.Add(sp.ID);
+                IDSource.Add(sp.ID);
             }
 
-            this.ID.ItemsSource = this.IDSource;
+            ID.ItemsSource = IDSource;
 
-            this.CurrentShip = Settings.Grid.Ships[0];
+            CurrentShip = Settings.Grid.Ships[0];
 
-            this.Add.IsEnabled = false;
-            this.Remove.IsEnabled = false;
-            this.Update.IsEnabled = true;
+            Add.IsEnabled = false;
+            Remove.IsEnabled = false;
+            Update.IsEnabled = true;
 
-            this.UpdateText();
+            UpdateText();
         }
 
         /// <summary>
@@ -57,27 +56,27 @@
         /// <param name="e">Event.</param>
         public void Click_Update(object sender, EventArgs e)
         {
-            this.Status.Content = string.Empty;
+            Status.Content = string.Empty;
 
-            (bool, List<Square>, int, int) res = this.AbleToProceed(this.CurrentShip, true);
+            (bool, List<Square>, int, int) res = AbleToProceed(CurrentShip, true);
 
             if (res.Item1)
             {
-                (bool?, Square) hoz = this.HorizontalOrVertical(res.Item3, res.Item4, res.Item2);
+                (bool?, Square) hoz = HorizontalOrVertical(res.Item3, res.Item4, res.Item2);
 
-                this.CurrentShip.Name = this.Name_.Text;
-                this.CurrentShip.IsSunk = (bool)this.IsSunk.IsChecked;
-                this.CurrentShip.OriginalOccupiedSquares = res.Item2;
+                CurrentShip.Name = Name_.Text;
+                CurrentShip.IsSunk = (bool)IsSunk.IsChecked;
+                CurrentShip.OriginalOccupiedSquares = res.Item2;
 
                 foreach (Square square in res.Item2)
                 {
                     if (!square.BeenSearched)
                     {
-                        this.CurrentShip.CurrentOccupiedSquares.Add(square);
+                        CurrentShip.CurrentOccupiedSquares.Add(square);
                     }
                 }
 
-                this.Status.Content = $"Successfully edited Ship {this.CurrentShip.ID}.";
+                Status.Content = $"Successfully edited Ship {CurrentShip.ID}.";
             }
         }
 
@@ -88,29 +87,29 @@
         /// <param name="e">Event.</param>
         private void Click_Add(object sender, EventArgs e)
         {
-            this.Status.Content = string.Empty;
+            Status.Content = string.Empty;
 
-            string nameS = this.Name_.Text;
-            bool isSunk = (bool)this.IsSunk.IsChecked;
+            string nameS = Name_.Text;
+            bool isSunk = (bool)IsSunk.IsChecked;
 
             int breadthN = 0;
             int lengthN = 0;
 
             Ship ship = new Ship(Settings.Grid, lengthN, breadthN);
 
-            (bool, List<Square>, int, int) res = this.AbleToProceed(ship, false);
+            (bool, List<Square>, int, int) res = AbleToProceed(ship, false);
 
             if (res.Item1)
             {
-                (bool?, Square) hoz = this.HorizontalOrVertical(res.Item3, res.Item4, res.Item2);
+                (bool?, Square) hoz = HorizontalOrVertical(res.Item3, res.Item4, res.Item2);
 
                 if (hoz.Item1 != null)
                 {
                     Settings.Grid.AddShip(hoz.Item2, new Ship(Settings.Grid, res.Item3, res.Item4), (bool)hoz.Item1);
                 }
 
-                this.IDSource.Add(ship.ID);
-                this.Status.Content = $"Successfully added {ship.Name}.";
+                IDSource.Add(ship.ID);
+                Status.Content = $"Successfully added {ship.Name}.";
             }
         }
 
@@ -145,8 +144,8 @@
         /// <param name="e">Event.</param>
         private void Click_Remove(object sender, EventArgs e)
         {
-            Settings.Grid.Ships.Remove(this.CurrentShip);
-            Settings.Grid.OriginalShips.Remove(this.CurrentShip);
+            Settings.Grid.Ships.Remove(CurrentShip);
+            Settings.Grid.OriginalShips.Remove(CurrentShip);
 
             int id = 0;
 
@@ -156,9 +155,9 @@
                 id++;
             }
 
-            this.ID.SelectedIndex--;
-            this.UpdateText();
-            this.IDSource.Remove(this.IDSource[^1]);
+            ID.SelectedIndex--;
+            UpdateText();
+            IDSource.Remove(IDSource[^1]);
         }
 
         /// <summary>
@@ -168,32 +167,32 @@
         /// <param name="e">Event.</param>
         private void ID_DropDownClosed(object sender, EventArgs e)
         {
-            this.Status.Content = string.Empty;
+            Status.Content = string.Empty;
 
-            if (this.ID.SelectedIndex == 0)
+            if (ID.SelectedIndex == 0)
             {
-                this.Add.IsEnabled = true;
-                this.Remove.IsEnabled = false;
-                this.Update.IsEnabled = false;
+                Add.IsEnabled = true;
+                Remove.IsEnabled = false;
+                Update.IsEnabled = false;
 
-                this.Name_.Text = string.Empty;
-                this.OccupiedSqs.Text = string.Empty;
-                this.Length.Text = string.Empty;
-                this.Breadth.Text = string.Empty;
-                this.IsSunk.IsChecked = false;
+                Name_.Text = string.Empty;
+                OccupiedSqs.Text = string.Empty;
+                Length.Text = string.Empty;
+                Breadth.Text = string.Empty;
+                IsSunk.IsChecked = false;
             }
             else
             {
-                this.Add.IsEnabled = false;
-                this.Remove.IsEnabled = true;
-                this.Update.IsEnabled = true;
+                Add.IsEnabled = false;
+                Remove.IsEnabled = true;
+                Update.IsEnabled = true;
 
-                if (this.ID.SelectedIndex == 1)
+                if (ID.SelectedIndex == 1)
                 {
-                    this.Remove.IsEnabled = false;
+                    Remove.IsEnabled = false;
                 }
 
-                this.UpdateText();
+                UpdateText();
             }
         }
 
@@ -202,22 +201,22 @@
         /// </summary>
         private void UpdateText()
         {
-            this.CurrentShip = Settings.Grid.OriginalShips[this.ID.SelectedIndex - 1];
+            CurrentShip = Settings.Grid.OriginalShips[ID.SelectedIndex - 1];
 
-            this.Status.Content = string.Empty;
+            Status.Content = string.Empty;
 
-            this.Name_.Text = this.CurrentShip.Name;
-            this.Length.Text = this.CurrentShip.Length.ToString();
-            this.Breadth.Text = this.CurrentShip.Breadth.ToString();
-            this.IsSunk.IsChecked = this.CurrentShip.IsSunk;
+            Name_.Text = CurrentShip.Name;
+            Length.Text = CurrentShip.Length.ToString();
+            Breadth.Text = CurrentShip.Breadth.ToString();
+            IsSunk.IsChecked = CurrentShip.IsSunk;
 
             string text = string.Empty;
-            foreach (Square sq in this.CurrentShip.OriginalOccupiedSquares)
+            foreach (Square sq in CurrentShip.OriginalOccupiedSquares)
             {
                 text += $",{sq.ToCoor()}";
             }
 
-            this.OccupiedSqs.Text = text.Remove(0, 1).Replace(" ", string.Empty);
+            OccupiedSqs.Text = text.Remove(0, 1).Replace(" ", string.Empty);
         }
 
         /// <summary>
@@ -230,11 +229,11 @@
         {
             (bool, List<Square>, int, int) res = (true, new List<Square>(), 0, 0);
 
-            this.Status.Content = string.Empty;
+            Status.Content = string.Empty;
 
-            string occupiedSqs = this.OccupiedSqs.Text;
-            string lengthS = this.Length.Text;
-            string breadthS = this.Breadth.Text;
+            string occupiedSqs = OccupiedSqs.Text;
+            string lengthS = Length.Text;
+            string breadthS = Breadth.Text;
 
             List<string> sqs = new List<string>();
             try
@@ -261,13 +260,13 @@
 
                     if (!xBool1 || !yBool1)
                     {
-                        this.Status.Content = "Error: Squares must be represented in the following format: (x1,y1),(x2,y2) etc.";
+                        Status.Content = "Error: Squares must be represented in the following format: (x1,y1),(x2,y2) etc.";
                         res.Item1 = false;
                     }
                 }
                 catch
                 {
-                    this.Status.Content = "Error: Squares must be represented in the following format: (x1,y1),(x2,y2) etc.";
+                    Status.Content = "Error: Squares must be represented in the following format: (x1,y1),(x2,y2) etc.";
                     res.Item1 = false;
                 }
 
@@ -279,7 +278,7 @@
                 }
                 catch
                 {
-                    this.Status.Content = $"Error: {id} is an invalid ID";
+                    Status.Content = $"Error: {id} is an invalid ID";
                     res.Item1 = false;
                 }
             }
@@ -292,15 +291,15 @@
                 {
                     if (ship1.OriginalOccupiedSquares.Contains(sq))
                     {
-                        this.Status.Content = "Error: Ship cannot overlap another ship.";
+                        Status.Content = "Error: Ship cannot overlap another ship.";
                         res.Item1 = false;
                     }
                 }
             }
 
-            if (this.ID.SelectedIndex == 0 && isUpdate == true)
+            if (ID.SelectedIndex == 0 && isUpdate == true)
             {
-                this.Status.Content = "Error: ID must be an integer";
+                Status.Content = "Error: ID must be an integer";
                 res.Item1 = false;
             }
 
@@ -309,13 +308,13 @@
 
             if (!xBool || !yBool)
             {
-                this.Status.Content = "Error: Height and Width property must be an integer!";
+                Status.Content = "Error: Height and Width property must be an integer!";
                 res.Item1 = false;
             }
 
             if (lengthN * breadthN != potentialSqs.Count)
             {
-                this.Status.Content = "Error: Number of squares must be equal to length * breadth.";
+                Status.Content = "Error: Number of squares must be equal to length * breadth.";
                 res.Item1 = false;
             }
 
@@ -326,9 +325,9 @@
             ship.Length = res.Item3;
             ship.Breadth = res.Item4;
 
-            if (!this.ValidShipSquares(res.Item3, res.Item4, res.Item2))
+            if (!ValidShipSquares(res.Item3, res.Item4, res.Item2))
             {
-                this.Status.Content = "Error: Squares must be arranged together.";
+                Status.Content = "Error: Squares must be arranged together.";
                 res.Item1 = false;
             }
 

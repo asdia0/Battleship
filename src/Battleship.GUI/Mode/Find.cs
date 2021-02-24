@@ -1,20 +1,16 @@
 ﻿namespace Battleship.GUI
 {
+    using Battleship.Core;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows;
-
-    using Battleship.Core;
 
     public partial class MainWindow : Window
     {
-        Square recommendedSq;
-
-        List<Square> searchedSquares = new List<Square>();
+        private Square recommendedSq;
+        private List<Square> searchedSquares = new List<Square>();
 
         public void Click_Find_Button(object sender, RoutedEventArgs args)
         {
@@ -25,41 +21,41 @@
             recommendedSq.BeenSearched = true;
             searchedSquares.Add(recommendedSq);
 
-            switch (this.Find_Combo.SelectedIndex)
+            switch (Find_Combo.SelectedIndex)
             {
                 // MISS
                 case 0:
                     recommendedSq.BeenSearched = true;
                     recommendedSq.IsMiss = true;
-                    this.Find();
+                    Find();
                     break;
                 // HIT
                 case 1:
                     recommendedSq.IsHit = true;
                     recommendedSq.HadShip = true;
-                    this.Find();
+                    Find();
                     break;
                 // SINK
                 case 2:
-                    this.SP_A.Visibility = Visibility.Collapsed;
-                    this.SP_B.Visibility = Visibility.Visible;
+                    SP_A.Visibility = Visibility.Collapsed;
+                    SP_B.Visibility = Visibility.Visible;
                     break;
             }
         }
 
         public void Click_Find_Sunk_Button(object sender, RoutedEventArgs args)
         {
-            string raw = this.Find_Sunk_SquaresText.Text;
-            string shipIDS = this.Find_Sunk_ShipText.Text;
+            string raw = Find_Sunk_SquaresText.Text;
+            string shipIDS = Find_Sunk_ShipText.Text;
 
             if (!int.TryParse(shipIDS, out int shipID))
             {
-                this.Find_Sunk_Label.Content = "Error: Ship ID should be an integer.";
+                Find_Sunk_Label.Content = "Error: Ship ID should be an integer.";
             }
 
             if (grid.OriginalShips.Count - 1 < shipID)
             {
-                this.Find_Sunk_Label.Content = "Error: No ship was found.";
+                Find_Sunk_Label.Content = "Error: No ship was found.";
             }
 
             string[] xy = raw.Replace(")", string.Empty).Split(",(");
@@ -88,10 +84,10 @@
             ship.IsSunk = true;
             grid.Ships.Remove(ship);
 
-            this.Find_Sunk_ShipText.Clear();
-            this.Find_Sunk_SquaresText.Clear();
+            Find_Sunk_ShipText.Clear();
+            Find_Sunk_SquaresText.Clear();
 
-            this.Find();
+            Find();
         }
 
         private void Find()
@@ -112,13 +108,13 @@
                 }
             }
 
-            this.SP_A.Visibility = Visibility.Visible;
-            this.SP_B.Visibility = Visibility.Collapsed;
+            SP_A.Visibility = Visibility.Visible;
+            SP_B.Visibility = Visibility.Collapsed;
 
             // Find Best Square
             (Square sq, Dictionary<int, int> prob) = Program.FindBestSquare(grid);
 
-            this.recommendedSq = sq;
+            recommendedSq = sq;
 
             // Update Screen
             string text = "Dimensions || ID || Is Sunk";
@@ -127,16 +123,16 @@
                 text += $"\n{ship.Length}x{ship.Breadth} || {ship.ID} || {ship.IsSunk}";
             }
 
-            this.Find_ShipStats.Text = text;
-            this.Find_Label.Content = $"Search {sq.ToCoor()} ({prob.Values.Max()}%)";
-            this.Find_Combo.SelectedIndex = 0;
+            Find_ShipStats.Text = text;
+            Find_Label.Content = $"Search {sq.ToCoor()} ({prob.Values.Max()}%)";
+            Find_Combo.SelectedIndex = 0;
 
             // Update Image
             Bitmap bitmap = new Bitmap(Settings.GridWidth, Settings.GridHeight);
 
-            for (var x = 0; x < bitmap.Width; x++)
+            for (int x = 0; x < bitmap.Width; x++)
             {
-                for (var y = 0; y < bitmap.Height; y++)
+                for (int y = 0; y < bitmap.Height; y++)
                 {
                     Color color = default(Color);
                     double percentage = (double)decimal.Divide(prob[x + (y * Settings.GridWidth)], prob.Values.Max());
@@ -152,7 +148,7 @@
                 }
             }
 
-            foreach (Square square in this.searchedSquares)
+            foreach (Square square in searchedSquares)
             {
                 int x = square.ToCoor().Item1 - 1;
                 int y = square.ToCoor().Item2 - 1;
@@ -171,12 +167,12 @@
                 }
             }
 
-            bitmap.SetPixel(this.recommendedSq.ToCoor().Item1 - 1, this.recommendedSq.ToCoor().Item2 - 1, Color.FromArgb(66, 155, 66));
+            bitmap.SetPixel(recommendedSq.ToCoor().Item1 - 1, recommendedSq.ToCoor().Item2 - 1, Color.FromArgb(66, 155, 66));
 
-            this.Image2.Source = this.BitmapToImageSource(this.ResizeBitmap(bitmap, 500, 500));
+            Image2.Source = BitmapToImageSource(ResizeBitmap(bitmap, 500, 500));
         }
 
-        void HsvToRgb(double h, double S, double V, out int r, out int g, out int b)
+        private void HsvToRgb(double h, double S, double V, out int r, out int g, out int b)
         {
             double H = h;
             while (H < 0) { H += 360; };
@@ -270,19 +266,26 @@
         /// <summary>
         /// Clamp a value to 0-255
         /// </summary>
-        int Clamp(int i)
+        private int Clamp(int i)
         {
             if (i < 0) return 0;
             if (i > 255) return 255;
             return i;
         }
 
-        public int LinearInterp(int start, int end, double percentage) => start + (int)Math.Round(percentage * (end - start));
-        public Color ColorInterp(Color start, Color end, double percentage) =>
-            Color.FromArgb(LinearInterp(start.A, end.A, percentage),
-                           LinearInterp(start.R, end.R, percentage),
-                           LinearInterp(start.G, end.G, percentage),
-                           LinearInterp(start.B, end.B, percentage));
+        public int LinearInterp(int start, int end, double percentage)
+        {
+            return start + (int)Math.Round(percentage * (end - start));
+        }
+
+        public Color ColorInterp(Color start, Color end, double percentage)
+        {
+            return Color.FromArgb(LinearInterp(start.A, end.A, percentage),
+LinearInterp(start.R, end.R, percentage),
+LinearInterp(start.G, end.G, percentage),
+LinearInterp(start.B, end.B, percentage));
+        }
+
         public Color GradientPick(double percentage, Color Start, Color Center, Color End)
         {
             if (percentage < 0.5)

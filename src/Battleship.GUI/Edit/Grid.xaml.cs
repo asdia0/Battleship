@@ -1,7 +1,7 @@
 ﻿namespace Battleship.GUI
 {
-    using System.Windows;
     using Battleship.Core;
+    using System.Windows;
 
     /// <summary>
     /// Interaction logic for Grid.xaml.
@@ -13,8 +13,8 @@
         /// </summary>
         public GridEditor()
         {
-            this.InitializeComponent();
-            this.UpdateText();
+            InitializeComponent();
+            UpdateText();
         }
 
         /// <summary>
@@ -22,8 +22,8 @@
         /// </summary>
         public void UpdateText()
         {
-            this.Height_.Text = Settings.GridHeight.ToString();
-            this.Width_.Text = Settings.GridWidth.ToString();
+            Height_.Text = Settings.GridHeight.ToString();
+            Width_.Text = Settings.GridWidth.ToString();
         }
 
         /// <summary>
@@ -33,17 +33,17 @@
         /// <param name="e">Event.</param>
         public void Click_Update(object sender, RoutedEventArgs e)
         {
-            this.Status.Content = string.Empty;
+            Status.Content = string.Empty;
 
-            string heightS = this.Height_.Text;
-            string widthS = this.Width_.Text;
+            string heightS = Height_.Text;
+            string widthS = Width_.Text;
 
             bool heightB = int.TryParse(heightS, out int heightN);
             bool widthB = int.TryParse(widthS, out int widthN);
 
             if ((!heightB || !widthB) || (heightN <= 0 || widthN <= 0) || (heightN % 1 != 0 || widthN % 1 != 0))
             {
-                this.Status.Content = "Error: Height and Width must be positive integers.";
+                Status.Content = "Error: Height and Width must be positive integers.";
             }
             else
             {
@@ -61,9 +61,9 @@
                     MainWindow.grid = new Grid(Settings.Grid);
 
 
-                    this.Status.Content = "Successfully edited grid.";
+                    Status.Content = "Successfully edited grid.";
 
-                    this.UpdateText();
+                    UpdateText();
                 }
             }
         }

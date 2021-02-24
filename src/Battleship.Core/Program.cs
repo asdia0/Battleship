@@ -237,7 +237,7 @@
                 int i = 0;
                 double[][] result = source.GroupBy(s => i++ / 10).Select(g => g.ToArray()).ToArray();
 
-                attackedSq = player.Squares[(int)probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
+                attackedSq = player.Squares[probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
             }
 
             player.SearchedSquares.Add(attackedSq);
@@ -406,7 +406,7 @@
         /// <returns>The median of the list.</returns>
         public static decimal Median(List<dynamic> list)
         {
-            var ys = list.OrderBy(x => x).ToList();
+            List<dynamic> ys = list.OrderBy(x => x).ToList();
             double mid = (ys.Count - 1) / 2.0;
             return (ys[(int)mid] + ys[(int)(mid + 0.5)]) / 2;
         }
