@@ -79,9 +79,9 @@
         /// </summary>
         /// <param name="player">The grid to analyse.</param>
         /// <returns>The square to search and the probability of it having a ship on it.</returns>
-        public static (Square, decimal) FindBestSquare(Grid player)
+        public static (Square, Dictionary<int, int>) FindBestSquare(Grid player)
         {
-            decimal prob = 0;
+            Dictionary<int, int> prob = new Dictionary<int, int>();
 
             int sunkSquares = 0;
             int sunkShips = 0;
@@ -124,25 +124,14 @@
             {
                 if (sq.BeenSearched && sq.HadShip == true && sq.IsSunk != true)
                 {
-                    List<int> sqID = new List<int>()
-                    {
-                        sq.ID - 1,
-                        sq.ID + 1,
-                        sq.ID - Settings.GridWidth,
-                        sq.ID + Settings.GridWidth,
-                    };
-
                     List<Square> potentialSqs = new List<Square>();
 
-                    foreach (int id in sqID)
+                    foreach (Square square in sq.GetAdjacentSquares())
                     {
-                        if (id > -1 && id < (Settings.GridHeight * Settings.GridWidth))
+                        // is a valid square if it has not been searched
+                        if (!sq.BeenSearched)
                         {
-                            // is a valid square if it has not been searched
-                            if (!player.Squares[id].BeenSearched)
-                            {
-                                potentialSqs.Add(player.Squares[id]);
-                            }
+                            potentialSqs.Add(sq);
                         }
                     }
 
@@ -172,10 +161,19 @@
                 }
             }
 
+            for (int i = 0; i < (Settings.GridHeight * Settings.GridWidth); i++)
+            {
+                prob.Add(i, 0);
+            }
+
             if (player.ToAttack.Any())
             {
+                foreach (Square square in player.ToAttack)
+                {
+                    prob[square.ID] = 100;
+                }
+
                 attackedSq = HighestHCS(player.ToAttack.ToList()).First();
-                prob = 100;
             }
             else
             {
@@ -201,6 +199,7 @@
                                 if (l.Contains(player.Squares[sqID]))
                                 {
                                     probability[sqID] += (double)decimal.Divide(1, arrL.Count);
+                                    prob[sqID]++;
                                 }
                             }
                         }
@@ -227,6 +226,7 @@
                                 if (l.Contains(player.Squares[sqID]))
                                 {
                                     probability[sqID]++;
+                                    prob[sqID]++;
                                 }
                             }
                         }
@@ -238,7 +238,6 @@
                 double[][] result = source.GroupBy(s => i++ / 10).Select(g => g.ToArray()).ToArray();
 
                 attackedSq = player.Squares[(int)probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
-                prob = decimal.Divide((decimal)probability[attackedSq.ID], (decimal)probability.Values.Sum()) * 100;
             }
 
             player.SearchedSquares.Add(attackedSq);
@@ -246,7 +245,20 @@
             player.ToSearch.Remove(attackedSq);
             attackedSq.BeenSearched = true;
 
-            return (attackedSq, prob);
+            int sum = prob.Values.Sum();
+            Dictionary<int, int> res = new Dictionary<int, int>();
+
+            for (int i = 0; i < (Settings.GridWidth * Settings.GridHeight); i++)
+            {
+                res.Add(i, 0);
+            }
+
+            foreach (int key in prob.Keys)
+            {
+                res[key] = prob[key];
+            }
+
+            return (attackedSq, res);
         }
 
         /// <summary>
@@ -287,18 +299,18 @@
             foreach (Ship ship in shipList)
             {
                 Ship sp = new Ship(player, ship.Length, ship.Breadth);
-                player.Ships.Add(sp);
+
                 player.OriginalShips.Add(sp);
+                player.Ships.Add(sp);
             }
 
             while (player.Ships.Count > 0)
             {
                 Console.Clear();
-                Console.WriteLine($"{player.Squares[45].ToCoor()} {player.Squares[45].GetNumberOfHitConnectedSquares()}");
-                (Square sq, decimal e) = FindBestSquare(player);
+                (Square sq, Dictionary<int, int> e) = FindBestSquare(player);
                 player.UnsearchedSquares.Remove(sq);
                 Console.WriteLine($"Square Coordinates: {sq.ToCoor()}");
-                Console.WriteLine($"Probability: {e}%");
+                Console.WriteLine($"Probability: {e.Values.Max()}%");
                 Console.WriteLine("M / H / S");
                 string ans = Console.ReadLine();
                 switch (ans)
@@ -361,7 +373,7 @@
         /// </summary>
         public static void Main()
         {
-            Simulate(100);
+            Find();
         }
 
         /// <summary>

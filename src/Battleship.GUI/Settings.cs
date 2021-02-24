@@ -15,7 +15,7 @@
         /// <summary>
         /// The Computer's grid.
         /// </summary>
-        public static Grid Computer;
+        public static Grid Computer = new Grid();
 
         /// <summary>
         /// The height of the player and computer's grids.

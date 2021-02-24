@@ -32,7 +32,24 @@
             </MenuItem>
         </Menu>
 
+        <TextBlock Name="Find_ShipStats" Height="Auto" Width="Auto" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14"/>
+
         <Image Name="Image1" Height="Auto" Width="{Binding Path=Height, RelativeSource={RelativeSource Self}}" Grid.Column="0" VerticalAlignment="Center" Margin="30,0,0,0"/>
-        <Image Name="Image2" Height="Auto" Width="{Binding Path=Height, RelativeSource={RelativeSource Self}}" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,0,30"/>
+        <Image Name="Image2" Height="Auto" Width="{Binding Path=Height, RelativeSource={RelativeSource Self}}" Grid.Column="1" VerticalAlignment="Center"/>
+        <Image Name="Image3" Height="Auto" Width="{Binding Path=Height, RelativeSource={RelativeSource Self}}" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,0,30"/>
+        <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10,0,10,0">
+            <StackPanel Name="SP_A" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10,0,10,0">
+                <Label x:Name="Find_Label" Content="Original" Height="26" HorizontalContentAlignment="Center"/>
+                <ComboBox x:Name="Find_Combo" Height="26" Margin="0,10,0,0"/>
+                <Button x:Name="Find_Button" Height="26" Content="Update" Margin="0,10,0,0" Click="Click_Find_Button"/>
+            </StackPanel>
+            <StackPanel Name="SP_B" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10,30,10,0">
+                <Label x:Name="Find_Sunk_Ship" Content="Ship ID" Height="26" HorizontalContentAlignment="Center"/>
+                <TextBox Name="Find_Sunk_ShipText" Height="26" Margin="0,10,0,0"/>
+                <Label x:Name="Find_Sunk_Label" Content="Sunk squares" Height="26" HorizontalContentAlignment="Center" Margin="0,10,0,0"/>
+                <TextBox Name="Find_Sunk_SquaresText" Height="26" Margin="0,10,0,0"/>
+                <Button x:Name="Find_Sunk_Button" Height="26" Content="Update" Margin="0,10,0,0" Click="Click_Find_Sunk_Button"/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>

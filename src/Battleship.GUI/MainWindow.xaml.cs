@@ -1,6 +1,7 @@
 ﻿namespace Battleship.GUI
 {
     using System;
+    using System.Collections.Generic;
     using System.Drawing;
     using System.IO;
     using System.Windows;
@@ -20,6 +21,16 @@
         public bool IsInPlayMode = false;
 
         /// <summary>
+        /// State options.
+        /// </summary>
+        public List<string> States = new List<string>()
+        {
+            "Miss",
+            "Hit",
+            "Sunk",
+        };
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
         /// </summary>
         public MainWindow()
@@ -28,7 +39,13 @@
             Application.Current.MainWindow.WindowState = WindowState.Maximized;
             this.UpdateSaveGame();
 
-            Settings.Player.AddShip(Settings.Player.Squares[0], new Ship(Settings.Player, 5, 1), true);
+            this.AddDefaultShips(Settings.Player);
+            this.AddDefaultShips(Settings.Computer);
+
+            this.Find_Combo.ItemsSource = this.States;
+
+            this.SP_A.Visibility = Visibility.Collapsed;
+            this.SP_B.Visibility = Visibility.Collapsed;
         }
 
         // CONTROLS
@@ -43,6 +60,15 @@
         /// <param name="e">Event.</param>
         public void Click_New(object sender, RoutedEventArgs e)
         {
+            Settings.Player = new Grid();
+            Settings.Computer = new Grid();
+
+            this.AddDefaultShips(Settings.Player);
+            this.AddDefaultShips(Settings.Computer);
+
+            this.searchedSquares.Clear();
+            // if current mode == find:
+            this.Find();
         }
 
         /// <summary>
@@ -159,14 +185,15 @@
             }
         }
 
-        public Bitmap ResizeBitmap(Bitmap bmp, int width, int height)
+        private Bitmap ResizeBitmap(Bitmap sourceBMP, int width, int height)
         {
             Bitmap result = new Bitmap(width, height);
             using (Graphics g = Graphics.FromImage(result))
             {
-                g.DrawImage(bmp, 0, 0, width, height);
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                g.DrawImage(sourceBMP, 0, 0, width, height);
             }
-
             return result;
         }
 
@@ -176,6 +203,25 @@
         public void UpdateSaveGame()
         {
             this.SaveGame.IsEnabled = this.IsInPlayMode;
+        }
+
+        public void AddDefaultShips(Grid grid)
+        {
+            Ship ship1 = new Ship(grid, 5, 1);
+            grid.OriginalShips.Add(ship1);
+            grid.Ships.Add(ship1);
+            Ship ship2 = new Ship(grid, 4, 1);
+            grid.OriginalShips.Add(ship2);
+            grid.Ships.Add(ship2);
+            Ship ship3 = new Ship(grid, 3, 1);
+            grid.OriginalShips.Add(ship3);
+            grid.Ships.Add(ship3);
+            Ship ship4 = new Ship(grid, 3, 1);
+            grid.OriginalShips.Add(ship4);
+            grid.Ships.Add(ship4);
+            Ship ship5 = new Ship(grid, 2, 1);
+            grid.OriginalShips.Add(ship5);
+            grid.Ships.Add(ship5);
         }
         #endregion
 

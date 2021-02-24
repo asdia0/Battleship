@@ -403,24 +403,11 @@
         {
             if (p2.Squares[squareID].BeenSearched && p2.Squares[squareID].HadShip == true && p2.Squares[squareID].IsSunk != true)
             {
-                List<int> sqID = new List<int>()
+                foreach (Square sq in p2.Squares[squareID].GetAdjacentSquares())
                 {
-                    squareID - 1,
-                    squareID + 1,
-                    squareID - Settings.GridWidth,
-                    squareID + Settings.GridWidth,
-                };
-
-                foreach (int id in sqID)
-                {
-                    if (id > -1 && id < (Settings.GridHeight * Settings.GridWidth))
+                    if (!sq.BeenSearched && !p1.ToSearch.Contains(sq))
                     {
-                        Square sq = p2.Squares[id];
-
-                        if (!sq.BeenSearched && !p1.ToSearch.Contains(sq))
-                        {
-                            p1.ToSearch.Add(sq);
-                        }
+                        p1.ToSearch.Add(sq);
                     }
                 }
             }
