@@ -382,7 +382,7 @@
         /// </summary>
         public static void Main()
         {
-            Find();
+            Simulate(1000);
         }
 
         /// <summary>

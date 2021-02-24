@@ -319,14 +319,41 @@
             {
                 if (sq.BeenSearched && sq.HadShip == true && sq.IsSunk != true)
                 {
-                    this.TooManyMisses(p1, sq);
+                    List<Square> potentialSqs = new List<Square>();
+
+                    foreach (Square square in sq.GetAdjacentSquares())
+                    {
+                        // is a valid square if it has not been searched
+                        if (!sq.BeenSearched)
+                        {
+                            potentialSqs.Add(sq);
+                        }
+                    }
+
+                    if (potentialSqs.Count == 1)
+                    {
+                        p1.ToAttack.Add(potentialSqs.First());
+                    }
                 }
             }
 
             // 2.
             foreach (Ship ship in p2.Ships)
             {
-                this.OnlyOneArrangement(p1, p2);
+                List<List<int>> arrL = ship.GetArrangements();
+
+                if (arrL.Count == 1)
+                {
+                    foreach (int sqID in arrL.First())
+                    {
+                        Square sq = p2.Squares[sqID];
+
+                        if (!sq.BeenSearched && !p1.ToAttack.Contains(sq))
+                        {
+                            p1.ToAttack.Add(sq);
+                        }
+                    }
+                }
             }
 
             if (p1.ToAttack.Any())
