@@ -312,6 +312,23 @@
                 Console.WriteLine($"Square Coordinates: {sq.ToCoor()}");
                 Console.WriteLine($"Probability: {e.Values.Max()}%");
                 Console.WriteLine("M / H / S");
+
+                player.ToSearch.Clear();
+                foreach (Square sq1 in player.Squares)
+                {
+                    if (!sq1.BeenSearched)
+                    {
+                        foreach (Square adjSq in sq1.GetAdjacentSquares())
+                        {
+                            if (adjSq.IsHit == true)
+                            {
+                                player.ToSearch.Add(sq1);
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 string ans = Console.ReadLine();
                 switch (ans)
                 {
@@ -319,14 +336,6 @@
                         player.Squares[sq.ID].IsMiss = true;
                         break;
                     case "H":
-                        foreach (Square sq1 in sq.GetAdjacentSquares())
-                        {
-                            if (!sq1.BeenSearched && !player.SearchedSquares.Contains(sq1))
-                            {
-                                player.ToSearch.Add(sq1);
-                            }
-                        }
-
                         player.Squares[sq.ID].IsHit = true;
                         player.Squares[sq.ID].HadShip = true;
                         break;

@@ -55,8 +55,11 @@
                     Core.Settings.GridHeight = heightN;
                     Core.Settings.GridWidth = widthN;
 
-                    Settings.Player = new Grid();
-                    Settings.Computer = new Grid();
+                    Settings.Grid = new Grid();
+                    Settings.Grid.AddDefaultShips();
+
+                    MainWindow.grid = new Grid(Settings.Grid);
+
 
                     this.Status.Content = "Successfully edited grid.";
 

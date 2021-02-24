@@ -8,6 +8,8 @@
     /// </summary>
     public class Ship
     {
+        public bool? Alignment = null;
+
         /// <summary>
         /// The ship's name.
         /// </summary>

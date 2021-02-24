@@ -57,6 +57,33 @@
             this.AddSquares();
         }
 
+        public Grid(Grid grid)
+        {
+            this.AddSquares();
+
+            foreach (Ship ship in grid.OriginalShips)
+            {
+                Square sq = this.Squares[ship.OriginalOccupiedSquares[0].ID];
+                Ship ship1 = new Ship(this, ship.Length, ship.Breadth);
+                this.AddShip(sq, ship1, (bool)ship.Alignment);
+            }
+
+            foreach (Square square in grid.Squares)
+            {
+                Square sq = this.Squares[square.ID];
+
+                sq.HadShip = square.HadShip;
+                sq.HasShip = square.HasShip;
+                sq.IsHit = square.IsHit;
+                sq.IsMiss = square.IsMiss;
+                sq.IsSunk = square.IsSunk;
+                if (square.Ship != null)
+                {
+                    sq.Ship = this.Ships[square.Ship.ID];
+                }
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Grid"/> class from a string.
         /// </summary>
@@ -154,6 +181,7 @@
 
                 this.Ships.Add(ship);
                 this.OriginalShips.Add(ship);
+                ship.Alignment = true;
                 return true;
             }
 
@@ -179,6 +207,7 @@
 
                 this.OriginalShips.Add(ship);
                 this.Ships.Add(ship);
+                ship.Alignment = false;
 
                 return true;
             }
@@ -208,5 +237,15 @@
 
             return res;
         }
+
+        public void AddDefaultShips()
+        {
+            this.AddShip(this.Squares[0], new Ship(this, 5, 1), true);
+            this.AddShip(this.Squares[10], new Ship(this, 4, 1), true);
+            this.AddShip(this.Squares[20], new Ship(this, 3, 1), true);
+            this.AddShip(this.Squares[30], new Ship(this, 3, 1), true);
+            this.AddShip(this.Squares[40], new Ship(this, 2, 1), true);
+        }
+
     }
 }

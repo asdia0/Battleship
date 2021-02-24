@@ -53,7 +53,7 @@
         /// <param name="e">Event.</param>
         public void Click_Update(object sender, RoutedEventArgs e)
         {
-            Square sq = Settings.Player.Squares[this.Square.SelectedIndex];
+            Square sq = Settings.Grid.Squares[this.Square.SelectedIndex];
 
             switch (this.State.SelectedIndex)
             {
@@ -159,7 +159,7 @@
         {
             this.Status.Content = string.Empty;
 
-            Square sq = Settings.Player.Squares[this.Square.SelectedIndex];
+            Square sq = Settings.Grid.Squares[this.Square.SelectedIndex];
 
             if (sq.BeenSearched)
             {

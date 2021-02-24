@@ -34,14 +34,14 @@
 
             this.IDSource.Add(string.Empty);
 
-            foreach (Ship sp in Settings.Player.Ships)
+            foreach (Ship sp in Settings.Grid.Ships)
             {
                 this.IDSource.Add(sp.ID);
             }
 
             this.ID.ItemsSource = this.IDSource;
 
-            this.CurrentShip = Settings.Player.Ships[0];
+            this.CurrentShip = Settings.Grid.Ships[0];
 
             this.Add.IsEnabled = false;
             this.Remove.IsEnabled = false;
@@ -96,7 +96,7 @@
             int breadthN = 0;
             int lengthN = 0;
 
-            Ship ship = new Ship(Settings.Player, lengthN, breadthN);
+            Ship ship = new Ship(Settings.Grid, lengthN, breadthN);
 
             (bool, List<Square>, int, int) res = this.AbleToProceed(ship, false);
 
@@ -106,7 +106,7 @@
 
                 if (hoz.Item1 != null)
                 {
-                    Settings.Player.AddShip(hoz.Item2, new Ship(Settings.Player, res.Item3, res.Item4), (bool)hoz.Item1);
+                    Settings.Grid.AddShip(hoz.Item2, new Ship(Settings.Grid, res.Item3, res.Item4), (bool)hoz.Item1);
                 }
 
                 this.IDSource.Add(ship.ID);
@@ -126,15 +126,15 @@
 
             if ((sqIDs.First() % Settings.GridWidth) - length == (sqIDs.Last() % Settings.GridWidth))
             {
-                return (true, Settings.Player.Squares[sqIDs.First()]);
+                return (true, Settings.Grid.Squares[sqIDs.First()]);
             }
             else if ((sqIDs.First() % Settings.GridWidth) - breadth == (sqIDs.Last() % Settings.GridWidth))
             {
-                return (false, Settings.Player.Squares[sqIDs.First()]);
+                return (false, Settings.Grid.Squares[sqIDs.First()]);
             }
             else
             {
-                return (null, Settings.Player.Squares[sqIDs.First()]);
+                return (null, Settings.Grid.Squares[sqIDs.First()]);
             }
         }
 
@@ -145,12 +145,12 @@
         /// <param name="e">Event.</param>
         private void Click_Remove(object sender, EventArgs e)
         {
-            Settings.Player.Ships.Remove(this.CurrentShip);
-            Settings.Player.OriginalShips.Remove(this.CurrentShip);
+            Settings.Grid.Ships.Remove(this.CurrentShip);
+            Settings.Grid.OriginalShips.Remove(this.CurrentShip);
 
             int id = 0;
 
-            foreach (Ship ship in Settings.Player.OriginalShips)
+            foreach (Ship ship in Settings.Grid.OriginalShips)
             {
                 ship.ID = id;
                 id++;
@@ -202,7 +202,7 @@
         /// </summary>
         private void UpdateText()
         {
-            this.CurrentShip = Settings.Player.OriginalShips[this.ID.SelectedIndex - 1];
+            this.CurrentShip = Settings.Grid.OriginalShips[this.ID.SelectedIndex - 1];
 
             this.Status.Content = string.Empty;
 
@@ -275,7 +275,7 @@
 
                 try
                 {
-                    potentialSqs.Add(Settings.Player.Squares[id]);
+                    potentialSqs.Add(Settings.Grid.Squares[id]);
                 }
                 catch
                 {
@@ -288,7 +288,7 @@
             {
                 res.Item2.Add(sq);
 
-                foreach (Ship ship1 in Settings.Player.OriginalShips)
+                foreach (Ship ship1 in Settings.Grid.OriginalShips)
                 {
                     if (ship1.OriginalOccupiedSquares.Contains(sq))
                     {
@@ -352,7 +352,7 @@
 
                 foreach (int sqID in arr)
                 {
-                    if (squares.Contains(Settings.Player.Squares[sqID]))
+                    if (squares.Contains(Settings.Grid.Squares[sqID]))
                     {
                         counter++;
                     }

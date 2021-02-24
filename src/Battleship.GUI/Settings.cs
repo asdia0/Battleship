@@ -10,12 +10,7 @@
         /// <summary>
         /// The Player's grid.
         /// </summary>
-        public static Grid Player = new Grid();
-
-        /// <summary>
-        /// The Computer's grid.
-        /// </summary>
-        public static Grid Computer = new Grid();
+        public static Grid Grid = new Grid();
 
         /// <summary>
         /// The height of the player and computer's grids.

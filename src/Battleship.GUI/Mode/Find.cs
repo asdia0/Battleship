@@ -18,11 +18,9 @@
 
         public void Click_Find_Button(object sender, RoutedEventArgs args)
         {
-            Grid player = Settings.Player;
-
-            player.ToSearch.Remove(recommendedSq);
-            player.ToAttack.Remove(recommendedSq);
-            player.UnsearchedSquares.Remove(recommendedSq);
+            grid.ToSearch.Remove(recommendedSq);
+            grid.ToAttack.Remove(recommendedSq);
+            grid.UnsearchedSquares.Remove(recommendedSq);
 
             recommendedSq.BeenSearched = true;
             searchedSquares.Add(recommendedSq);
@@ -37,14 +35,6 @@
                     break;
                 // HIT
                 case 1:
-                    foreach (Square sq1 in recommendedSq.GetAdjacentSquares())
-                    {
-                        if (!sq1.BeenSearched && !player.SearchedSquares.Contains(sq1))
-                        {
-                            player.ToSearch.Add(sq1);
-                        }
-                    }
-
                     recommendedSq.IsHit = true;
                     recommendedSq.HadShip = true;
                     this.Find();
@@ -59,7 +49,6 @@
 
         public void Click_Find_Sunk_Button(object sender, RoutedEventArgs args)
         {
-            Grid player = Settings.Player;
             string raw = this.Find_Sunk_SquaresText.Text;
             string shipIDS = this.Find_Sunk_ShipText.Text;
 
@@ -68,57 +57,69 @@
                 this.Find_Sunk_Label.Content = "Error: Ship ID should be an integer.";
             }
 
-            if (player.OriginalShips.Count - 1 < shipID)
+            if (grid.OriginalShips.Count - 1 < shipID)
             {
                 this.Find_Sunk_Label.Content = "Error: No ship was found.";
             }
 
             string[] xy = raw.Replace(")", string.Empty).Split(",(");
-            foreach (Ship ship in player.Ships.ToList())
+            Ship ship = grid.Ships[shipID];
+
+            ship.OriginalOccupiedSquares.Clear();
+
+            foreach (string xys in xy)
             {
-                if (ship.ID == shipID)
-                {
-                    foreach (string xys in xy)
-                    {
-                        string s = xys.Replace("(", string.Empty);
-                        int x = int.Parse(s.Split(",")[0]);
-                        int y = int.Parse(s.Split(",")[1]);
+                string s = xys.Replace("(", string.Empty);
+                int x = int.Parse(s.Split(",")[0]);
+                int y = int.Parse(s.Split(",")[1]);
 
-                        int sqID1 = ((y - 1) * Settings.GridWidth) + x - 1;
+                int sqID1 = ((y - 1) * Settings.GridWidth) + x - 1;
 
-                        ship.OriginalOccupiedSquares.Add(player.Squares[sqID1]);
-                    }
-
-                    foreach (Square square in ship.OriginalOccupiedSquares)
-                    {
-                        square.IsSunk = true;
-                        square.HadShip = true;
-                        square.IsHit = false;
-                    }
-
-                    ship.IsSunk = true;
-                    player.Ships.Remove(ship);
-                }
+                ship.OriginalOccupiedSquares.Add(grid.Squares[sqID1]);
             }
+
+            foreach (Square square in ship.OriginalOccupiedSquares)
+            {
+                square.IsSunk = true;
+                square.HadShip = true;
+                square.IsHit = false;
+            }
+
+            ship.IsSunk = true;
+            grid.Ships.Remove(ship);
 
             this.Find();
         }
 
         private void Find()
         {
+            grid.ToSearch.Clear();
+            foreach (Square sq1 in grid.Squares)
+            {
+                if (!sq1.BeenSearched)
+                {
+                    foreach (Square adjSq in sq1.GetAdjacentSquares())
+                    {
+                        if (adjSq.IsHit == true)
+                        {
+                            grid.ToSearch.Add(sq1);
+                            break;
+                        }
+                    }
+                }
+            }
+
             this.SP_A.Visibility = Visibility.Visible;
             this.SP_B.Visibility = Visibility.Collapsed;
 
-            Grid player = Settings.Player;
-
             // Find Best Square
-            (Square sq, Dictionary<int, int> prob) = Program.FindBestSquare(player);
+            (Square sq, Dictionary<int, int> prob) = Program.FindBestSquare(grid);
 
             this.recommendedSq = sq;
 
             // Update Screen
             string text = "Dimensions || ID || Is Sunk";
-            foreach (Ship ship in player.OriginalShips)
+            foreach (Ship ship in grid.OriginalShips)
             {
                 text += $"\n{ship.Length}x{ship.Breadth} || {ship.ID} || {ship.IsSunk}";
             }
