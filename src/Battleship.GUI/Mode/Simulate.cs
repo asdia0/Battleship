@@ -29,8 +29,6 @@
 
             for (int i = 0; i < numberOfGames; i++)
             {
-                this.Sim_Bar.Value = i;
-
                 Stopwatch elapsedTime = new Stopwatch();
                 elapsedTime.Start();
 
