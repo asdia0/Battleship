@@ -27,10 +27,10 @@
         /// <param name="tuple">The coordinates of the square moved.</param>
         public Move(string player, (int, int) tuple)
         {
-            Player = player;
+            this.Player = player;
 
-            X = tuple.Item1;
-            Y = tuple.Item2;
+            this.X = tuple.Item1;
+            this.Y = tuple.Item2;
         }
     }
 }

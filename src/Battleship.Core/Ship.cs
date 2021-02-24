@@ -58,10 +58,10 @@
         /// <param name="breadth">The ship's breadth.</param>
         public Ship(Grid grid, int length, int breadth)
         {
-            Length = length;
-            Grid = grid;
-            ID = grid.OriginalShips.Count;
-            Breadth = breadth;
+            this.Length = length;
+            this.Grid = grid;
+            this.ID = grid.OriginalShips.Count;
+            this.Breadth = breadth;
         }
 
         /// <summary>
@@ -72,9 +72,9 @@
         /// <param name="breadth">The ship's breadth.</param>
         public Ship(int id, int length, int breadth)
         {
-            Length = length;
-            ID = id;
-            Breadth = breadth;
+            this.Length = length;
+            this.ID = id;
+            this.Breadth = breadth;
         }
 
         /// <summary>
@@ -92,13 +92,13 @@
             int availCols = Settings.GridHeight - (int)Math.Floor((double)(sq.ID / Settings.GridWidth));
 
             // horizontal
-            if (alignment && Length <= availRows)
+            if (alignment && this.Length <= availRows)
             {
                 int failures = 0;
 
-                for (int j = 0; j < Length; j++)
+                for (int j = 0; j < this.Length; j++)
                 {
-                    Square square = Grid.Squares[j + sq.ID];
+                    Square square = this.Grid.Squares[j + sq.ID];
                     if ((square.BeenSearched && square.HadShip == true) || square.IsSunk == true)
                     {
                         failures++;
@@ -107,7 +107,7 @@
 
                 if (failures == 0)
                 {
-                    for (int j = 0; j < Length; j++)
+                    for (int j = 0; j < this.Length; j++)
                     {
                         if (res.ContainsKey(j + sq.ID))
                         {
@@ -118,13 +118,13 @@
             }
 
             // vertical
-            if (!alignment && Length <= availCols)
+            if (!alignment && this.Length <= availCols)
             {
                 int failures = 0;
 
-                for (int j = 0; j < Length; j++)
+                for (int j = 0; j < this.Length; j++)
                 {
-                    Square square = Grid.Squares[(j * Settings.GridWidth) + sq.ID];
+                    Square square = this.Grid.Squares[(j * Settings.GridWidth) + sq.ID];
                     if ((square.BeenSearched && square.HadShip == true) || square.IsSunk == true)
                     {
                         failures++;
@@ -133,7 +133,7 @@
 
                 if (failures == 0)
                 {
-                    for (int j = 0; j < Length; j++)
+                    for (int j = 0; j < this.Length; j++)
                     {
                         if (res.ContainsKey((j * Settings.GridWidth) + sq.ID))
                         {
@@ -158,13 +158,13 @@
             int availCols = Settings.GridHeight - (int)Math.Floor((double)(sq.ID / Settings.GridWidth));
 
             // horizontal
-            if (alignment && Length <= availRows)
+            if (alignment && this.Length <= availRows)
             {
                 int hits = 0;
 
-                for (int j = 0; j < Length; j++)
+                for (int j = 0; j < this.Length; j++)
                 {
-                    Square square = Grid.Squares[j + sq.ID];
+                    Square square = this.Grid.Squares[j + sq.ID];
 
                     // is an obstruction if it is a miss or has been sunk
                     if (square.IsMiss == true || square.IsSunk == true)
@@ -178,7 +178,7 @@
                     }
                 }
 
-                if (hits == Length)
+                if (hits == this.Length)
                 {
                     return false;
                 }
@@ -187,13 +187,13 @@
             }
 
             // vertical
-            if (!alignment && Length <= availCols)
+            if (!alignment && this.Length <= availCols)
             {
                 int hits = 0;
 
-                for (int j = 0; j < Length; j++)
+                for (int j = 0; j < this.Length; j++)
                 {
-                    Square square = Grid.Squares[(j * Settings.GridWidth) + sq.ID];
+                    Square square = this.Grid.Squares[(j * Settings.GridWidth) + sq.ID];
 
                     // is an obstruction if it is a miss or has been sunk
                     if (square.IsMiss == true || square.IsSunk == true)
@@ -207,7 +207,7 @@
                     }
                 }
 
-                if (hits == Length)
+                if (hits == this.Length)
                 {
                     return false;
                 }
@@ -226,13 +226,13 @@
         {
             List<List<int>> res = new List<List<int>>();
 
-            foreach (Square sq in Grid.Squares)
+            foreach (Square sq in this.Grid.Squares)
             {
-                if (CanFit(sq, true))
+                if (this.CanFit(sq, true))
                 {
                     List<int> arr = new List<int>();
 
-                    for (int i = 0; i < Length; i++)
+                    for (int i = 0; i < this.Length; i++)
                     {
                         arr.Add(sq.ID + i);
                     }
@@ -240,11 +240,11 @@
                     res.Add(arr);
                 }
 
-                if (CanFit(sq, false))
+                if (this.CanFit(sq, false))
                 {
                     List<int> arr = new List<int>();
 
-                    for (int i = 0; i < Length; i++)
+                    for (int i = 0; i < this.Length; i++)
                     {
                         arr.Add(sq.ID + (i * Settings.GridWidth));
                     }

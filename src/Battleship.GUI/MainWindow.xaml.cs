@@ -1,13 +1,14 @@
 ﻿namespace Battleship.GUI
 {
-    using Battleship.Core;
-    using Microsoft.Win32;
     using System;
     using System.Collections.Generic;
     using System.Drawing;
     using System.IO;
     using System.Windows;
     using System.Windows.Media.Imaging;
+
+    using Battleship.Core;
+    using Microsoft.Win32;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml.
@@ -36,17 +37,17 @@
         /// </summary>
         public MainWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             Application.Current.MainWindow.WindowState = WindowState.Maximized;
-            UpdateSaveGame();
+            this.UpdateSaveGame();
 
             Settings.Grid.AddDefaultShips();
             grid = new Grid(Settings.Grid);
 
-            Find_Combo.ItemsSource = States;
+            this.Find_Combo.ItemsSource = this.States;
 
-            SP_A.Visibility = Visibility.Collapsed;
-            SP_B.Visibility = Visibility.Collapsed;
+            this.SP_A.Visibility = Visibility.Collapsed;
+            this.SP_B.Visibility = Visibility.Collapsed;
         }
 
         // CONTROLS
@@ -63,9 +64,9 @@
         {
             grid = new Grid(Settings.Grid);
 
-            searchedSquares.Clear();
+            this.searchedSquares.Clear();
             // if current mode == find:
-            Find();
+            this.Find();
         }
 
         /// <summary>
@@ -135,9 +136,9 @@
         /// <param name="e">Event.</param>
         public void Click_Play(object sender, RoutedEventArgs e)
         {
-            IsInPlayMode = true;
-            GameString = string.Empty;
-            UpdateSaveGame();
+            this.IsInPlayMode = true;
+            this.GameString = string.Empty;
+            this.UpdateSaveGame();
         }
 
         /// <summary>
@@ -147,8 +148,8 @@
         /// <param name="e">Event.</param>
         public void Click_Simulate(object sender, RoutedEventArgs e)
         {
-            IsInPlayMode = false;
-            UpdateSaveGame();
+            this.IsInPlayMode = false;
+            this.UpdateSaveGame();
         }
 
         /// <summary>
@@ -158,9 +159,9 @@
         /// <param name="e">Event.</param>
         public void Click_Find(object sender, RoutedEventArgs e)
         {
-            IsInPlayMode = false;
-            UpdateSaveGame();
-            Find();
+            this.IsInPlayMode = false;
+            this.UpdateSaveGame();
+            this.Find();
         }
         #endregion
 
@@ -199,7 +200,7 @@
         /// </summary>
         public void UpdateSaveGame()
         {
-            SaveGame.IsEnabled = IsInPlayMode;
+            this.SaveGame.IsEnabled = this.IsInPlayMode;
         }
         #endregion
 

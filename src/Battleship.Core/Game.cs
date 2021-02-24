@@ -41,8 +41,8 @@
         /// </summary>
         public Game()
         {
-            player1 = new Grid();
-            player2 = new Grid();
+            this.player1 = new Grid();
+            this.player2 = new Grid();
         }
 
         /// <summary>
@@ -50,11 +50,11 @@
         /// </summary>
         public void CreateGame()
         {
-            StartGame();
+            this.StartGame();
 
-            while (player1.Ships.Count > 0 && player2.Ships.Count > 0)
+            while (this.player1.Ships.Count > 0 && this.player2.Ships.Count > 0)
             {
-                ProbabilityDensity();
+                this.ProbabilityDensity();
 
                 //if (this.turn)
                 //{
@@ -66,7 +66,7 @@
                 //}
             }
 
-            EndGame();
+            this.EndGame();
         }
 
         /// <summary>
@@ -75,9 +75,9 @@
         /// <returns>The stringified version of the game.</returns>
         public override string ToString()
         {
-            string res = $"[Player 1 \"{player1}\"]\n[Player 2 \"{player2}\"]\n\n";
+            string res = $"[Player 1 \"{this.player1}\"]\n[Player 2 \"{this.player2}\"]\n\n";
 
-            foreach (Move move in MoveList)
+            foreach (Move move in this.MoveList)
             {
                 res += $"{move.Player}: ({move.X},{move.Y})\n";
             }
@@ -112,7 +112,7 @@
                         horizontal = true;
                     }
 
-                    if (player1.AddShip(player1.UnoccupiedSquares[rnd.Next(player1.UnoccupiedSquares.Count)], new Ship(player1, length, 1), horizontal))
+                    if (this.player1.AddShip(this.player1.UnoccupiedSquares[rnd.Next(this.player1.UnoccupiedSquares.Count)], new Ship(this.player1, length, 1), horizontal))
                     {
                         break;
                     }
@@ -127,7 +127,7 @@
                         horizontal = true;
                     }
 
-                    if (player2.AddShip(player2.UnoccupiedSquares[rnd.Next(player2.UnoccupiedSquares.Count)], new Ship(player2, length, 1), horizontal))
+                    if (this.player2.AddShip(this.player2.UnoccupiedSquares[rnd.Next(this.player2.UnoccupiedSquares.Count)], new Ship(this.player2, length, 1), horizontal))
                     {
                         break;
                     }
@@ -140,13 +140,13 @@
         /// </summary>
         private void EndGame()
         {
-            if (player2.Ships.Count == 0)
+            if (this.player2.Ships.Count == 0)
             {
-                Winner = true;
+                this.Winner = true;
             }
-            else if (player1.Ships.Count == 0)
+            else if (this.player1.Ships.Count == 0)
             {
-                Winner = false;
+                this.Winner = false;
             }
         }
 
@@ -159,30 +159,30 @@
             Grid p1;
             Grid p2;
 
-            Move++;
+            this.Move++;
 
-            if (turn)
+            if (this.turn)
             {
                 playername = "Player 1";
-                p1 = player1;
-                p2 = player2;
+                p1 = this.player1;
+                p2 = this.player2;
             }
             else
             {
                 playername = "Player 2";
-                p1 = player2;
-                p2 = player1;
+                p1 = this.player2;
+                p2 = this.player1;
             }
 
             Square attackedSq = p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
 
-            Search(p1, p2, attackedSq);
+            this.Search(p1, p2, attackedSq);
 
-            MoveList.Add(new Move(playername, attackedSq.ToCoor()));
+            this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
 
             if (attackedSq.HadShip == false)
             {
-                turn ^= true;
+                this.turn ^= true;
             }
         }
 
@@ -195,19 +195,19 @@
             Grid p1;
             Grid p2;
 
-            Move++;
+            this.Move++;
 
-            if (turn)
+            if (this.turn)
             {
                 playername = "Player 1";
-                p1 = player1;
-                p2 = player2;
+                p1 = this.player1;
+                p2 = this.player2;
             }
             else
             {
                 playername = "Player 2";
-                p1 = player2;
-                p2 = player1;
+                p1 = this.player2;
+                p2 = this.player1;
             }
 
             // HUNT
@@ -215,13 +215,13 @@
             {
                 Square attackedSq = p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
 
-                Search(p1, p2, attackedSq);
+                this.Search(p1, p2, attackedSq);
 
-                MoveList.Add(new Move(playername, attackedSq.ToCoor()));
+                this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
 
                 if (attackedSq.HadShip == false)
                 {
-                    turn ^= true;
+                    this.turn ^= true;
                 }
             }
 
@@ -230,13 +230,13 @@
             {
                 Square attackedSq = p1.ToSearch.First();
 
-                Search(p1, p2, attackedSq);
+                this.Search(p1, p2, attackedSq);
 
-                MoveList.Add(new Move(playername, attackedSq.ToCoor()));
+                this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
 
                 if (attackedSq.HadShip == false)
                 {
-                    turn ^= true;
+                    this.turn ^= true;
                 }
             }
         }
@@ -251,19 +251,19 @@
             Grid p1;
             Grid p2;
 
-            if (turn)
+            if (this.turn)
             {
-                p1 = player1;
-                p2 = player2;
+                p1 = this.player1;
+                p2 = this.player2;
                 playername = "Player 1";
 
-                Move++;
+                this.Move++;
             }
             else
             {
                 playername = "Player 2";
-                p1 = player2;
-                p2 = player1;
+                p1 = this.player2;
+                p2 = this.player1;
             }
 
             /*
@@ -280,14 +280,14 @@
             {
                 if (sq.BeenSearched && sq.HadShip == true && sq.IsSunk != true)
                 {
-                    TooManyMisses(p1, sq);
+                    this.TooManyMisses(p1, sq);
                 }
             }
 
             // 2.
             foreach (Ship ship in p2.Ships)
             {
-                OnlyOneArrangement(p1, p2);
+                this.OnlyOneArrangement(p1, p2);
             }
 
             if (p1.ToAttack.Any())
@@ -354,16 +354,16 @@
                 int i = 0;
                 double[][] result = source.GroupBy(s => i++ / 10).Select(g => g.ToArray()).ToArray();
 
-                attackedSq = p2.Squares[probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
+                attackedSq = p2.Squares[(int)probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
             }
 
-            Search(p1, p2, attackedSq);
+            this.Search(p1, p2, attackedSq);
 
-            MoveList.Add(new Move(playername, attackedSq.ToCoor()));
+            this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
 
             if (attackedSq.HadShip != true)
             {
-                turn ^= true;
+                this.turn ^= true;
             }
         }
 
@@ -390,7 +390,7 @@
                 text += $"{sq.ID} ";
             }
 
-            return $"{playerName} Move {Move}: {text}";
+            return $"{playerName} Move {this.Move}: {text}";
         }
 
         /// <summary>
@@ -433,7 +433,7 @@
 
             if (sq.HasShip == true)
             {
-                AddTargets(p1, p2, sq.ID);
+                this.AddTargets(p1, p2, sq.ID);
 
                 sq.HasShip = false;
                 sq.IsHit = true;
