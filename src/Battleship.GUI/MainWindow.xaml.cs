@@ -21,9 +21,12 @@
         public static Grid Grid;
 
         /// <summary>
-        /// Determines whether the user is in play mode.
+        /// The mode the user is currently in. 
+        /// (  True: Play
+        ///   False: Simulate
+        ///    Null: Find)
         /// </summary>
-        public bool IsInPlayMode = false;
+        public bool? CurrentMode = null;
 
         /// <summary>
         /// State options.
@@ -58,21 +61,7 @@
             Settings.Grid.AddDefaultShips();
             Grid = new Grid(Settings.Grid);
 
-            // SIMULATE
-            this.Sim_Games.Foreground = System.Windows.Media.Brushes.Gray;
-            this.Sim_Games.Text = "Number of games to simulate";
-
-            this.Sim_Games.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.tb_GotKeyboardFocus);
-            this.Sim_Games.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.tb_LostKeyboardFocus);
-
-            this.Sim_Algo1.ItemsSource = this.Algorithms;
-            this.Sim_Algo2.ItemsSource = this.Algorithms;
-
-            // FIND
-            this.Find_Combo.ItemsSource = this.States;
-
-            this.SP_A.Visibility = Visibility.Collapsed;
-            this.SP_B.Visibility = Visibility.Collapsed;
+            this.ResetWindow();
         }
 
         // CONTROLS
@@ -91,8 +80,24 @@
 
             this.SearchedSquares.Clear();
 
-            // if current mode == find:
-            this.Find();
+            this.ResetWindow();
+
+            if (CurrentMode == true)
+            {
+                this.GameString = string.Empty;
+                this.UpdateSaveGame();
+            }
+            else if (CurrentMode == false)
+            {
+                this.UpdateSaveGame();
+                this.Sim_SP.Visibility = Visibility.Visible;
+
+            }
+            else
+            {
+                this.UpdateSaveGame();
+                this.Find();
+            }
         }
 
         /// <summary>
@@ -162,8 +167,13 @@
         /// <param name="e">Event.</param>
         public void Click_Play(object sender, RoutedEventArgs e)
         {
-            this.IsInPlayMode = true;
+            this.Title = "Battleship: Play";
+
+            this.CurrentMode = true;
             this.GameString = string.Empty;
+
+            this.ResetWindow();
+
             this.UpdateSaveGame();
         }
 
@@ -174,8 +184,13 @@
         /// <param name="e">Event.</param>
         public void Click_Simulate(object sender, RoutedEventArgs e)
         {
-            this.IsInPlayMode = false;
+            this.Title = "Battleship: Simulate";
+
+            this.CurrentMode = false;
             this.UpdateSaveGame();
+            this.ResetWindow();
+
+            this.Sim_SP.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -185,8 +200,13 @@
         /// <param name="e">Event.</param>
         public void Click_Find(object sender, RoutedEventArgs e)
         {
-            this.IsInPlayMode = false;
+            this.Title = "Battleship: Find";
+
+            this.CurrentMode = null;
             this.UpdateSaveGame();
+
+            this.ResetWindow();
+
             this.Find();
         }
         #endregion
@@ -199,7 +219,14 @@
         /// </summary>
         public void UpdateSaveGame()
         {
-            this.SaveGame.IsEnabled = this.IsInPlayMode;
+            if (this.CurrentMode == true)
+            {
+                this.SaveGame.IsEnabled = true;
+            }
+            else
+            {
+                this.SaveGame.IsEnabled = false;
+            }
         }
 
         /// <summary>
@@ -252,11 +279,24 @@
             //Make sure sender is the correct Control.
             if (sender is System.Windows.Controls.TextBox)
             {
+                System.Windows.Controls.TextBox tb = (System.Windows.Controls.TextBox)sender;
                 //If nothing was entered, reset default text.
                 if (((System.Windows.Controls.TextBox)sender).Text.Trim().Equals(string.Empty))
                 {
-                    ((System.Windows.Controls.TextBox)sender).Foreground = System.Windows.Media.Brushes.Gray;
-                    ((System.Windows.Controls.TextBox)sender).Text = "Number of games to simulate";
+                    tb.Foreground = System.Windows.Media.Brushes.Gray;
+                    if (tb == this.Sim_Games)
+                    {
+                        tb.Text = "Number of games to simulate";
+                    }
+                    if (tb == this.Find_Sunk_ShipText)
+                    {
+                        tb.Text = "Ship ID";
+
+                    }
+                    if (tb == this.Find_Sunk_SquaresText)
+                    {
+                        tb.Text = "Sunk squares";
+                    }
                 }
             }
         }
@@ -272,6 +312,30 @@
                     ((System.Windows.Controls.TextBox)sender).Foreground = System.Windows.Media.Brushes.Black;
                 }
             }
+        }
+
+        private void ResetWindow()
+        {
+            // SIMULATE
+            this.Sim_Games.Foreground = System.Windows.Media.Brushes.Gray;
+            this.Sim_Games.Text = "Number of games to simulate";
+
+            this.Sim_Games.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.tb_GotKeyboardFocus);
+            this.Sim_Games.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.tb_LostKeyboardFocus);
+
+            this.Sim_Algo1.ItemsSource = this.Algorithms;
+            this.Sim_Algo2.ItemsSource = this.Algorithms;
+
+            this.Sim_SP.Visibility = Visibility.Collapsed;
+
+            // FIND
+            this.Find_Combo.ItemsSource = this.States;
+
+            this.SP_A.Visibility = Visibility.Collapsed;
+            this.SP_B.Visibility = Visibility.Collapsed;
+
+            this.Image2.Visibility = Visibility.Collapsed;
+            this.Find_ShipStats.Visibility = Visibility.Collapsed;
         }
 
         #endregion

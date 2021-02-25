@@ -26,8 +26,8 @@
                 <MenuItem Header="Grid editor" Click="Click_GridEditor"/>
             </MenuItem>
             <MenuItem Header="Mode">
-                <MenuItem Header="Play against computer" Click="Click_Play"/>
-                <MenuItem Header="Find best move" Click="Click_Find"/>
+                <MenuItem Header="Find" Click="Click_Find"/>
+                <MenuItem Header="Play" Click="Click_Play"/>
                 <MenuItem Header="Simulate" Click="Click_Simulate"/>
             </MenuItem>
         </Menu>
@@ -40,15 +40,14 @@
         <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10,0,10,0">
             <StackPanel Name="SP_A" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10,0,10,0">
                 <Label x:Name="Find_Label" Content="" Height="26" HorizontalContentAlignment="Center"/>
-                <ComboBox x:Name="Find_Combo" Height="26" Margin="0,10,0,0"/>
-                <Button x:Name="Find_Button" Height="26" Content="Update" Margin="0,10,0,0" Click="Click_Find_Button"/>
+                <ComboBox x:Name="Find_Combo"  Height="26" Margin="0,10,0,0" Text="Square state" IsEditable="True" IsReadOnly="True" Focusable="False"/>
+                <Button x:Name="Find_Button" Height="26" Content="Update" Margin="0,10,0,0" Click="Click_Update_Button"/>
 
                 <StackPanel Name="SP_B" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="0,30,0,0">
-                    <Label x:Name="Find_Sunk_Ship" Content="Ship ID" Height="26" HorizontalContentAlignment="Center"/>
                     <TextBox Name="Find_Sunk_ShipText" Height="26" Margin="0,10,0,0"/>
-                    <Label x:Name="Find_Sunk_Label" Content="Sunk squares" Height="26" HorizontalContentAlignment="Center" Margin="0,10,0,0"/>
                     <TextBox Name="Find_Sunk_SquaresText" Height="26" Margin="0,10,0,0"/>
                     <Button x:Name="Find_Sunk_Button" Height="26" Content="Update" Margin="0,10,0,0" Click="Click_Find_Sunk_Button"/>
+                    <Label x:Name="Find_Sunk_Label" Height="26" Content="Update" Margin="0,10,0,0"/>
                 </StackPanel>
                 <Button x:Name="Find_Undo" Height="26" Content="Undo" Click="Click_Find_Undo" Margin="0,30,0,0"/>
             </StackPanel>

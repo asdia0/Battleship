@@ -40,7 +40,7 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_Find_Button(object sender, RoutedEventArgs e)
+        public void Click_Update_Button(object sender, RoutedEventArgs e)
         {
             this.MoveCount++;
 
@@ -58,6 +58,8 @@
             this.RecommendedSq.BeenSearched = true;
             this.SearchedSquares.Add(this.RecommendedSq);
 
+            this.Find_Sunk_Label.Content = this.Find_Combo.SelectedIndex.ToString();
+
             switch (this.Find_Combo.SelectedIndex)
             {
                 // MISS
@@ -66,7 +68,6 @@
                     this.RecommendedSq.IsMiss = true;
                     this.Find();
                     break;
-
                 // HIT
                 case 1:
                     this.RecommendedSq.IsHit = true;
@@ -176,6 +177,8 @@
                 }
             }
 
+            this.Find_ShipStats.Visibility = Visibility.Visible;
+            this.Image2.Visibility = Visibility.Visible;
             this.SP_A.Visibility = Visibility.Visible;
             this.SP_B.Visibility = Visibility.Collapsed;
 
