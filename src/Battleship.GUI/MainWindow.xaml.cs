@@ -323,6 +323,8 @@
             this.Sim_Games.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.tb_GotKeyboardFocus);
             this.Sim_Games.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.tb_LostKeyboardFocus);
 
+            this.Sim_Stats.Visibility = Visibility.Collapsed;
+
             this.Sim_Algo1.ItemsSource = this.Algorithms;
             this.Sim_Algo2.ItemsSource = this.Algorithms;
 
