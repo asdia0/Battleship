@@ -42,11 +42,11 @@
                 sumMoves += game.Move;
                 if (game.Winner == true)
                 {
-                    player1++;
+                    player2++;
                 }
                 else
                 {
-                    player2++;
+                    player1++;
                 }
 
                 totalTime += decimal.Divide(elapsedTime.ElapsedMilliseconds, 1000);

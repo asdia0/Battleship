@@ -49,12 +49,12 @@
                 if (game.Winner == true)
                 {
                     winner = "Player 1";
-                    player1++;
+                    player2++;
                 }
                 else
                 {
                     winner = "Player 2";
-                    player2++;
+                    player1++;
                 }
 
                 fileContent += $"{Settings.GridHeight},{Settings.GridWidth},Random,{winner},{game.Move}\n";
