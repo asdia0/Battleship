@@ -17,7 +17,7 @@
         /// <summary>
         /// The winner of the game.
         /// </summary>
-        public bool Winner;
+        public bool? Winner = null;
 
         /// <summary>
         /// Number of moves.
@@ -54,7 +54,7 @@
 
             while (this.player1.Ships.Count > 0 && this.player2.Ships.Count > 0)
             {
-                this.ProbabilityDensity();
+                this.Random();
             }
 
             this.EndGame();
@@ -62,13 +62,6 @@
 
         public void CreateGame(int algo1, int algo2)
         {
-            List<string> Algorithms = new List<string>()
-            {
-                "Random",
-                "Hunt Target",
-                "Probability Density",
-            };
-
             this.StartGame();
 
             while (this.player1.Ships.Count > 0 && this.player2.Ships.Count > 0)
@@ -179,11 +172,11 @@
         /// </summary>
         private void EndGame()
         {
-            if (this.player2.Ships.Count == 0)
+            if (this.player1.Ships.Any())
             {
                 this.Winner = true;
             }
-            else if (this.player1.Ships.Count == 0)
+            if (this.player2.Ships.Any())
             {
                 this.Winner = false;
             }
@@ -219,7 +212,7 @@
 
             this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
 
-            if (attackedSq.HadShip == false)
+            if (attackedSq.HadShip != true)
             {
                 this.turn ^= true;
             }
@@ -273,7 +266,7 @@
 
                 this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
 
-                if (attackedSq.HadShip == false)
+                if (attackedSq.HadShip != true)
                 {
                     this.turn ^= true;
                 }

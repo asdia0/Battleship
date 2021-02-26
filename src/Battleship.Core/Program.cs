@@ -39,7 +39,7 @@
                 elapsedTime.Start();
 
                 Game game = new Game();
-                game.CreateGame();
+                game.CreateGame(0, 2);
 
                 elapsedTime.Stop();
 
@@ -49,12 +49,12 @@
                 if (game.Winner == true)
                 {
                     winner = "Player 1";
-                    player2++;
+                    player1++;
                 }
                 else
                 {
                     winner = "Player 2";
-                    player1++;
+                    player2++;
                 }
 
                 fileContent += $"{Settings.GridHeight},{Settings.GridWidth},Random,{winner},{game.Move}\n";
@@ -382,7 +382,7 @@
         /// </summary>
         public static void Main()
         {
-            Simulate(1000);
+            Simulate(100);
         }
 
         /// <summary>

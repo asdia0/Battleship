@@ -40,13 +40,14 @@
                 gameMoves.Add(game.Move);
 
                 sumMoves += game.Move;
+
                 if (game.Winner == true)
                 {
-                    player2++;
+                    player1++;
                 }
                 else
                 {
-                    player1++;
+                    player2++;
                 }
 
                 totalTime += decimal.Divide(elapsedTime.ElapsedMilliseconds, 1000);
@@ -67,7 +68,7 @@
             string numS = this.Sim_Games.Text;
 
             int algo1 = this.Sim_Algo1.SelectedIndex;
-            int algo2= this.Sim_Algo2.SelectedIndex;
+            int algo2 = this.Sim_Algo2.SelectedIndex;
 
             if (!int.TryParse(numS, out int num))
             {
