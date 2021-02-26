@@ -191,8 +191,6 @@
             Grid p1;
             Grid p2;
 
-            this.Move++;
-
             if (this.turn)
             {
                 playername = "Player 1";
@@ -214,6 +212,11 @@
 
             if (attackedSq.HadShip != true)
             {
+                if (this.turn)
+                {
+                    this.Move++;
+                }
+
                 this.turn ^= true;
             }
         }
@@ -226,8 +229,6 @@
             string playername;
             Grid p1;
             Grid p2;
-
-            this.Move++;
 
             if (this.turn)
             {
@@ -268,6 +269,11 @@
 
                 if (attackedSq.HadShip != true)
                 {
+                    if (this.turn)
+                    {
+                        this.Move++;
+                    }
+
                     this.turn ^= true;
                 }
             }
@@ -288,8 +294,6 @@
                 p1 = this.player1;
                 p2 = this.player2;
                 playername = "Player 1";
-
-                this.Move++;
             }
             else
             {
@@ -422,6 +426,11 @@
 
             if (attackedSq.HadShip != true)
             {
+                if (this.turn)
+                {
+                    this.Move++;
+                }
+
                 this.turn ^= true;
             }
         }

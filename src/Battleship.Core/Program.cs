@@ -39,7 +39,7 @@
                 elapsedTime.Start();
 
                 Game game = new Game();
-                game.CreateGame(0, 2);
+                game.CreateGame();
 
                 elapsedTime.Stop();
 
