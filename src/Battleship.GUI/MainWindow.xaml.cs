@@ -320,8 +320,13 @@
             this.Sim_Games.Foreground = System.Windows.Media.Brushes.Gray;
             this.Sim_Games.Text = "Number of games to simulate";
 
+            this.Sim_Algo1.SelectedIndex = 0;
+            this.Sim_Algo2.SelectedIndex = 0;
+
             this.Sim_Games.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.tb_GotKeyboardFocus);
             this.Sim_Games.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.tb_LostKeyboardFocus);
+
+            this.Sim_Status.Content = string.Empty;
 
             this.Sim_Stats.Visibility = Visibility.Collapsed;
 
