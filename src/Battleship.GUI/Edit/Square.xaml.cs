@@ -14,12 +14,12 @@
         /// <summary>
         /// Square options.
         /// </summary>
-        public ObservableCollection<int> SqSource = new ObservableCollection<int>();
+        public ObservableCollection<int> SquareIDSource = new ObservableCollection<int>();
 
         /// <summary>
         /// State options.
         /// </summary>
-        public List<string> States = new List<string>()
+        public List<string> SquareStates = new List<string>()
         {
             "Unsearched",
             "Miss",
@@ -34,16 +34,16 @@
         {
             this.InitializeComponent();
 
-            this.Square.ItemsSource = this.SqSource;
-            this.State.ItemsSource = this.States;
-            this.Square.SelectedIndex = 0;
+            this.SquareID.ItemsSource = this.SquareIDSource;
+            this.SquareState.ItemsSource = this.SquareStates;
+            this.SquareID.SelectedIndex = 0;
 
             for (int i = 0; i < (Settings.GridHeight * Settings.GridWidth); i++)
             {
-                this.SqSource.Add(i);
+                this.SquareIDSource.Add(i);
             }
 
-            this.UpdateText();
+            this.Update();
         }
 
         /// <summary>
@@ -51,11 +51,11 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_Update(object sender, RoutedEventArgs e)
+        private void Update_OnClick(object sender, RoutedEventArgs e)
         {
-            Square sq = Settings.Grid.Squares[this.Square.SelectedIndex];
+            Square sq = Settings.Grid.Squares[this.SquareID.SelectedIndex];
 
-            switch (this.State.SelectedIndex)
+            switch (this.SquareState.SelectedIndex)
             {
                 case 0:
                     if (sq.Ship != null && !sq.Ship.IsSunk)
@@ -68,7 +68,7 @@
                         sq.IsMiss = false;
                         sq.IsHit = false;
 
-                        this.Status.Content = $"Successfully edited Square {this.Square.SelectedIndex}.";
+                        this.Status.Content = $"Successfully edited Square {this.SquareID.SelectedIndex}.";
                     }
                     else
                     {
@@ -90,7 +90,7 @@
                         sq.IsMiss = true;
                         sq.IsHit = false;
 
-                        this.Status.Content = $"Successfully edited Square {this.Square.SelectedIndex}.";
+                        this.Status.Content = $"Successfully edited Square {this.SquareID.SelectedIndex}.";
                     }
 
                     break;
@@ -115,7 +115,7 @@
                             sq.IsMiss = false;
                             sq.Ship.CurrentOccupiedSquares.Remove(sq);
 
-                            this.Status.Content = $"Successfully edited Square {this.Square.SelectedIndex}.";
+                            this.Status.Content = $"Successfully edited Square {this.SquareID.SelectedIndex}.";
                         }
                     }
                     else
@@ -140,7 +140,7 @@
                             sq.IsHit = false;
                             sq.IsMiss = false;
 
-                            this.Status.Content = $"Successfully edited Square {this.Square.SelectedIndex}.";
+                            this.Status.Content = $"Successfully edited Square {this.SquareID.SelectedIndex}.";
                         }
                     }
                     else
@@ -152,51 +152,51 @@
             }
         }
 
+        private void SquareID_DropDownClosed(object sender, System.EventArgs e)
+        {
+            this.Update();
+        }
+
         /// <summary>
         /// Updates the screen.
         /// </summary>
-        public void UpdateText()
+        private void Update()
         {
             this.Status.Content = string.Empty;
 
-            Square sq = Settings.Grid.Squares[this.Square.SelectedIndex];
+            Square sq = Settings.Grid.Squares[this.SquareID.SelectedIndex];
 
             if (sq.BeenSearched)
             {
                 if (sq.IsMiss == true)
                 {
-                    this.State.SelectedIndex = 1;
+                    this.SquareState.SelectedIndex = 1;
                 }
                 else
                 {
                     if (sq.IsHit == true)
                     {
-                        this.State.SelectedIndex = 2;
+                        this.SquareState.SelectedIndex = 2;
                     }
                     else
                     {
-                        this.State.SelectedIndex = 3;
+                        this.SquareState.SelectedIndex = 3;
                     }
                 }
             }
             else
             {
-                this.State.SelectedIndex = 0;
+                this.SquareState.SelectedIndex = 0;
             }
 
             if (sq.Ship != null)
             {
-                this.Ship.Text = sq.Ship.ID.ToString();
+                this.SquareShip.Text = sq.Ship.ID.ToString();
             }
             else
             {
-                this.Ship.Clear();
+                this.SquareShip.Clear();
             }
-        }
-
-        private void Square_DropDownClosed(object sender, System.EventArgs e)
-        {
-            this.UpdateText();
         }
     }
 }

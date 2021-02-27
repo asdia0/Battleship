@@ -21,17 +21,14 @@
         public static Grid Grid;
 
         /// <summary>
-        /// The mode the user is currently in. 
-        /// (  True: Play
-        ///   False: Simulate
-        ///    Null: Find)
+        /// The mode the user is currently in. True means play, false means simulate and null means find.
         /// </summary>
         public bool? CurrentMode = null;
 
         /// <summary>
         /// State options.
         /// </summary>
-        public List<string> States = new List<string>()
+        public List<string> SquareStates = new List<string>()
         {
             "Miss",
             "Hit",
@@ -61,7 +58,7 @@
             Settings.Grid.AddDefaultShips();
             Grid = new Grid(Settings.Grid);
 
-            this.ResetWindow();
+            this.Reset();
         }
 
         // CONTROLS
@@ -74,24 +71,23 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_New(object sender, RoutedEventArgs e)
+        public void NewGame_OnClick(object sender, RoutedEventArgs e)
         {
             Grid = new Grid(Settings.Grid);
 
             this.SearchedSquares.Clear();
 
-            this.ResetWindow();
+            this.Reset();
 
-            if (CurrentMode == true)
+            if (this.CurrentMode == true)
             {
                 this.GameString = string.Empty;
                 this.UpdateSaveGame();
             }
-            else if (CurrentMode == false)
+            else if (this.CurrentMode == false)
             {
                 this.UpdateSaveGame();
-                this.Sim_SP.Visibility = Visibility.Visible;
-
+                this.Simulate_SP.Visibility = Visibility.Visible;
             }
             else
             {
@@ -105,7 +101,7 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_Load(object sender, RoutedEventArgs e)
+        public void LoadGame_OnClick(object sender, RoutedEventArgs e)
         {
         }
 
@@ -114,7 +110,7 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_Save(object sender, RoutedEventArgs e)
+        public void SaveGame_OnClick(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             if (saveFileDialog.ShowDialog() == true)
@@ -130,7 +126,7 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_ShipEditor(object sender, RoutedEventArgs e)
+        public void ShipEditor_OnClick(object sender, RoutedEventArgs e)
         {
             Window shipEditor = new ShipEditor();
             shipEditor.Show();
@@ -141,7 +137,7 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_GridEditor(object sender, RoutedEventArgs e)
+        public void GridEditor_OnClick(object sender, RoutedEventArgs e)
         {
             Window gridEditor = new GridEditor();
             gridEditor.Show();
@@ -152,7 +148,7 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_SquareEditor(object sender, RoutedEventArgs e)
+        public void SquareEditor_OnClick(object sender, RoutedEventArgs e)
         {
             Window squareEditor = new SquareEditor();
             squareEditor.Show();
@@ -165,14 +161,14 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_Play(object sender, RoutedEventArgs e)
+        public void Play_OnClick(object sender, RoutedEventArgs e)
         {
             this.Title = "Battleship: Play";
 
             this.CurrentMode = true;
             this.GameString = string.Empty;
 
-            this.ResetWindow();
+            this.Reset();
 
             this.UpdateSaveGame();
         }
@@ -182,15 +178,15 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_Simulate(object sender, RoutedEventArgs e)
+        public void Simulate_OnClick(object sender, RoutedEventArgs e)
         {
             this.Title = "Battleship: Simulate";
 
             this.CurrentMode = false;
             this.UpdateSaveGame();
-            this.ResetWindow();
+            this.Reset();
 
-            this.Sim_SP.Visibility = Visibility.Visible;
+            this.Simulate_SP.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -198,14 +194,14 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_Find(object sender, RoutedEventArgs e)
+        public void Find_OnClick(object sender, RoutedEventArgs e)
         {
             this.Title = "Battleship: Find";
 
             this.CurrentMode = null;
             this.UpdateSaveGame();
 
-            this.ResetWindow();
+            this.Reset();
 
             this.Find();
         }
@@ -274,34 +270,36 @@
             return result;
         }
 
-        private void tb_LostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
+        private void TextBox_LostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
         {
             //Make sure sender is the correct Control.
             if (sender is System.Windows.Controls.TextBox)
             {
-                System.Windows.Controls.TextBox tb = (System.Windows.Controls.TextBox)sender;
+                System.Windows.Controls.TextBox textbox = (System.Windows.Controls.TextBox)sender;
+
                 //If nothing was entered, reset default text.
                 if (((System.Windows.Controls.TextBox)sender).Text.Trim().Equals(string.Empty))
                 {
-                    tb.Foreground = System.Windows.Media.Brushes.Gray;
-                    if (tb == this.Sim_Games)
+                    textbox.Foreground = System.Windows.Media.Brushes.Gray;
+                    if (textbox == this.Simulate_GamesText)
                     {
-                        tb.Text = "Number of games to simulate";
+                        textbox.Text = "Number of games to simulate";
                     }
-                    if (tb == this.Find_Sunk_ShipText)
-                    {
-                        tb.Text = "Ship ID";
 
-                    }
-                    if (tb == this.Find_Sunk_SquaresText)
+                    if (textbox == this.Find_Sunk_ShipText)
                     {
-                        tb.Text = "Sunk squares";
+                        textbox.Text = "Ship ID";
+                    }
+
+                    if (textbox == this.Find_Sunk_SquaresText)
+                    {
+                        textbox.Text = "Sunk squares";
                     }
                 }
             }
         }
 
-        private void tb_GotKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
+        private void Textbox_GotKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
         {
             if (sender is System.Windows.Controls.TextBox)
             {
@@ -314,35 +312,35 @@
             }
         }
 
-        private void ResetWindow()
+        private void Reset()
         {
             // SIMULATE
-            this.Sim_Games.Foreground = System.Windows.Media.Brushes.Gray;
-            this.Sim_Games.Text = "Number of games to simulate";
+            this.Simulate_GamesText.Foreground = System.Windows.Media.Brushes.Gray;
+            this.Simulate_GamesText.Text = "Number of games to simulate";
 
-            this.Sim_Algo1.SelectedIndex = 0;
-            this.Sim_Algo2.SelectedIndex = 0;
+            this.Simulate_Algorithm1.SelectedIndex = 0;
+            this.Simulate_ALgorithm2.SelectedIndex = 0;
 
-            this.Sim_Games.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.tb_GotKeyboardFocus);
-            this.Sim_Games.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.tb_LostKeyboardFocus);
+            this.Simulate_GamesText.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.Textbox_GotKeyboardFocus);
+            this.Simulate_GamesText.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.TextBox_LostKeyboardFocus);
 
-            this.Sim_Status.Content = string.Empty;
+            this.Simulate_Status.Content = string.Empty;
 
-            this.Sim_Stats.Visibility = Visibility.Collapsed;
+            this.Simulate_Stats.Visibility = Visibility.Collapsed;
 
-            this.Sim_Algo1.ItemsSource = this.Algorithms;
-            this.Sim_Algo2.ItemsSource = this.Algorithms;
+            this.Simulate_Algorithm1.ItemsSource = this.Algorithms;
+            this.Simulate_ALgorithm2.ItemsSource = this.Algorithms;
 
-            this.Sim_SP.Visibility = Visibility.Collapsed;
+            this.Simulate_SP.Visibility = Visibility.Collapsed;
 
             // FIND
-            this.Find_Combo.ItemsSource = this.States;
+            this.Find_SquareStates.ItemsSource = this.SquareStates;
 
-            this.SP_A.Visibility = Visibility.Collapsed;
-            this.SP_B.Visibility = Visibility.Collapsed;
+            this.Find_SP.Visibility = Visibility.Collapsed;
+            this.Find_Sunk_SP.Visibility = Visibility.Collapsed;
 
             this.Image2.Visibility = Visibility.Collapsed;
-            this.Find_ShipStats.Visibility = Visibility.Collapsed;
+            this.Find_ShipStatus.Visibility = Visibility.Collapsed;
         }
 
         #endregion

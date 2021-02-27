@@ -16,12 +16,12 @@
         /// <summary>
         /// ID options.
         /// </summary>
-        public ObservableCollection<dynamic> IDSource = new ObservableCollection<dynamic>();
+        public ObservableCollection<dynamic> ShipIDSource = new ObservableCollection<dynamic>();
 
         /// <summary>
         /// Current ship selected.
         /// </summary>
-        public Ship CurrentShip;
+        public Ship SelectedShip;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ShipEditor"/> class.
@@ -30,68 +30,63 @@
         {
             this.InitializeComponent();
 
-            this.ID.SelectedIndex = 1;
+            this.ShipID.SelectedIndex = 1;
 
-            this.IDSource.Add(string.Empty);
+            this.ShipIDSource.Add(string.Empty);
 
             foreach (Ship sp in Settings.Grid.Ships)
             {
-                this.IDSource.Add(sp.ID);
+                this.ShipIDSource.Add(sp.ID);
             }
 
-            this.ID.ItemsSource = this.IDSource;
+            this.ShipID.ItemsSource = this.ShipIDSource;
 
-            this.CurrentShip = Settings.Grid.Ships[0];
+            this.SelectedShip = Settings.Grid.Ships[0];
 
-            this.Add.IsEnabled = false;
-            this.Remove.IsEnabled = false;
-            this.Update.IsEnabled = true;
+            this.AddShip.IsEnabled = false;
+            this.RemoveShip.IsEnabled = false;
+            this.Submit.IsEnabled = true;
 
-            this.UpdateText();
+            this.Update();
         }
 
         /// <summary>
-        /// Fired when the Update button is clicked.
+        /// Fired when the Submit button is clicked.
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_Update(object sender, EventArgs e)
+        private void Submit_OnClick(object sender, EventArgs e)
         {
             this.Status.Content = string.Empty;
 
-            (bool, List<Square>, int, int) res = this.AbleToProceed(this.CurrentShip, true);
+            (bool, List<Square>, int, int) res = this.AbleToProceed(this.SelectedShip, true);
 
             if (res.Item1)
             {
-                (bool?, Square) hoz = this.HorizontalOrVertical(res.Item3, res.Item4, res.Item2);
-
-                this.CurrentShip.Name = this.Name_.Text;
-                this.CurrentShip.IsSunk = (bool)this.IsSunk.IsChecked;
-                this.CurrentShip.OriginalOccupiedSquares = res.Item2;
+                this.SelectedShip.Name = this.ShipName.Text;
+                this.SelectedShip.IsSunk = (bool)this.ShipIsSunk.IsChecked;
+                this.SelectedShip.OriginalOccupiedSquares = res.Item2;
 
                 foreach (Square square in res.Item2)
                 {
                     if (!square.BeenSearched)
                     {
-                        this.CurrentShip.CurrentOccupiedSquares.Add(square);
+                        this.SelectedShip.CurrentOccupiedSquares.Add(square);
                     }
                 }
 
-                this.Status.Content = $"Successfully edited Ship {this.CurrentShip.ID}.";
+                this.Status.Content = $"Successfully edited Ship {this.SelectedShip.ID}.";
             }
         }
 
         /// <summary>
-        /// Fired when the Add button is clicked.
+        /// Fired when the Add Ship button is clicked.
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        private void Click_Add(object sender, EventArgs e)
+        private void AddShip_OnClick(object sender, EventArgs e)
         {
             this.Status.Content = string.Empty;
-
-            string nameS = this.Name_.Text;
-            bool isSunk = (bool)this.IsSunk.IsChecked;
 
             int breadthN = 0;
             int lengthN = 0;
@@ -102,19 +97,112 @@
 
             if (res.Item1)
             {
-                (bool?, Square) hoz = this.HorizontalOrVertical(res.Item3, res.Item4, res.Item2);
+                (bool?, Square) alignment = this.DetermineAlignment(res.Item3, res.Item4, res.Item2);
 
-                if (hoz.Item1 != null)
+                if (alignment.Item1 != null)
                 {
-                    Settings.Grid.AddShip(hoz.Item2, new Ship(Settings.Grid, res.Item3, res.Item4), (bool)hoz.Item1);
+                    Ship addedShip = new Ship(Settings.Grid, res.Item3, res.Item4);
+                    Settings.Grid.AddShip(alignment.Item2, addedShip, (bool)alignment.Item1);
+
+                    addedShip.Name = this.ShipName.Text;
+                    addedShip.IsSunk = (bool)this.ShipIsSunk.IsChecked;
                 }
 
-                this.IDSource.Add(ship.ID);
+                this.ShipIDSource.Add(ship.ID);
                 this.Status.Content = $"Successfully added {ship.Name}.";
             }
         }
 
-        private (bool?, Square) HorizontalOrVertical(int length, int breadth, List<Square> list)
+        /// <summary>
+        /// Fired when the Remove button is clicked.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
+        private void RemoveShip_OnClick(object sender, EventArgs e)
+        {
+            Settings.Grid.Ships.Remove(this.SelectedShip);
+            Settings.Grid.OriginalShips.Remove(this.SelectedShip);
+
+            int id = 0;
+
+            foreach (Ship ship in Settings.Grid.OriginalShips)
+            {
+                ship.ID = id;
+                id++;
+            }
+
+            this.ShipID.SelectedIndex--;
+            this.Update();
+            this.ShipIDSource.Remove(this.ShipIDSource[^1]);
+        }
+
+        /// <summary>
+        /// Fired when the ID Combobox closes.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
+        private void ShipID_OnDropDownClosed(object sender, EventArgs e)
+        {
+            this.Status.Content = string.Empty;
+
+            if (this.ShipID.SelectedIndex == 0)
+            {
+                this.AddShip.IsEnabled = true;
+                this.RemoveShip.IsEnabled = false;
+                this.Submit.IsEnabled = false;
+
+                this.ShipName.Text = string.Empty;
+                this.ShipOccupiedSqs.Text = string.Empty;
+                this.ShipLength.Text = string.Empty;
+                this.ShipBreadth.Text = string.Empty;
+                this.ShipIsSunk.IsChecked = false;
+            }
+            else
+            {
+                this.AddShip.IsEnabled = false;
+                this.RemoveShip.IsEnabled = true;
+                this.Submit.IsEnabled = true;
+
+                if (this.ShipID.SelectedIndex == 1)
+                {
+                    this.RemoveShip.IsEnabled = false;
+                }
+
+                this.Update();
+            }
+        }
+
+        /// <summary>
+        /// Updates the screen.
+        /// </summary>
+        private void Update()
+        {
+            this.SelectedShip = Settings.Grid.OriginalShips[this.ShipID.SelectedIndex - 1];
+
+            this.Status.Content = string.Empty;
+
+            this.ShipName.Text = this.SelectedShip.Name;
+            this.ShipLength.Text = this.SelectedShip.Length.ToString();
+            this.ShipBreadth.Text = this.SelectedShip.Breadth.ToString();
+            this.ShipIsSunk.IsChecked = this.SelectedShip.IsSunk;
+
+            string text = string.Empty;
+            foreach (Square sq in this.SelectedShip.OriginalOccupiedSquares)
+            {
+                text += $",{sq.ToCoor()}";
+            }
+
+            this.ShipOccupiedSqs.Text = text.Remove(0, 1).Replace(" ", string.Empty);
+        }
+
+        /// <summary>
+        /// Determines the alignment of a given ship.
+        /// </summary>
+        /// <param name="length">The length of the ship.</param>
+        /// <param name="breadth">The breadth of the ship.</param>
+        /// <param name="list">The list of squares the ship occupies.</param>
+        /// <returns>A boolean and <see cref="Square"/> tuples. True means horizontal, false means vertical. The square is the ship's starting square.</returns>
+        private (bool?, Square) DetermineAlignment(int length, int breadth, List<Square> list)
         {
             List<int> sqIDs = new List<int>();
             foreach (Square sq in list)
@@ -139,88 +227,6 @@
         }
 
         /// <summary>
-        /// Fired when the Remove button is clicked.
-        /// </summary>
-        /// <param name="sender">Reference.</param>
-        /// <param name="e">Event.</param>
-        private void Click_Remove(object sender, EventArgs e)
-        {
-            Settings.Grid.Ships.Remove(this.CurrentShip);
-            Settings.Grid.OriginalShips.Remove(this.CurrentShip);
-
-            int id = 0;
-
-            foreach (Ship ship in Settings.Grid.OriginalShips)
-            {
-                ship.ID = id;
-                id++;
-            }
-
-            this.ID.SelectedIndex--;
-            this.UpdateText();
-            this.IDSource.Remove(this.IDSource[^1]);
-        }
-
-        /// <summary>
-        /// Fired when the ID Combobox closes.
-        /// </summary>
-        /// <param name="sender">Reference.</param>
-        /// <param name="e">Event.</param>
-        private void ID_DropDownClosed(object sender, EventArgs e)
-        {
-            this.Status.Content = string.Empty;
-
-            if (this.ID.SelectedIndex == 0)
-            {
-                this.Add.IsEnabled = true;
-                this.Remove.IsEnabled = false;
-                this.Update.IsEnabled = false;
-
-                this.Name_.Text = string.Empty;
-                this.OccupiedSqs.Text = string.Empty;
-                this.Length.Text = string.Empty;
-                this.Breadth.Text = string.Empty;
-                this.IsSunk.IsChecked = false;
-            }
-            else
-            {
-                this.Add.IsEnabled = false;
-                this.Remove.IsEnabled = true;
-                this.Update.IsEnabled = true;
-
-                if (this.ID.SelectedIndex == 1)
-                {
-                    this.Remove.IsEnabled = false;
-                }
-
-                this.UpdateText();
-            }
-        }
-
-        /// <summary>
-        /// Updates the screen.
-        /// </summary>
-        private void UpdateText()
-        {
-            this.CurrentShip = Settings.Grid.OriginalShips[this.ID.SelectedIndex - 1];
-
-            this.Status.Content = string.Empty;
-
-            this.Name_.Text = this.CurrentShip.Name;
-            this.Length.Text = this.CurrentShip.Length.ToString();
-            this.Breadth.Text = this.CurrentShip.Breadth.ToString();
-            this.IsSunk.IsChecked = this.CurrentShip.IsSunk;
-
-            string text = string.Empty;
-            foreach (Square sq in this.CurrentShip.OriginalOccupiedSquares)
-            {
-                text += $",{sq.ToCoor()}";
-            }
-
-            this.OccupiedSqs.Text = text.Remove(0, 1).Replace(" ", string.Empty);
-        }
-
-        /// <summary>
         /// Determines if the inputs are valid.
         /// </summary>
         /// <param name="ship">Ship.</param>
@@ -232,9 +238,9 @@
 
             this.Status.Content = string.Empty;
 
-            string occupiedSqs = this.OccupiedSqs.Text;
-            string lengthS = this.Length.Text;
-            string breadthS = this.Breadth.Text;
+            string occupiedSqs = this.ShipOccupiedSqs.Text;
+            string lengthS = this.ShipLength.Text;
+            string breadthS = this.ShipBreadth.Text;
 
             List<string> sqs = new List<string>();
             try
@@ -271,7 +277,7 @@
                     res.Item1 = false;
                 }
 
-                int id = x - 1 + ((y - 1) * Settings.GridWidth);
+                int id = x - 1 + ((y - 1) * (int)Settings.GridWidth);
 
                 try
                 {
@@ -298,7 +304,7 @@
                 }
             }
 
-            if (this.ID.SelectedIndex == 0 && isUpdate == true)
+            if (this.ShipID.SelectedIndex == 0 && isUpdate == true)
             {
                 this.Status.Content = "Error: ID must be an integer";
                 res.Item1 = false;

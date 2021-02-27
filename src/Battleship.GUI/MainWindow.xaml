@@ -13,55 +13,55 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <Menu Name="Menu_" IsMainMenu="True" Grid.ColumnSpan="3">
+        <Menu IsMainMenu="True" Grid.ColumnSpan="3">
             <MenuItem Header="File">
-                <MenuItem Header="New game" Click="Click_New"/>
-                <MenuItem Header="Load game" Click="Click_Load"/>
-                <MenuItem Name="SaveGame" Header="Save game" Click="Click_Save"/>
+                <MenuItem Header="New game" Click="NewGame_OnClick"/>
+                <MenuItem Header="Load game" Click="LoadGame_OnClick"/>
+                <MenuItem Name="SaveGame" Header="Save game" Click="SaveGame_OnClick"/>
 
             </MenuItem>
-            <MenuItem Header="_Edit">
-                <MenuItem Header="Ship editor" Click="Click_ShipEditor"/>
-                <MenuItem Header="Square editor" Click="Click_SquareEditor"/>
-                <MenuItem Header="Grid editor" Click="Click_GridEditor"/>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Ship editor" Click="ShipEditor_OnClick"/>
+                <MenuItem Header="Square editor" Click="SquareEditor_OnClick"/>
+                <MenuItem Header="Grid editor" Click="GridEditor_OnClick"/>
             </MenuItem>
             <MenuItem Header="Mode">
-                <MenuItem Header="Find" Click="Click_Find"/>
-                <MenuItem Header="Play" Click="Click_Play"/>
-                <MenuItem Header="Simulate" Click="Click_Simulate"/>
+                <MenuItem Header="Find" Click="Find_OnClick"/>
+                <MenuItem Header="Play" Click="Play_OnClick"/>
+                <MenuItem Header="Simulate" Click="Simulate_OnClick"/>
             </MenuItem>
         </Menu>
 
-        <TextBlock Name="Find_ShipStats" Height="Auto" Width="Auto" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14"/>
+        <TextBlock Name="Find_ShipStatus" Height="Auto" Width="Auto" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14"/>
 
         <Image Name="Image1" Height="Auto" Width="{Binding Path=Height, RelativeSource={RelativeSource Self}}" Grid.Column="0" VerticalAlignment="Center" Margin="30,0,0,0"/>
         <Image Name="Image2" Height="Auto" Width="{Binding Path=Height, RelativeSource={RelativeSource Self}}" Grid.Column="1" VerticalAlignment="Center"/>
         <Image Name="Image3" Height="Auto" Width="{Binding Path=Height, RelativeSource={RelativeSource Self}}" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,0,30"/>
         <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10,0,10,0">
-            <StackPanel Name="SP_A" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10,0,10,0">
+            <StackPanel Name="Find_SP" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10,0,10,0">
                 <Label x:Name="Find_Label" Content="" Height="26" HorizontalContentAlignment="Center"/>
-                <ComboBox x:Name="Find_Combo"  Height="26" Margin="0,10,0,0" Text="Square state" IsEditable="True" IsReadOnly="True" Focusable="False"/>
-                <Button x:Name="Find_Button" Height="26" Content="Update" Margin="0,10,0,0" Click="Click_Update_Button"/>
+                <ComboBox x:Name="Find_SquareStates"  Height="26" Margin="0,10,0,0" Text="Square state" IsEditable="True" IsReadOnly="True" Focusable="False"/>
+                <Button x:Name="Find_Submit" Height="26" Content="Update" Margin="0,10,0,0" Click="Find_SubmitButton_OnClick"/>
 
-                <StackPanel Name="SP_B" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="0,30,0,0">
+                <StackPanel Name="Find_Sunk_SP" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="0,30,0,0">
                     <TextBox Name="Find_Sunk_ShipText" Height="26" Margin="0,10,0,0"/>
                     <TextBox Name="Find_Sunk_SquaresText" Height="26" Margin="0,10,0,0"/>
-                    <Button x:Name="Find_Sunk_Button" Height="26" Content="Update" Margin="0,10,0,0" Click="Click_Find_Sunk_Button"/>
-                    <Label x:Name="Find_Sunk_Label" Height="26" Content="Update" Margin="0,10,0,0"/>
+                    <Button x:Name="Find_Sunk_Submit" Height="26" Content="Update" Margin="0,10,0,0" Click="Find_SunkSubmitButton_OnClick"/>
+                    <Label x:Name="Find_Sunk_Status" Height="26" Content="Update" Margin="0,10,0,0"/>
                 </StackPanel>
-                <Button x:Name="Find_Undo" Height="26" Content="Undo" Click="Click_Find_Undo" Margin="0,30,0,0"/>
+                <Button x:Name="Find_Undo" Height="26" Content="Undo" Click="Find_UndoButton_OnClick" Margin="0,30,0,0"/>
             </StackPanel>
         </StackPanel>
 
-        <TextBlock x:Name="Sim_Stats" Height="Auto" Width="Auto" Grid.Column="1" VerticalAlignment="Center"/>
+        <TextBlock x:Name="Simulate_Stats" Height="Auto" Width="Auto" Grid.Column="1" VerticalAlignment="Center"/>
         
-        <StackPanel Name="Sim_SP" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="0,30,0,0">
-            <ComboBox Name="Sim_Algo1" Height="26" Margin="0,10,0,0" Text="Player 1 Algorithm" IsEditable="True" IsReadOnly="True" Focusable="False"/>
-            <ComboBox Name="Sim_Algo2" Height="26" Margin="0,10,0,0" Text="Player 2 Algorithm" IsEditable="True" IsReadOnly="True" Focusable="False"/>
-            <TextBox Name="Sim_Games" Height="26" Margin="0,10,0,0"/>
-            <Button x:Name="Sim_Button" Height="26" Content="Update" Margin="0,10,0,0" Click="Click_Sim_Button"/>
+        <StackPanel Name="Simulate_SP" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="0,30,0,0">
+            <ComboBox Name="Simulate_Algorithm1" Height="26" Margin="0,10,0,0" Text="Player 1 Algorithm" IsEditable="True" IsReadOnly="True" Focusable="False"/>
+            <ComboBox Name="Simulate_ALgorithm2" Height="26" Margin="0,10,0,0" Text="Player 2 Algorithm" IsEditable="True" IsReadOnly="True" Focusable="False"/>
+            <TextBox Name="Simulate_GamesText" Height="26" Margin="0,10,0,0"/>
+            <Button x:Name="Simulate_Submit" Height="26" Content="Update" Margin="0,10,0,0" Click="Simulate_SubmitButton_OnClick"/>
         </StackPanel>
-        <Label Name="Sim_Status" Grid.Column="1" VerticalAlignment="Top" Margin="0,296,0,0" Height="26" HorizontalContentAlignment="Center" Width="Auto"/>
+        <Label Name="Simulate_Status" Grid.Column="1" VerticalAlignment="Top" Margin="0,296,0,0" Height="26" HorizontalContentAlignment="Center" Width="Auto"/>
 
 
     </Grid>

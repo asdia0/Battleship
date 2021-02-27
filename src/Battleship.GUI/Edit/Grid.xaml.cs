@@ -14,34 +14,24 @@
         public GridEditor()
         {
             this.InitializeComponent();
-            this.UpdateText();
+            this.Update();
         }
 
         /// <summary>
-        /// Updates the screen.
-        /// </summary>
-        public void UpdateText()
-        {
-            this.Height_.Text = Settings.GridHeight.ToString();
-            this.Width_.Text = Settings.GridWidth.ToString();
-        }
-
-        /// <summary>
-        /// Fired when the Update button is clicked.
+        /// Fired when the Submit button is clicked.
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_Update(object sender, RoutedEventArgs e)
+        private void SubmitButton_OnClick(object sender, RoutedEventArgs e)
         {
+            bool heightB, widthB;
+
             this.Status.Content = string.Empty;
 
-            string heightS = this.Height_.Text;
-            string widthS = this.Width_.Text;
+            heightB = uint.TryParse(this.GridHeight.Text, out uint height);
+            widthB = uint.TryParse(this.GridWidth.Text, out uint width);
 
-            bool heightB = int.TryParse(heightS, out int heightN);
-            bool widthB = int.TryParse(widthS, out int widthN);
-
-            if ((!heightB || !widthB) || (heightN <= 0 || widthN <= 0) || (heightN % 1 != 0 || widthN % 1 != 0))
+            if (!heightB || !widthB)
             {
                 this.Status.Content = "Error: Height and Width must be positive integers.";
             }
@@ -50,10 +40,8 @@
                 MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure? Changing the grid dimensions will reset all ships and squares.", "Confirmation", MessageBoxButton.YesNo);
                 if (messageBoxResult == MessageBoxResult.Yes)
                 {
-                    Settings.GridHeight = heightN;
-                    Settings.GridWidth = widthN;
-                    Core.Settings.GridHeight = heightN;
-                    Core.Settings.GridWidth = widthN;
+                    Settings.GridHeight = Core.Settings.GridHeight = (int)height;
+                    Settings.GridWidth = Core.Settings.GridWidth = (int)width;
 
                     Settings.Grid = new Grid();
                     Settings.Grid.AddDefaultShips();
@@ -62,9 +50,18 @@
 
                     this.Status.Content = "Successfully edited grid.";
 
-                    this.UpdateText();
+                    this.Update();
                 }
             }
+        }
+
+        /// <summary>
+        /// Updates the screen.
+        /// </summary>
+        private void Update()
+        {
+            this.GridHeight.Text = Settings.GridHeight.ToString();
+            this.GridWidth.Text = Settings.GridWidth.ToString();
         }
     }
 }

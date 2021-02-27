@@ -355,7 +355,7 @@
                                     int x = int.Parse(s.Split(",")[0]);
                                     int y = int.Parse(s.Split(",")[1]);
 
-                                    int sqID1 = ((y - 1) * Settings.GridWidth) + x - 1;
+                                    int sqID1 = ((y - 1) * (int)Settings.GridWidth) + x - 1;
 
                                     ship.OriginalOccupiedSquares.Add(player.Squares[sqID1]);
                                 }

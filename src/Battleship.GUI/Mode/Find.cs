@@ -4,8 +4,6 @@
     using System.Collections.Generic;
     using System.Drawing;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows;
 
     using Battleship.Core;
@@ -23,7 +21,7 @@
         /// <summary>
         /// Square to search.
         /// </summary>
-        public Square RecommendedSq;
+        public Square BestSquare;
 
         /// <summary>
         /// The <see cref="MainWindow.Grid"/> one move back.
@@ -36,11 +34,11 @@
         public List<Square> SearchedSquares = new List<Square>();
 
         /// <summary>
-        /// Fired when the Find Button button is clicked.
+        /// Fired when the Submit button is clicked.
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_Update_Button(object sender, RoutedEventArgs e)
+        public void Find_SubmitButton_OnClick(object sender, RoutedEventArgs e)
         {
             this.MoveCount++;
 
@@ -51,56 +49,57 @@
 
             this.PreviousGrid = new Grid(Grid);
 
-            Grid.ToSearch.Remove(this.RecommendedSq);
-            Grid.ToAttack.Remove(this.RecommendedSq);
-            Grid.UnsearchedSquares.Remove(this.RecommendedSq);
+            Grid.ToSearch.Remove(this.BestSquare);
+            Grid.ToAttack.Remove(this.BestSquare);
+            Grid.UnsearchedSquares.Remove(this.BestSquare);
 
-            this.RecommendedSq.BeenSearched = true;
-            this.SearchedSquares.Add(this.RecommendedSq);
+            this.BestSquare.BeenSearched = true;
+            this.SearchedSquares.Add(this.BestSquare);
 
-            this.Find_Sunk_Label.Content = this.Find_Combo.SelectedIndex.ToString();
+            this.Find_Sunk_Status.Content = this.Find_SquareStates.SelectedIndex.ToString();
 
-            switch (this.Find_Combo.SelectedIndex)
+            switch (this.Find_SquareStates.SelectedIndex)
             {
                 // MISS
                 case 0:
-                    this.RecommendedSq.BeenSearched = true;
-                    this.RecommendedSq.IsMiss = true;
+                    this.BestSquare.BeenSearched = true;
+                    this.BestSquare.IsMiss = true;
                     this.Find();
                     break;
+
                 // HIT
                 case 1:
-                    this.RecommendedSq.IsHit = true;
-                    this.RecommendedSq.HadShip = true;
+                    this.BestSquare.IsHit = true;
+                    this.BestSquare.HadShip = true;
                     this.Find();
                     break;
 
                 // SINK
                 case 2:
-                    this.SP_A.Visibility = Visibility.Collapsed;
-                    this.SP_B.Visibility = Visibility.Visible;
+                    this.Find_SP.Visibility = Visibility.Collapsed;
+                    this.Find_Sunk_SP.Visibility = Visibility.Visible;
                     break;
             }
         }
 
         /// <summary>
-        /// Fired when the Find Sunk Button button is clicked.
+        /// Fired when the Sunk Submit button is clicked.
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_Find_Sunk_Button(object sender, RoutedEventArgs e)
+        public void Find_SunkSubmitButton_OnClick(object sender, RoutedEventArgs e)
         {
             string raw = this.Find_Sunk_SquaresText.Text;
             string shipIDS = this.Find_Sunk_ShipText.Text;
 
             if (!int.TryParse(shipIDS, out int shipID))
             {
-                this.Find_Sunk_Label.Content = "Error: Ship ID should be an integer.";
+                this.Find_Sunk_Status.Content = "Error: Ship ID should be an integer.";
             }
 
             if (Grid.OriginalShips.Count - 1 < shipID)
             {
-                this.Find_Sunk_Label.Content = "Error: No ship was found.";
+                this.Find_Sunk_Status.Content = "Error: No ship was found.";
             }
 
             string[] xy = raw.Replace(")", string.Empty).Split(",(");
@@ -136,11 +135,11 @@
         }
 
         /// <summary>
-        /// Fired when the Find Undo Button button is clicked.
+        /// Fired when the Undo button is clicked.
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Click_Find_Undo(object sender, RoutedEventArgs e)
+        public void Find_UndoButton_OnClick(object sender, RoutedEventArgs e)
         {
             Grid = this.PreviousGrid;
 
@@ -177,15 +176,15 @@
                 }
             }
 
-            this.Find_ShipStats.Visibility = Visibility.Visible;
+            this.Find_ShipStatus.Visibility = Visibility.Visible;
             this.Image2.Visibility = Visibility.Visible;
-            this.SP_A.Visibility = Visibility.Visible;
-            this.SP_B.Visibility = Visibility.Collapsed;
+            this.Find_SP.Visibility = Visibility.Visible;
+            this.Find_Sunk_SP.Visibility = Visibility.Collapsed;
 
             // Find Best Square
             (Square sq, Dictionary<int, int> prob) = Program.FindBestSquare(Grid);
 
-            this.RecommendedSq = sq;
+            this.BestSquare = sq;
 
             // Update Screen
             string text = "Dimensions || ID || Is Sunk";
@@ -194,9 +193,9 @@
                 text += $"\n{ship.Length}x{ship.Breadth} || {ship.ID} || {ship.IsSunk}";
             }
 
-            this.Find_ShipStats.Text = text;
+            this.Find_ShipStatus.Text = text;
             this.Find_Label.Content = $"Search {sq.ToCoor()} ({prob.Values.Max()}%)";
-            this.Find_Combo.SelectedIndex = 0;
+            this.Find_SquareStates.SelectedIndex = 0;
 
             // Update Image
             Bitmap bitmap = new Bitmap(Settings.GridWidth, Settings.GridHeight);
@@ -236,7 +235,7 @@
                 }
             }
 
-            bitmap.SetPixel(this.RecommendedSq.ToCoor().Item1 - 1, this.RecommendedSq.ToCoor().Item2 - 1, Color.FromArgb(66, 155, 66));
+            bitmap.SetPixel(this.BestSquare.ToCoor().Item1 - 1, this.BestSquare.ToCoor().Item2 - 1, Color.FromArgb(66, 155, 66));
 
             this.Image2.Source = this.BitmapToImageSource(this.ResizeBitmap(bitmap, 500, 500));
         }

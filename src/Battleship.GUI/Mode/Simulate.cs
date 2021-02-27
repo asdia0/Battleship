@@ -2,10 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Diagnostics;
     using System.Linq;
-    using System.Threading;
     using System.Windows;
 
     using Battleship.Core;
@@ -19,7 +17,9 @@
         /// Simulates a number of games.
         /// </summary>
         /// <param name="numberOfGames">Number of games to simulate.</param>
-        public void Simulate(int numberOfGames, int algo1, int algo2)
+        /// <param name="algorithm1">The ID of Player 1's algorithm.</param>
+        /// <param name="algorithm2">The ID of Player 2's algorithm.</param>
+        public void Simulate(int numberOfGames, int algorithm1, int algorithm2)
         {
             int sumMoves = 0;
             int player1 = 0;
@@ -33,7 +33,7 @@
                 elapsedTime.Start();
 
                 Game game = new Game();
-                game.CreateGame(algo1, algo2);
+                game.CreateGame(algorithm1, algorithm2);
 
                 elapsedTime.Stop();
 
@@ -56,23 +56,28 @@
             TimeSpan avg = TimeSpan.FromSeconds((double)decimal.Divide(totalTime, numberOfGames));
             TimeSpan tot = TimeSpan.FromSeconds((double)totalTime);
 
-            this.Sim_Stats.Visibility = Visibility.Visible;
+            this.Simulate_Stats.Visibility = Visibility.Visible;
 
-            this.Sim_Stats.Text = $"Board Dimension: {Settings.GridHeight}x{Settings.GridWidth}\nWhite won: {player1}\nBlack won: {player2}\n\nStatistics\nMinimum: {gameMoves.Min()}\nMaximum: {gameMoves.Max()}\nAverage: {decimal.Divide(sumMoves, numberOfGames)}\nMedian: {Program.Median(gameMoves)}\nMode: {Program.Mode(gameMoves)}\n\nTime\nTotal time elapsed: {tot.Hours} hours {tot.Minutes} minutes {tot.Seconds} seconds {tot.Milliseconds} milliseconds\nAverage time elapsed: {avg.Hours} hours {avg.Minutes} minutes {avg.Seconds} seconds {avg.Milliseconds} milliseconds";
+            this.Simulate_Stats.Text = $"Board Dimension: {Settings.GridHeight}x{Settings.GridWidth}\nWhite won: {player1}\nBlack won: {player2}\n\nStatistics\nMinimum: {gameMoves.Min()}\nMaximum: {gameMoves.Max()}\nAverage: {decimal.Divide(sumMoves, numberOfGames)}\nMedian: {Program.Median(gameMoves)}\nMode: {Program.Mode(gameMoves)}\n\nTime\nTotal time elapsed: {tot.Hours} hours {tot.Minutes} minutes {tot.Seconds} seconds {tot.Milliseconds} milliseconds\nAverage time elapsed: {avg.Hours} hours {avg.Minutes} minutes {avg.Seconds} seconds {avg.Milliseconds} milliseconds";
         }
 
-        public void Click_Sim_Button(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Fired when the Submit button is clicked.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
+        public void Simulate_SubmitButton_OnClick(object sender, RoutedEventArgs e)
         {
-            this.Sim_SP.Visibility = Visibility.Hidden;
+            this.Simulate_SP.Visibility = Visibility.Hidden;
 
-            string numS = this.Sim_Games.Text;
+            string numS = this.Simulate_GamesText.Text;
 
-            int algo1 = this.Sim_Algo1.SelectedIndex;
-            int algo2 = this.Sim_Algo2.SelectedIndex;
+            int algo1 = this.Simulate_Algorithm1.SelectedIndex;
+            int algo2 = this.Simulate_ALgorithm2.SelectedIndex;
 
             if (!int.TryParse(numS, out int num))
             {
-                this.Sim_Status.Content = "Number of games must be an integer!";
+                this.Simulate_Status.Content = "Number of games must be an integer!";
             }
 
             if (num > 0)
@@ -81,7 +86,7 @@
             }
             else
             {
-                this.Sim_Status.Content = "Number of games must be a positive integer!";
+                this.Simulate_Status.Content = "Number of games must be a positive integer!";
             }
         }
     }

@@ -26,9 +26,9 @@
                     <Setter Property="Height" Value="26"/>
                 </Style>
             </StackPanel.Resources>
-            <Label Content="Square" Target="{Binding ElementName=Square}"></Label>
-            <Label Content="State" Target="{Binding ElementName=State}"></Label>
-            <Label Content="Ship ID" Target="{Binding ElementName=Ship}"></Label>
+            <Label Content="Square" Target="{Binding ElementName=SquareID}"></Label>
+            <Label Content="State" Target="{Binding ElementName=SquareState}"></Label>
+            <Label Content="Ship ID" Target="{Binding ElementName=SquareShip}"></Label>
         </StackPanel>
 
         <StackPanel Grid.Column="2" Grid.Row="0" VerticalAlignment="Center">
@@ -39,15 +39,15 @@
                 </Style>
             </StackPanel.Resources>
 
-            <ComboBox Name="Square" DropDownClosed="Square_DropDownClosed"/>
-            <ComboBox Name="State"/>
-            <TextBox Name="Ship" IsReadOnly="True" Margin="0,10,0,0" Height="26"/>
+            <ComboBox Name="SquareID" DropDownClosed="SquareID_DropDownClosed"/>
+            <ComboBox Name="SquareState"/>
+            <TextBox Name="SquareShip" IsReadOnly="True" Margin="0,10,0,0" Height="26"/>
         </StackPanel>
 
         <Label Name="Status" Height="26" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="Auto" HorizontalContentAlignment="Center"/>
 
         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center" Grid.Column="2" Width="60" Height="20" Margin="36,0,0,0">
-            <Button x:Name="Update" Content="Update" Width="50" Click="Click_Update"/>
+            <Button x:Name="Submit" Content="Update" Width="50" Click="Update_OnClick"/>
         </StackPanel>
     </Grid>
 

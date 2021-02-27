@@ -60,7 +60,12 @@
             this.EndGame();
         }
 
-        public void CreateGame(int algo1, int algo2)
+        /// <summary>
+        /// Starts a new game.
+        /// </summary>
+        /// <param name="algorithm1">The algorithm of Player 1.</param>
+        /// <param name="algorithm2">The algorithm of Player 2.</param>
+        public void CreateGame(int algorithm1, int algorithm2)
         {
             this.StartGame();
 
@@ -68,7 +73,7 @@
             {
                 if (this.turn)
                 {
-                    switch (algo1)
+                    switch (algorithm1)
                     {
                         case 0:
                             this.Random();
@@ -83,7 +88,7 @@
                 }
                 else
                 {
-                    switch (algo2)
+                    switch (algorithm2)
                     {
                         case 0:
                             this.Random();
@@ -176,6 +181,7 @@
             {
                 this.Winner = true;
             }
+
             if (this.player2.Ships.Any())
             {
                 this.Winner = false;
