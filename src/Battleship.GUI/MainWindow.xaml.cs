@@ -58,6 +58,21 @@
             Settings.Grid.AddDefaultShips();
             Grid = new Grid(Settings.Grid);
 
+            this.Simulate_GamesText.Foreground = System.Windows.Media.Brushes.Gray;
+            this.Simulate_GamesText.Text = "Number of games to simulate";
+            this.Simulate_GamesText.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.Textbox_GotKeyboardFocus);
+            this.Simulate_GamesText.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.TextBox_LostKeyboardFocus);
+
+            this.Find_Sunk_ShipText.Foreground = System.Windows.Media.Brushes.Gray;
+            this.Find_Sunk_ShipText.Text = "Ship ID";
+            this.Find_Sunk_ShipText.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.Textbox_GotKeyboardFocus);
+            this.Find_Sunk_ShipText.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.TextBox_LostKeyboardFocus);
+
+            this.Find_Sunk_SquaresText.Foreground = System.Windows.Media.Brushes.Gray;
+            this.Find_Sunk_SquaresText.Text = "Sunk squares";
+            this.Find_Sunk_SquaresText.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.Textbox_GotKeyboardFocus);
+            this.Find_Sunk_SquaresText.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.TextBox_LostKeyboardFocus);
+
             this.Reset();
         }
 
@@ -315,14 +330,8 @@
         private void Reset()
         {
             // SIMULATE
-            this.Simulate_GamesText.Foreground = System.Windows.Media.Brushes.Gray;
-            this.Simulate_GamesText.Text = "Number of games to simulate";
-
             this.Simulate_Algorithm1.SelectedIndex = 0;
             this.Simulate_ALgorithm2.SelectedIndex = 0;
-
-            this.Simulate_GamesText.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.Textbox_GotKeyboardFocus);
-            this.Simulate_GamesText.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.TextBox_LostKeyboardFocus);
 
             this.Simulate_Status.Content = string.Empty;
 
@@ -337,7 +346,6 @@
             this.Find_SquareStates.ItemsSource = this.SquareStates;
 
             this.Find_SP.Visibility = Visibility.Collapsed;
-            this.Find_Sunk_SP.Visibility = Visibility.Collapsed;
 
             this.Image2.Visibility = Visibility.Collapsed;
             this.Find_ShipStatus.Visibility = Visibility.Collapsed;

@@ -56,8 +56,6 @@
             this.BestSquare.BeenSearched = true;
             this.SearchedSquares.Add(this.BestSquare);
 
-            this.Find_Sunk_Status.Content = this.Find_SquareStates.SelectedIndex.ToString();
-
             switch (this.Find_SquareStates.SelectedIndex)
             {
                 // MISS
@@ -76,7 +74,7 @@
 
                 // SINK
                 case 2:
-                    this.Find_SP.Visibility = Visibility.Collapsed;
+                    this.Find_SP_Input.Visibility = Visibility.Collapsed;
                     this.Find_Sunk_SP.Visibility = Visibility.Visible;
                     break;
             }
@@ -179,6 +177,7 @@
             this.Find_ShipStatus.Visibility = Visibility.Visible;
             this.Image2.Visibility = Visibility.Visible;
             this.Find_SP.Visibility = Visibility.Visible;
+            this.Find_SP_Input.Visibility = Visibility.Visible;
             this.Find_Sunk_SP.Visibility = Visibility.Collapsed;
 
             // Find Best Square
