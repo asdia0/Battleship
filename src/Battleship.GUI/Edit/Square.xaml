@@ -47,7 +47,7 @@
         <Label Name="Status" Height="26" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="Auto" HorizontalContentAlignment="Center"/>
 
         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Center" Grid.Column="2" Width="60" Height="20" Margin="36,0,0,0">
-            <Button x:Name="Submit" Content="Update" Width="50" Click="Update_OnClick"/>
+            <Button Name="Submit" Content="Update" Width="50" Click="Update_OnClick"/>
         </StackPanel>
     </Grid>
 

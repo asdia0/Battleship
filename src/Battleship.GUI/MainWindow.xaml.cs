@@ -58,6 +58,11 @@
             Settings.Grid.AddDefaultShips();
             Grid = new Grid(Settings.Grid);
 
+            foreach (Ship ship in Settings.Grid.Ships)
+            {
+                Core.Settings.ShipList.Add(ship);
+            }
+
             this.Simulate_GamesText.Foreground = System.Windows.Media.Brushes.Gray;
             this.Simulate_GamesText.Text = "Number of games to simulate";
             this.Simulate_GamesText.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.Textbox_GotKeyboardFocus);
@@ -72,6 +77,11 @@
             this.Find_Sunk_SquaresText.Text = "Sunk squares";
             this.Find_Sunk_SquaresText.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.Textbox_GotKeyboardFocus);
             this.Find_Sunk_SquaresText.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.TextBox_LostKeyboardFocus);
+
+            this.Play_SquareText.Foreground = System.Windows.Media.Brushes.Gray;
+            this.Play_SquareText.Text = "Coordinates of square to search";
+            this.Play_SquareText.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.Textbox_GotKeyboardFocus);
+            this.Play_SquareText.LostKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.TextBox_LostKeyboardFocus);
 
             this.Reset();
         }
@@ -92,21 +102,27 @@
 
             this.SearchedSquares.Clear();
 
+            this.UpdateSaveGame();
             this.Reset();
 
             if (this.CurrentMode == true)
             {
-                this.GameString = string.Empty;
-                this.UpdateSaveGame();
+                this.Title = "Battleship: Play";
+
+                this.Play_Algorithm_SP.Visibility = Visibility.Visible;
+                this.Play_Algorithm_Choose.SelectedIndex = 0;
+                this.Play_Algorithm_Choose.ItemsSource = this.Algorithms;
             }
             else if (this.CurrentMode == false)
             {
-                this.UpdateSaveGame();
+                this.Title = "Battleship: Simulate";
+
                 this.Simulate_SP.Visibility = Visibility.Visible;
             }
             else
             {
-                this.UpdateSaveGame();
+                this.Title = "Battleship: Find";
+
                 this.Find();
             }
         }
@@ -128,9 +144,12 @@
         public void SaveGame_OnClick(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            saveFileDialog.FilterIndex = 1;
+
             if (saveFileDialog.ShowDialog() == true)
             {
-                File.WriteAllText(saveFileDialog.FileName, "placeholder");
+                File.WriteAllText(saveFileDialog.FileName, this.GameString);
             }
         }
 
@@ -181,11 +200,14 @@
             this.Title = "Battleship: Play";
 
             this.CurrentMode = true;
-            this.GameString = string.Empty;
-
-            this.Reset();
 
             this.UpdateSaveGame();
+            this.Reset();
+
+            this.Play_Algorithm_SP.Visibility = Visibility.Visible;
+
+            this.Play_Algorithm_Choose.SelectedIndex = 0;
+            this.Play_Algorithm_Choose.ItemsSource = this.Algorithms;
         }
 
         /// <summary>
@@ -310,6 +332,11 @@
                     {
                         textbox.Text = "Sunk squares";
                     }
+
+                    if (textbox == this.Play_SquareText)
+                    {
+                        textbox.Text = "Coordinates of square to search";
+                    }
                 }
             }
         }
@@ -349,6 +376,14 @@
 
             this.Image2.Visibility = Visibility.Collapsed;
             this.Find_ShipStatus.Visibility = Visibility.Collapsed;
+
+            // PLAY
+            this.Image1.Visibility = Visibility.Hidden;
+            this.Image2.Visibility = Visibility.Hidden;
+            this.Play_Algorithm_SP.Visibility = Visibility.Hidden;
+            this.Play_SP.Visibility = Visibility.Hidden;
+            this.Image1_Label.Visibility = Visibility.Hidden;
+            this.Image2_Label.Visibility = Visibility.Hidden;
         }
 
         #endregion

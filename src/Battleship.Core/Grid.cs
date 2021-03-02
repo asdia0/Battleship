@@ -253,5 +253,28 @@
             this.AddShip(this.Squares[30], new Ship(this, 3, 1), true);
             this.AddShip(this.Squares[40], new Ship(this, 2, 1), true);
         }
+
+        public void AddShipsRandomly(List<Ship> shipList)
+        {
+            foreach (Ship ship in shipList)
+            {
+                Random rnd = new Random();
+
+                while (true)
+                {
+                    bool horizontal = false;
+
+                    if (rnd.Next(2) == 0)
+                    {
+                        horizontal = true;
+                    }
+
+                    if (this.AddShip(this.UnoccupiedSquares[rnd.Next(this.UnoccupiedSquares.Count)], new Ship(this, ship.Length, ship.Breadth), horizontal))
+                    {
+                        break;
+                    }
+                }
+            }
+        }
     }
 }

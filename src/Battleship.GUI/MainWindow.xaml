@@ -34,34 +34,49 @@
 
         <TextBlock Name="Find_ShipStatus" Height="Auto" Width="Auto" Grid.Column="0" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14"/>
 
-        <Image Name="Image1" Height="Auto" Width="{Binding Path=Height, RelativeSource={RelativeSource Self}}" Grid.Column="0" VerticalAlignment="Center" Margin="30,0,0,0"/>
-        <Image Name="Image2" Height="Auto" Width="{Binding Path=Height, RelativeSource={RelativeSource Self}}" Grid.Column="1" VerticalAlignment="Center"/>
-        <Image Name="Image3" Height="Auto" Width="{Binding Path=Height, RelativeSource={RelativeSource Self}}" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,0,30"/>
-        <StackPanel Name="Find_SP" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10,0,10,0">
-            <Label x:Name="Find_Label" Content="" Height="26" HorizontalContentAlignment="Center"/>
-            <StackPanel Name="Find_SP_Input" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10,0,10,30">
-                <ComboBox x:Name="Find_SquareStates"  Height="26" Margin="0,10,0,0" Text="Square state" IsEditable="True" IsReadOnly="True" Focusable="False"/>
-                <Button x:Name="Find_Submit" Height="26" Content="Update" Margin="0,10,0,0" Click="Find_SubmitButton_OnClick"/>
+        <StackPanel Margin="10,0,10,0" VerticalAlignment="Center" Grid.Column="0">
+            <Image Name="Image1" Height="Auto" Width="{Binding Path=Height, RelativeSource={RelativeSource Self}}"/>
+            <Label Name="Image1_Label" Content="Your grid" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+        <StackPanel Margin="10,0,10,0" VerticalAlignment="Center" Grid.Column="1">
+            <Image Name="Image2" Height="Auto" Width="{Binding Path=Height, RelativeSource={RelativeSource Self}}"/>
+            <Label Name="Image2_Label" Content="Computer's grid" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+        
+        <StackPanel Name="Find_SP" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10,0,10,0" Visibility="Hidden">
+            <Label Name="Find_Label" Content="" Height="26" HorizontalContentAlignment="Center"/>
+            <StackPanel Name="Find_SP_Input" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="0,0,0,30">
+                <ComboBox Name="Find_SquareStates"  Height="26" Margin="0,10,0,0"/>
+                <Button Name="Find_Submit" Height="26" Content="Update" Margin="0,10,0,0" Click="Find_SubmitButton_OnClick"/>
             </StackPanel>
-            <StackPanel Name="Find_Sunk_SP" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10,0,10,30">
+            <StackPanel Name="Find_Sunk_SP" Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="0,0,0,30">
                 <TextBox Name="Find_Sunk_ShipText" Height="26" Margin="0,10,0,0"/>
                 <TextBox Name="Find_Sunk_SquaresText" Height="26" Margin="0,10,0,0"/>
-                <Button x:Name="Find_Sunk_Submit" Height="26" Content="Update" Margin="0,10,0,0" Click="Find_SunkSubmitButton_OnClick"/>
-                <Label x:Name="Find_Sunk_Status" Height="26" Margin="0,10,0,0"/>
+                <Button Name="Find_Sunk_Submit" Height="26" Content="Update" Margin="0,10,0,0" Click="Find_SunkSubmitButton_OnClick"/>
+                <Label Name="Find_Sunk_Status" Height="26" Margin="0,10,0,0"/>
             </StackPanel>
-            <Button x:Name="Find_Undo" Height="26" Content="Undo" Click="Find_UndoButton_OnClick" Margin="10,0,10,0"/>
+            <Button Name="Find_Undo" Height="26" Content="Undo" Click="Find_UndoButton_OnClick"/>
         </StackPanel>
 
-        <TextBlock x:Name="Simulate_Stats" Height="Auto" Width="Auto" Grid.Column="1" VerticalAlignment="Center"/>
+        <TextBlock Name="Simulate_Stats" Height="Auto" Width="Auto" Grid.Column="1" VerticalAlignment="Center" Visibility="Hidden"/>
         
-        <StackPanel Name="Simulate_SP" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="0,30,0,0">
-            <ComboBox Name="Simulate_Algorithm1" Height="26" Margin="0,10,0,0" Text="Player 1 Algorithm" IsEditable="True" IsReadOnly="True" Focusable="False"/>
-            <ComboBox Name="Simulate_ALgorithm2" Height="26" Margin="0,10,0,0" Text="Player 2 Algorithm" IsEditable="True" IsReadOnly="True" Focusable="False"/>
+        <StackPanel Name="Simulate_SP" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="0,30,0,0" Visibility="Hidden">
+            <ComboBox Name="Simulate_Algorithm1" Height="26" Margin="0,10,0,0"/>
+            <ComboBox Name="Simulate_ALgorithm2" Height="26" Margin="0,10,0,0"/>
             <TextBox Name="Simulate_GamesText" Height="26" Margin="0,10,0,0"/>
-            <Button x:Name="Simulate_Submit" Height="26" Content="Update" Margin="0,10,0,0" Click="Simulate_SubmitButton_OnClick"/>
+            <Button Name="Simulate_Submit" Height="26" Content="Update" Margin="0,10,0,0" Click="Simulate_SubmitButton_OnClick"/>
         </StackPanel>
         <Label Name="Simulate_Status" Grid.Column="1" VerticalAlignment="Top" Margin="0,296,0,0" Height="26" HorizontalContentAlignment="Center" Width="Auto"/>
 
-
+        <StackPanel Name="Play_Algorithm_SP" Height="Auto" Width="Auto" Grid.Column="1" VerticalAlignment="Center" Visibility="Hidden">
+            <ComboBox Name="Play_Algorithm_Choose" Height="26" Margin="0,10,0,0"/>
+            <Button Name="Play_Algorithm_Submit" Height="26" Content="Submit" Margin="0,10,0,0" Click="Play_Algorithm_SubmitButton_OnClick"/>
+        </StackPanel>
+        <StackPanel Name="Play_SP" Height="Auto" Width="Auto" Grid.Column="2" VerticalAlignment="Center" Margin="10,0,10,0" Visibility="Hidden">
+            <TextBox Name="Play_SquareText" Height="26" Margin="0,10,0,0"/>
+            <Button Name="Play_Submit" Height="26" Content="Update" Margin="0,10,0,0" Click="Play_SubmitButton_OnClick"/>
+            <Label Name="Play_Status" Height="26" Margin="0,10,0,0"/>
+            <TextBlock Name="Play_ShipStats" Height="Auto" Width="Auto" Margin="0,30,0,0" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        </StackPanel>
     </Grid>
 </Window>

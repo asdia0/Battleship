@@ -75,6 +75,8 @@
                     }
                 }
 
+                this.UpdateSettings();
+
                 this.Status.Content = $"Successfully edited Ship {this.SelectedShip.ID}.";
             }
         }
@@ -102,11 +104,14 @@
                 if (alignment.Item1 != null)
                 {
                     Ship addedShip = new Ship(Settings.Grid, res.Item3, res.Item4);
+
                     Settings.Grid.AddShip(alignment.Item2, addedShip, (bool)alignment.Item1);
 
                     addedShip.Name = this.ShipName.Text;
                     addedShip.IsSunk = (bool)this.ShipIsSunk.IsChecked;
                 }
+
+                this.UpdateSettings();
 
                 this.ShipIDSource.Add(ship.ID);
                 this.Status.Content = $"Successfully added {ship.Name}.";
@@ -134,6 +139,10 @@
             this.ShipID.SelectedIndex--;
             this.Update();
             this.ShipIDSource.Remove(this.ShipIDSource[^1]);
+
+            this.UpdateSettings();
+
+            this.Status.Content = $"Successfully removed {this.SelectedShip.Name}.";
         }
 
         /// <summary>
@@ -371,6 +380,16 @@
             }
 
             return false;
+        }
+
+        private void UpdateSettings()
+        {
+            Core.Settings.ShipList.Clear();
+
+            foreach (Ship ship in Settings.Grid.Ships)
+            {
+                Core.Settings.ShipList.Add(ship);
+            }
         }
     }
 }

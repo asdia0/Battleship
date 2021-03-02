@@ -27,14 +27,14 @@
         /// <summary>
         /// Player 1's grid.
         /// </summary>
-        private Grid player1;
+        public Grid player1;
 
         /// <summary>
         /// Player 2's grid.
         /// </summary>
-        private Grid player2;
+        public Grid player2;
 
-        private bool turn = true;
+        public bool turn = true;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class.
@@ -127,49 +127,8 @@
         /// </summary>
         private void StartGame()
         {
-            List<int> shipTypes = new List<int>()
-            {
-                5,
-                4,
-                3,
-                3,
-                2,
-            };
-
-            foreach (int length in shipTypes)
-            {
-                Random rnd = new Random();
-
-                while (true)
-                {
-                    bool horizontal = false;
-
-                    if (rnd.Next(2) == 0)
-                    {
-                        horizontal = true;
-                    }
-
-                    if (this.player1.AddShip(this.player1.UnoccupiedSquares[rnd.Next(this.player1.UnoccupiedSquares.Count)], new Ship(this.player1, length, 1), horizontal))
-                    {
-                        break;
-                    }
-                }
-
-                while (true)
-                {
-                    bool horizontal = false;
-
-                    if (rnd.Next(2) == 0)
-                    {
-                        horizontal = true;
-                    }
-
-                    if (this.player2.AddShip(this.player2.UnoccupiedSquares[rnd.Next(this.player2.UnoccupiedSquares.Count)], new Ship(this.player2, length, 1), horizontal))
-                    {
-                        break;
-                    }
-                }
-            }
+            this.player1.AddShipsRandomly(Settings.ShipList);
+            this.player2.AddShipsRandomly(Settings.ShipList);
         }
 
         /// <summary>
@@ -191,7 +150,7 @@
         /// <summary>
         /// Attacks an enemy square randomly.
         /// </summary>
-        private void Random()
+        public void Random()
         {
             string playername;
             Grid p1;
@@ -230,7 +189,7 @@
         /// <summary>
         /// Attacks an enmy square that is adjacent to a hit square. Implements parity.
         /// </summary>
-        private void HuntTarget()
+        public void HuntTarget()
         {
             string playername;
             Grid p1;
@@ -288,7 +247,7 @@
         /// <summary>
         /// Attacks an enemy square based on previous searches. Searches for all enemy ships at the same time.
         /// </summary>
-        private void ProbabilityDensity()
+        public void ProbabilityDensity()
         {
             string playername;
             Square attackedSq;
@@ -493,7 +452,7 @@
         /// <param name="p1">Player 1's grid.</param>
         /// <param name="p2">Player 2's grid.</param>
         /// <param name="sq">The square to search.</param>
-        private void Search(Grid p1, Grid p2, Square sq)
+        public void Search(Grid p1, Grid p2, Square sq)
         {
             if (sq.BeenSearched)
             {
