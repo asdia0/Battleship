@@ -44,7 +44,7 @@
             this.SelectedShip = Settings.Grid.Ships[0];
 
             this.AddShip.IsEnabled = false;
-            this.RemoveShip.IsEnabled = false;
+            this.RemoveShip.IsEnabled = true;
             this.Submit.IsEnabled = true;
 
             this.Update();
@@ -172,7 +172,7 @@
                 this.RemoveShip.IsEnabled = true;
                 this.Submit.IsEnabled = true;
 
-                if (this.ShipID.SelectedIndex == 1)
+                if (this.ShipIDSource.Count == 2)
                 {
                     this.RemoveShip.IsEnabled = false;
                 }
