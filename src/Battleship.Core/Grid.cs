@@ -247,11 +247,11 @@
         /// </summary>
         public void AddDefaultShips()
         {
-            this.AddShip(this.Squares[0], new Ship(this, 5, 1), true);
-            this.AddShip(this.Squares[10], new Ship(this, 4, 1), true);
-            this.AddShip(this.Squares[20], new Ship(this, 3, 1), true);
-            this.AddShip(this.Squares[30], new Ship(this, 3, 1), true);
-            this.AddShip(this.Squares[40], new Ship(this, 2, 1), true);
+            this.AddShip(this.Squares[0], new Ship(this, 5, 1), false);
+            this.AddShip(this.Squares[1], new Ship(this, 4, 1), false);
+            this.AddShip(this.Squares[2], new Ship(this, 3, 1), false);
+            this.AddShip(this.Squares[3], new Ship(this, 3, 1), false);
+            this.AddShip(this.Squares[4], new Ship(this, 2, 1), false);
         }
 
         public void AddShipsRandomly(List<Ship> shipList)

@@ -82,9 +82,15 @@
 
             this.human = new Grid(Settings.Grid);
             this.computer = new Grid();
-            this.computer.AddShipsRandomly(Core.Settings.ShipList);
-
-            this.Play_UpdateScreen();
+            try
+            {
+                this.computer.AddShipsRandomly(Core.Settings.ShipList);
+                this.Play_UpdateScreen();
+            }
+            catch
+            {
+                this.Play_Status.Content = "Error: Grid size too small";
+            }
         }
 
         private void Play_SubmitButton_OnClick(object sender, RoutedEventArgs e)
