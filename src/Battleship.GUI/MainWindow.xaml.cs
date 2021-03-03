@@ -225,8 +225,6 @@
 
             this.Play_Algorithm_Choose.SelectedIndex = 0;
             this.Play_Algorithm_Choose.ItemsSource = this.Algorithms;
-
-            this.Play_UpdateScreen();
         }
 
         /// <summary>
