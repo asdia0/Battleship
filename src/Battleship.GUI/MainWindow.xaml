@@ -26,8 +26,8 @@
                 <MenuItem Header="Grid editor" Click="GridEditor_OnClick"/>
             </MenuItem>
             <MenuItem Header="Mode">
-                <MenuItem Header="Find" Click="Find_OnClick"/>
-                <MenuItem Header="Play" Click="Play_OnClick"/>
+                <MenuItem Header="Find" Click="Find_Start"/>
+                <MenuItem Header="Play" Click="PLay_OnClick"/>
                 <MenuItem Header="Simulate" Click="Simulate_OnClick"/>
             </MenuItem>
         </Menu>
@@ -63,9 +63,8 @@
         
         <StackPanel Name="Simulate_SP" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="0,30,0,0" Visibility="Hidden">
             <ComboBox Name="Simulate_Algorithm1" Height="26" Margin="0,10,0,0"/>
-            <ComboBox Name="Simulate_ALgorithm2" Height="26" Margin="0,10,0,0"/>
-            <TextBox Name="Simulate_GamesText" Height="26" Margin="0,10,0,0"/>
-            <Button Name="Simulate_Submit" Height="26" Content="Update" Margin="0,10,0,0" Click="Simulate_SubmitButton_OnClick"/>
+            <ComboBox Name="Simulate_Algorithm2" Height="26" Margin="0,10,0,0"/>
+            <TextBox Name="Simulate_GamesText" Height="26" Margin="0,10,0,0" KeyUp="TextBox_KeyUp"/>
         </StackPanel>
         <Label Name="Simulate_Status" Grid.Column="1" VerticalAlignment="Top" Margin="0,296,0,0" Height="26" HorizontalContentAlignment="Center" Width="Auto"/>
 
@@ -74,8 +73,7 @@
             <Button Name="Play_Algorithm_Submit" Height="26" Content="Submit" Margin="0,10,0,0" Click="Play_Algorithm_SubmitButton_OnClick"/>
         </StackPanel>
         <StackPanel Name="Play_SP" Height="Auto" Width="Auto" Grid.Column="2" VerticalAlignment="Center" Margin="10,0,10,0" Visibility="Hidden">
-            <TextBox Name="Play_SquareText" Height="26" Margin="0,10,0,0"/>
-            <Button Name="Play_Submit" Height="26" Content="Update" Margin="0,10,0,0" Click="Play_SubmitButton_OnClick"/>
+            <TextBox Name="Play_SquareText" Height="26" Margin="0,10,0,0" KeyUp="TextBox_KeyUp"/>
             <Label Name="Play_Status" Height="26" Margin="0,10,0,0" HorizontalContentAlignment="Center"/>
             <TextBlock Name="Play_ShipStats" Height="Auto" Width="Auto" Margin="0,30,0,0" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
         </StackPanel>

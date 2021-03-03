@@ -5,6 +5,7 @@
     using System.Drawing;
     using System.IO;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Media.Imaging;
 
     using Battleship.Core;
@@ -18,7 +19,7 @@
         /// <summary>
         /// The current grid to work with. Cloned from <see cref="Settings.Grid"/>.
         /// </summary>
-        public static Grid Grid;
+        public static Core.Grid Grid;
 
         /// <summary>
         /// The mode the user is currently in. True means play, false means simulate and null means find.
@@ -56,7 +57,7 @@
             this.UpdateSaveGame();
 
             Settings.Grid.AddDefaultShips();
-            Grid = new Grid(Settings.Grid);
+            Grid = new Core.Grid(Settings.Grid);
 
             foreach (Ship ship in Settings.Grid.Ships)
             {
@@ -98,7 +99,7 @@
         /// <param name="e">Event.</param>
         public void NewGame_OnClick(object sender, RoutedEventArgs e)
         {
-            Grid = new Grid(Settings.Grid);
+            Grid = new Core.Grid(Settings.Grid);
 
             this.SearchedSquares.Clear();
 
@@ -212,7 +213,7 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Play_OnClick(object sender, RoutedEventArgs e)
+        public void PLay_OnClick(object sender, RoutedEventArgs e)
         {
             this.Title = "Battleship: Play";
 
@@ -248,7 +249,7 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void Find_OnClick(object sender, RoutedEventArgs e)
+        public void Find_Start(object sender, RoutedEventArgs e)
         {
             this.Title = "Battleship: Find";
 
@@ -330,14 +331,15 @@
         private void TextBox_LostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
         {
             //Make sure sender is the correct Control.
-            if (sender is System.Windows.Controls.TextBox)
+            if (sender is TextBox)
             {
-                System.Windows.Controls.TextBox textbox = (System.Windows.Controls.TextBox)sender;
+                TextBox textbox = (TextBox)sender;
 
                 //If nothing was entered, reset default text.
-                if (((System.Windows.Controls.TextBox)sender).Text.Trim().Equals(string.Empty))
+                if (textbox.Text.Trim().Equals(string.Empty))
                 {
                     textbox.Foreground = System.Windows.Media.Brushes.Gray;
+
                     if (textbox == this.Simulate_GamesText)
                     {
                         textbox.Text = "Number of games to simulate";
@@ -363,13 +365,31 @@
 
         private void Textbox_GotKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
         {
-            if (sender is System.Windows.Controls.TextBox)
+            if (sender is TextBox)
             {
+                TextBox textbox = (TextBox)sender;
                 //If nothing has been entered yet.
-                if (((System.Windows.Controls.TextBox)sender).Foreground == System.Windows.Media.Brushes.Gray)
+                if (textbox.Foreground == System.Windows.Media.Brushes.Gray)
                 {
-                    ((System.Windows.Controls.TextBox)sender).Text = string.Empty;
-                    ((System.Windows.Controls.TextBox)sender).Foreground = System.Windows.Media.Brushes.Black;
+                    textbox.Text = string.Empty;
+                    textbox.Foreground = System.Windows.Media.Brushes.Black;
+                }
+            }
+        }
+
+        private void TextBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                TextBox textbox = (TextBox)sender;
+
+                if (textbox == this.Play_SquareText)
+                {
+                    this.Play_SubmitButton_OnClick();
+                }
+                if (textbox == this.Simulate_GamesText)
+                {
+                    this.Simulate_SubmitButton_OnClick();
                 }
             }
         }
@@ -378,14 +398,14 @@
         {
             // SIMULATE
             this.Simulate_Algorithm1.SelectedIndex = 0;
-            this.Simulate_ALgorithm2.SelectedIndex = 0;
+            this.Simulate_Algorithm2.SelectedIndex = 0;
 
             this.Simulate_Status.Content = string.Empty;
 
             this.Simulate_Stats.Visibility = Visibility.Collapsed;
 
             this.Simulate_Algorithm1.ItemsSource = this.Algorithms;
-            this.Simulate_ALgorithm2.ItemsSource = this.Algorithms;
+            this.Simulate_Algorithm2.ItemsSource = this.Algorithms;
 
             this.Simulate_SP.Visibility = Visibility.Collapsed;
 

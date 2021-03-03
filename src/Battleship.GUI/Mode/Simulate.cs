@@ -61,19 +61,14 @@
             this.Simulate_Stats.Text = $"Board Dimension: {Settings.GridHeight}x{Settings.GridWidth}\nWhite won: {player1}\nBlack won: {player2}\n\nStatistics\nMinimum: {gameMoves.Min()}\nMaximum: {gameMoves.Max()}\nAverage: {decimal.Divide(sumMoves, numberOfGames)}\nMedian: {Program.Median(gameMoves)}\nMode: {Program.Mode(gameMoves)}\n\nTime\nTotal time elapsed: {tot.Hours} hours {tot.Minutes} minutes {tot.Seconds} seconds {tot.Milliseconds} milliseconds\nAverage time elapsed: {avg.Hours} hours {avg.Minutes} minutes {avg.Seconds} seconds {avg.Milliseconds} milliseconds";
         }
 
-        /// <summary>
-        /// Fired when the Submit button is clicked.
-        /// </summary>
-        /// <param name="sender">Reference.</param>
-        /// <param name="e">Event.</param>
-        public void Simulate_SubmitButton_OnClick(object sender, RoutedEventArgs e)
+        public void Simulate_SubmitButton_OnClick()
         {
             this.Simulate_SP.Visibility = Visibility.Hidden;
 
             string numS = this.Simulate_GamesText.Text;
 
             int algo1 = this.Simulate_Algorithm1.SelectedIndex;
-            int algo2 = this.Simulate_ALgorithm2.SelectedIndex;
+            int algo2 = this.Simulate_Algorithm2.SelectedIndex;
 
             if (!int.TryParse(numS, out int num))
             {

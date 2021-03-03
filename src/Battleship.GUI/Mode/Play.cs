@@ -95,7 +95,7 @@
             }
         }
 
-        private void Play_SubmitButton_OnClick(object sender, RoutedEventArgs e)
+        private void Play_SubmitButton_OnClick()
         {
             if (Play_CanProceed())
             {
