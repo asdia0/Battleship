@@ -13,9 +13,11 @@ For prebuilt binary releases, see the [Releases](https://github.com/asdia0/Battl
 * Edit grid dimensions
 * Edit square states
 
-## Requirements
-* [Net 5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
-* [Windows Presentation Foundation](https://visualstudio.microsoft.com/vs/features/wpf/)
+## Installing
+To install the application, download the [latest release](https://github.com/asdia0/Battleship/releases) and run `download/Battleship-vX.Y.Z.exe`.
+
+### Requirements
+- Windows 10 OS
 
 ## Contributing
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the process for submitting pull requests to us.
@@ -27,9 +29,6 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 **Asdia** - *Main developer* - [asdia0](https://github.com/asdia0)  
 **Jhas** - *Emotional support* - [T-Eason](https://github.com/T-Eason)  
 **MapleTree856** - *Epic Minecrafter* - [MapleTree856](https://github.com/MapleTree856)
-
-
-See also the list of [contributors](https://github.com/asdia0/Battleship/contributors) who participated in this project.
 
 ## License
 This project is licensed under the GNU General Public License v3.0 - see [LICENSE](https://github.com/asdia0/Battleship/blob/main/LICENSE) for more details.
