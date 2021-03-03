@@ -123,6 +123,9 @@
             {
                 this.Title = "Battleship: Find";
 
+                this.Find_SquareStates.IsEnabled = true;
+                this.Find_Submit.IsEnabled = true;
+
                 this.Find();
             }
         }
@@ -237,6 +240,9 @@
 
             this.CurrentMode = null;
             this.UpdateSaveGame();
+
+            this.Find_SquareStates.IsEnabled = true;
+            this.Find_Submit.IsEnabled = true;
 
             this.Reset();
 

@@ -56,27 +56,35 @@
             this.BestSquare.BeenSearched = true;
             this.SearchedSquares.Add(this.BestSquare);
 
-            switch (this.Find_SquareStates.SelectedIndex)
+            if (this.Find_CanProceed(Grid))
             {
-                // MISS
-                case 0:
-                    this.BestSquare.BeenSearched = true;
-                    this.BestSquare.IsMiss = true;
-                    this.Find();
-                    break;
+                switch (this.Find_SquareStates.SelectedIndex)
+                {
+                    // MISS
+                    case 0:
+                        this.BestSquare.BeenSearched = true;
+                        this.BestSquare.IsMiss = true;
+                        this.Find();
+                        break;
 
-                // HIT
-                case 1:
-                    this.BestSquare.IsHit = true;
-                    this.BestSquare.HadShip = true;
-                    this.Find();
-                    break;
+                    // HIT
+                    case 1:
+                        this.BestSquare.IsHit = true;
+                        this.BestSquare.HadShip = true;
+                        this.Find();
+                        break;
 
-                // SINK
-                case 2:
-                    this.Find_SP_Input.Visibility = Visibility.Collapsed;
-                    this.Find_Sunk_SP.Visibility = Visibility.Visible;
-                    break;
+                    // SINK
+                    case 2:
+                        this.Find_SP_Input.Visibility = Visibility.Collapsed;
+                        this.Find_Sunk_SP.Visibility = Visibility.Visible;
+                        break;
+                }
+            }
+            else
+            {
+                this.Find_SquareStates.IsEnabled = false;
+                this.Find_Submit.IsEnabled = false;
             }
         }
 
@@ -144,6 +152,9 @@
             this.Find_Undo.IsEnabled = false;
 
             this.MoveCount--;
+
+            this.Find_SquareStates.IsEnabled = true;
+            this.Find_Submit.IsEnabled = true;
 
             this.Find();
         }
@@ -304,6 +315,20 @@
             {
                 return this.ColorInterp(center, end, (percentage - 0.5) / 0.5);
             }
+        }
+
+        public bool Find_CanProceed(Grid grid)
+        {
+            foreach (Ship ship in grid.Ships)
+            {
+                if (ship.GetArrangements().Count == 0)
+                {
+                    this.Find_Status.Content = "Error: Impossible position reached.";
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
