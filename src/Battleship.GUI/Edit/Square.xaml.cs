@@ -14,7 +14,7 @@
         /// <summary>
         /// Square options.
         /// </summary>
-        public ObservableCollection<int> SquareIDSource = new ObservableCollection<int>();
+        public ObservableCollection<string> SquareIDSource = new ObservableCollection<string>();
 
         /// <summary>
         /// State options.
@@ -38,9 +38,9 @@
             this.SquareState.ItemsSource = this.SquareStates;
             this.SquareID.SelectedIndex = 0;
 
-            for (int i = 0; i < (Settings.GridHeight * Settings.GridWidth); i++)
+            foreach (Square square in Settings.Grid.Squares)
             {
-                this.SquareIDSource.Add(i);
+                this.SquareIDSource.Add(square.ToCoor().ToString());
             }
 
             this.Update();
