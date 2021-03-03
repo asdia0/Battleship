@@ -25,6 +25,8 @@
 
         private Square selectedSquare;
 
+        private List<Move> moveList;
+
         private void Play()
         {
             Game game = new Game();
@@ -126,23 +128,31 @@
                     this.Play_Status.Content = "Error: Square must be represented in the following format: x,y";
                     return false;
                 }
+
+                if (1 <= x && Settings.GridWidth >= x && 1 <=y && Settings.GridHeight >= y)
+                {
+                    int id = x - 1 + ((y - 1) * (int)Settings.GridWidth);
+
+                    try
+                    {
+                        this.selectedSquare = this.computer.Squares[id];
+                        return true;
+                    }
+                    catch
+                    {
+                        this.Play_Status.Content = $"Error: {id} is an invalid ID";
+                        return false;
+                    }
+                }
+                else
+                {
+                    this.Play_Status.Content = "Error: Invalid coordinates";
+                    return false;
+                }
             }
             catch
             {
                 this.Play_Status.Content = "Error: Square must be represented in the following format: x,y";
-                return false;
-            }
-
-            int id = x - 1 + ((y - 1) * (int)Settings.GridWidth);
-
-            try
-            {
-                this.selectedSquare = this.computer.Squares[id];
-                return true;
-            }
-            catch
-            {
-                this.Play_Status.Content = $"Error: {id} is an invalid ID";
                 return false;
             }
         }
