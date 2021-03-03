@@ -112,6 +112,20 @@
                 this.Play_Algorithm_SP.Visibility = Visibility.Visible;
                 this.Play_Algorithm_Choose.SelectedIndex = 0;
                 this.Play_Algorithm_Choose.ItemsSource = this.Algorithms;
+
+                string text = "Dimensions || ID || Is Sunk";
+                foreach (Ship ship in this.computer.OriginalShips)
+                {
+                    text += $"\n{ship.Length}x{ship.Breadth} || {ship.ID} || {ship.IsSunk}";
+                }
+
+                this.Play_ShipStats.Text = text;
+
+                this.Play_Status.Content = string.Empty;
+
+                this.Play_SquareText.Clear();
+
+                this.Image1.Source = this.Image2.Source = this.BitmapToImageSource(this.GetWhiteBitmap(500, 500));
             }
             else if (this.CurrentMode == false)
             {
@@ -211,6 +225,8 @@
 
             this.Play_Algorithm_Choose.SelectedIndex = 0;
             this.Play_Algorithm_Choose.ItemsSource = this.Algorithms;
+
+            this.Play_UpdateScreen();
         }
 
         /// <summary>
