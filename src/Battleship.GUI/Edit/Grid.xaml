@@ -43,7 +43,7 @@
             <TextBox Name="GridWidth" />
         </StackPanel>
 
-        <Label Name="Status" Height="26" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="61,0,0,63" Grid.RowSpan="2" HorizontalContentAlignment="Center"/>
+        <Label Name="Status" Height="26" Grid.Column="0" Grid.ColumnSpan="5"  HorizontalAlignment="Center" VerticalAlignment="Bottom" HorizontalContentAlignment="Center"/>
 
         <StackPanel Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button Name="Submit" Content="Update" Width="50" Click="SubmitButton_OnClick"/>
