@@ -43,9 +43,9 @@
 
                 elapsedTime.Stop();
 
-                gameMoves.Add(game.Move);
+                gameMoves.Add(game.Moves);
 
-                sumMoves += game.Move;
+                sumMoves += game.Moves;
                 if (game.Winner == true)
                 {
                     winner = "Player 1";
@@ -57,7 +57,7 @@
                     player2++;
                 }
 
-                fileContent += $"{Settings.GridHeight},{Settings.GridWidth},Random,{winner},{game.Move}\n";
+                fileContent += $"{Settings.GridHeight},{Settings.GridWidth},Random,{winner},{game.Moves}\n";
 
                 totalTime += decimal.Divide(elapsedTime.ElapsedMilliseconds, 1000);
 

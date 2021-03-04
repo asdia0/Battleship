@@ -37,9 +37,9 @@
 
                 elapsedTime.Stop();
 
-                gameMoves.Add(game.Move);
+                gameMoves.Add(game.Moves);
 
-                sumMoves += game.Move;
+                sumMoves += game.Moves;
 
                 if (game.Winner == true)
                 {

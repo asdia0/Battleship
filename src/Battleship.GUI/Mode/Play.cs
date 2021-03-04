@@ -31,11 +31,11 @@
         {
             Game game = new Game();
 
-            game.player1 = this.human;
-            game.player2 = this.computer;
+            game.Player1 = this.human;
+            game.Player2 = this.computer;
 
             game.Search(this.human, this.computer, this.selectedSquare);
-            game.turn = false;
+            game.Turn = false;
 
             switch (algorithmIndex)
             {

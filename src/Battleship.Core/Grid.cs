@@ -254,6 +254,10 @@
             this.AddShip(this.Squares[4], new Ship(this, 2, 1), false);
         }
 
+        /// <summary>
+        /// Adds ships in random positions.
+        /// </summary>
+        /// <param name="shipList">List of ships to add.</param>
         public void AddShipsRandomly(List<Ship> shipList)
         {
             foreach (Ship ship in shipList)
