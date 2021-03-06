@@ -15,16 +15,34 @@
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// The string of the current played game.
+        /// </summary>
         public string GameString;
 
+        /// <summary>
+        /// The player.
+        /// </summary>
         private Grid human;
 
+        /// <summary>
+        /// The algorithm.
+        /// </summary>
         private Grid computer;
 
+        /// <summary>
+        /// Index of the user's selected algorithm.
+        /// </summary>
         private int algorithmIndex;
 
+        /// <summary>
+        /// Most recently searched square by user.
+        /// </summary>
         private Square selectedSquare;
 
+        /// <summary>
+        /// List of moves from current game.
+        /// </summary>
         private List<Move> moveList;
 
         private void Play()
@@ -37,7 +55,7 @@
             game.Search(this.human, this.computer, this.selectedSquare);
             game.Turn = false;
 
-            switch (algorithmIndex)
+            switch (this.algorithmIndex)
             {
                 // Random
                 case 0:
@@ -48,7 +66,7 @@
                 case 1:
                     game.HuntTarget();
                     break;
-                
+
                // Probability Density
                 case 2:
                     game.ProbabilityDensity();
@@ -64,6 +82,7 @@
                 MessageBox.Show("You won!", "Congratulations!");
                 this.Play_SquareText.IsEnabled = false;
             }
+
             if (!this.human.Ships.Any())
             {
                 MessageBox.Show("You lost.", "Try again next time.");
@@ -97,7 +116,7 @@
 
         private void Play_SubmitButton_OnClick()
         {
-            if (Play_CanProceed())
+            if (this.Play_CanProceed())
             {
                 try
                 {
@@ -129,7 +148,7 @@
                     return false;
                 }
 
-                if (1 <= x && Settings.GridWidth >= x && 1 <=y && Settings.GridHeight >= y)
+                if (x >= 1 && Settings.GridWidth >= x && y >= 1 && Settings.GridHeight >= y)
                 {
                     int id = x - 1 + ((y - 1) * (int)Settings.GridWidth);
 
@@ -170,7 +189,6 @@
             this.Play_Status.Content = string.Empty;
 
             this.Play_SquareText.Clear();
-
 
             // Bitmaps
             Bitmap bitmap1 = this.GetWhiteBitmap(Settings.GridWidth, Settings.GridHeight);

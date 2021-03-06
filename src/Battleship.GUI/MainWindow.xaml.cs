@@ -368,7 +368,7 @@
             if (sender is TextBox)
             {
                 TextBox textbox = (TextBox)sender;
-                //If nothing has been entered yet.
+
                 if (textbox.Foreground == System.Windows.Media.Brushes.Gray)
                 {
                     textbox.Text = string.Empty;
@@ -387,9 +387,10 @@
                 {
                     this.Play_SubmitButton_OnClick();
                 }
+
                 if (textbox == this.Simulate_GamesText)
                 {
-                    this.Simulate_SubmitButton_OnClick();
+                    this.Simulate_Submit();
                 }
             }
         }

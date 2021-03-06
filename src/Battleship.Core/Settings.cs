@@ -17,6 +17,9 @@
         /// </summary>
         public static int GridHeight = 10;
 
+        /// <summary>
+        /// List of ships on the grid.
+        /// </summary>
         public static List<Ship> ShipList = new List<Ship>();
     }
 }

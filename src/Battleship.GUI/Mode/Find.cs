@@ -317,6 +317,11 @@
             }
         }
 
+        /// <summary>
+        /// Checks if the user input is valid.
+        /// </summary>
+        /// <param name="grid">The grid.</param>
+        /// <returns>A boolean.</returns>
         public bool Find_CanProceed(Grid grid)
         {
             foreach (Ship ship in grid.Ships)

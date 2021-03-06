@@ -61,7 +61,10 @@
             this.Simulate_Stats.Text = $"Board Dimension: {Settings.GridHeight}x{Settings.GridWidth}\nWhite won: {player1}\nBlack won: {player2}\n\nStatistics\nMinimum: {gameMoves.Min()}\nMaximum: {gameMoves.Max()}\nAverage: {decimal.Divide(sumMoves, numberOfGames)}\nMedian: {Program.Median(gameMoves)}\nMode: {Program.Mode(gameMoves)}\n\nTime\nTotal time elapsed: {tot.Hours} hours {tot.Minutes} minutes {tot.Seconds} seconds {tot.Milliseconds} milliseconds\nAverage time elapsed: {avg.Hours} hours {avg.Minutes} minutes {avg.Seconds} seconds {avg.Milliseconds} milliseconds";
         }
 
-        public void Simulate_SubmitButton_OnClick()
+        /// <summary>
+        /// Submit user input.
+        /// </summary>
+        public void Simulate_Submit()
         {
             this.Simulate_SP.Visibility = Visibility.Hidden;
 

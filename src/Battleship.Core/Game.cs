@@ -34,6 +34,9 @@
         /// </summary>
         public Grid Player2;
 
+        /// <summary>
+        /// Keeps track of which player to move. True = player 1, false = player 2.
+        /// </summary>
         public bool Turn = true;
 
         /// <summary>
@@ -43,67 +46,6 @@
         {
             this.Player1 = new Grid();
             this.Player2 = new Grid();
-        }
-
-        /// <summary>
-        /// Starts a new game.
-        /// </summary>
-        public void CreateGame()
-        {
-            this.StartGame();
-
-            while (this.Player1.Ships.Count > 0 && this.Player2.Ships.Count > 0)
-            {
-                this.Random();
-            }
-
-            this.EndGame();
-        }
-
-        /// <summary>
-        /// Starts a new game.
-        /// </summary>
-        /// <param name="algorithm1">The algorithm of Player 1.</param>
-        /// <param name="algorithm2">The algorithm of Player 2.</param>
-        public void CreateGame(int algorithm1, int algorithm2)
-        {
-            this.StartGame();
-
-            while (this.Player1.Ships.Count > 0 && this.Player2.Ships.Count > 0)
-            {
-                if (this.Turn)
-                {
-                    switch (algorithm1)
-                    {
-                        case 0:
-                            this.Random();
-                            break;
-                        case 1:
-                            this.HuntTarget();
-                            break;
-                        case 2:
-                            this.ProbabilityDensity();
-                            break;
-                    }
-                }
-                else
-                {
-                    switch (algorithm2)
-                    {
-                        case 0:
-                            this.Random();
-                            break;
-                        case 1:
-                            this.HuntTarget();
-                            break;
-                        case 2:
-                            this.ProbabilityDensity();
-                            break;
-                    }
-                }
-            }
-
-            this.EndGame();
         }
 
         /// <summary>
@@ -120,31 +62,6 @@
             }
 
             return res;
-        }
-
-        /// <summary>
-        /// Sets up the game.
-        /// </summary>
-        private void StartGame()
-        {
-            this.Player1.AddShipsRandomly(Settings.ShipList);
-            this.Player2.AddShipsRandomly(Settings.ShipList);
-        }
-
-        /// <summary>
-        /// Ends the game.
-        /// </summary>
-        private void EndGame()
-        {
-            if (this.Player1.Ships.Any())
-            {
-                this.Winner = true;
-            }
-
-            if (this.Player2.Ships.Any())
-            {
-                this.Winner = false;
-            }
         }
 
         /// <summary>
@@ -368,26 +285,6 @@
         }
 
         /// <summary>
-        /// Adds squares to the target list.
-        /// </summary>
-        /// <param name="p1">Player 1.</param>
-        /// <param name="p2">Player 2.</param>
-        /// <param name="squareID">Square to check's ID.</param>
-        private void AddTargets(Grid p1, Grid p2, int squareID)
-        {
-            if (p2.Squares[squareID].BeenSearched && p2.Squares[squareID].HadShip == true && p2.Squares[squareID].IsSunk != true)
-            {
-                foreach (Square sq in p2.Squares[squareID].GetAdjacentSquares())
-                {
-                    if (!sq.BeenSearched && !p1.ToSearch.Contains(sq))
-                    {
-                        p1.ToSearch.Add(sq);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Searches a square.
         /// </summary>
         /// <param name="p1">Player 1's grid.</param>
@@ -435,6 +332,112 @@
             else
             {
                 sq.IsMiss = true;
+            }
+        }
+
+        /// <summary>
+        /// Starts a new game.
+        /// </summary>
+        public void CreateGame()
+        {
+            this.StartGame();
+
+            while (this.Player1.Ships.Count > 0 && this.Player2.Ships.Count > 0)
+            {
+                this.Random();
+            }
+
+            this.EndGame();
+        }
+
+        /// <summary>
+        /// Starts a new game.
+        /// </summary>
+        /// <param name="algorithm1">The algorithm of Player 1.</param>
+        /// <param name="algorithm2">The algorithm of Player 2.</param>
+        public void CreateGame(int algorithm1, int algorithm2)
+        {
+            this.StartGame();
+
+            while (this.Player1.Ships.Count > 0 && this.Player2.Ships.Count > 0)
+            {
+                if (this.Turn)
+                {
+                    switch (algorithm1)
+                    {
+                        case 0:
+                            this.Random();
+                            break;
+                        case 1:
+                            this.HuntTarget();
+                            break;
+                        case 2:
+                            this.ProbabilityDensity();
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (algorithm2)
+                    {
+                        case 0:
+                            this.Random();
+                            break;
+                        case 1:
+                            this.HuntTarget();
+                            break;
+                        case 2:
+                            this.ProbabilityDensity();
+                            break;
+                    }
+                }
+            }
+
+            this.EndGame();
+        }
+
+        /// <summary>
+        /// Sets up the game.
+        /// </summary>
+        private void StartGame()
+        {
+            this.Player1.AddShipsRandomly(Settings.ShipList);
+            this.Player2.AddShipsRandomly(Settings.ShipList);
+        }
+
+        /// <summary>
+        /// Ends the game.
+        /// </summary>
+        private void EndGame()
+        {
+            if (this.Player1.Ships.Any())
+            {
+                this.Winner = true;
+            }
+
+            if (this.Player2.Ships.Any())
+            {
+                this.Winner = false;
+            }
+        }
+
+        /// <summary>
+        /// Adds squares to the target list.
+        /// </summary>
+        /// <param name="p1">Player 1.</param>
+        /// <param name="p2">Player 2.</param>
+        /// <param name="squareID">Square to check's ID.</param>
+        private void AddTargets(Grid p1, Grid p2, int squareID)
+        {
+            if (p2.Squares[squareID].BeenSearched && p2.Squares[squareID].HadShip == true && p2.Squares[squareID].IsSunk != true)
+            {
+                foreach (Square sq in p2.Squares[squareID].GetAdjacentSquares())
+                {
+                    if (!sq.BeenSearched && !p1.ToSearch.Contains(sq))
+                    {
+                        p1.ToSearch.Add(sq);
+                    }
+                }
             }
         }
 
