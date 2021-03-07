@@ -113,6 +113,8 @@
                 this.Play_Algorithm_Choose.ItemsSource = this.Algorithms;
 
                 string text = "Dimensions || ID || Is Sunk";
+                this.human = new Core.Grid(Grid);
+                this.computer = new Core.Grid();
                 foreach (Ship ship in this.computer.OriginalShips)
                 {
                     text += $"\n{ship.Length}x{ship.Breadth} || {ship.ID} || {ship.IsSunk}";
