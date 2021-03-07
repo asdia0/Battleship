@@ -54,7 +54,6 @@
             this.InitializeComponent();
 
             Application.Current.MainWindow.WindowState = WindowState.Maximized;
-            this.UpdateSaveGame();
 
             Settings.Grid.AddDefaultShips();
             Grid = new Core.Grid(Settings.Grid);
@@ -103,7 +102,6 @@
 
             this.SearchedSquares.Clear();
 
-            this.UpdateSaveGame();
             this.Reset();
 
             if (this.CurrentMode == true)
@@ -193,7 +191,6 @@
 
             this.CurrentMode = true;
 
-            this.UpdateSaveGame();
             this.Reset();
 
             this.Play_Algorithm_SP.Visibility = Visibility.Visible;
@@ -212,7 +209,7 @@
             this.Title = "Battleship: Simulate";
 
             this.CurrentMode = false;
-            this.UpdateSaveGame();
+
             this.Reset();
 
             this.Simulate_SP.Visibility = Visibility.Visible;
@@ -228,7 +225,6 @@
             this.Title = "Battleship: Find";
 
             this.CurrentMode = null;
-            this.UpdateSaveGame();
 
             this.Find_SquareStates.IsEnabled = true;
             this.Find_Submit.IsEnabled = true;
@@ -241,21 +237,6 @@
 
         // METHODS
         #region
-
-        /// <summary>
-        /// Enables or disables the Save Game button depending on whether the user in Play mode.
-        /// </summary>
-        public void UpdateSaveGame()
-        {
-            if (this.CurrentMode == true)
-            {
-                this.SaveGame.IsEnabled = true;
-            }
-            else
-            {
-                this.SaveGame.IsEnabled = false;
-            }
-        }
 
         /// <summary>
         /// Converts a Bitmap to an Image Source.
