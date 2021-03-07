@@ -5,10 +5,9 @@ For prebuilt binary releases, see the [Releases](https://github.com/asdia0/Battl
 
 ## Features
 * Game simulator
-* Play against the computer from any position
+* Play against the computer
 * Find the best square to search
 * Probability heat map
-* Singleplayer and Multiplayer
 * Add and edit ships
 * Edit grid dimensions
 * Edit square states
@@ -18,6 +17,9 @@ To install the application, download the [latest release](https://github.com/asd
 
 ### Requirements
 - Windows 10 OS
+
+## Documentation
+All documentation can be found [here](https://github.com/asdia0/Battleship/tree/main/documentation).
 
 ## Contributing
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the process for submitting pull requests to us.
