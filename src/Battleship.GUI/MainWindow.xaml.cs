@@ -145,23 +145,6 @@
             }
         }
 
-        /// <summary>
-        /// Fired when the Save Game button is clicked.
-        /// </summary>
-        /// <param name="sender">Reference.</param>
-        /// <param name="e">Event.</param>
-        public void SaveGame_OnClick(object sender, RoutedEventArgs e)
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
-            saveFileDialog.FilterIndex = 1;
-
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                File.WriteAllText(saveFileDialog.FileName, this.GameString);
-            }
-        }
-
         // EDIT
 
         /// <summary>

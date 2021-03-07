@@ -14,15 +14,11 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <Menu IsMainMenu="True" Grid.ColumnSpan="3">
-            <MenuItem Header="File">
-                <MenuItem Header="New game" Click="NewGame_OnClick"/>
-                <MenuItem Name="SaveGame" Header="Save game" Click="SaveGame_OnClick"/>
-
-            </MenuItem>
-            <MenuItem Header="Edit">
-                <MenuItem Header="Ship editor" Click="ShipEditor_OnClick"/>
-                <MenuItem Header="Square editor" Click="SquareEditor_OnClick"/>
-                <MenuItem Header="Grid editor" Click="GridEditor_OnClick"/>
+            <MenuItem Header="New game" Click="NewGame_OnClick"/>
+            <MenuItem Header="Editors">
+                <MenuItem Header="Ship" Click="ShipEditor_OnClick"/>
+                <MenuItem Header="Square" Click="SquareEditor_OnClick"/>
+                <MenuItem Header="Grid" Click="GridEditor_OnClick"/>
             </MenuItem>
             <MenuItem Header="Mode">
                 <MenuItem Header="Find" Click="Find_Start"/>

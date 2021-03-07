@@ -16,11 +16,6 @@
     public partial class MainWindow : Window
     {
         /// <summary>
-        /// The string of the current played game.
-        /// </summary>
-        public string GameString;
-
-        /// <summary>
         /// The player.
         /// </summary>
         private Grid human;
@@ -39,11 +34,6 @@
         /// Most recently searched square by user.
         /// </summary>
         private Square selectedSquare;
-
-        /// <summary>
-        /// List of moves from current game.
-        /// </summary>
-        private List<Move> moveList;
 
         private void Play()
         {
@@ -72,8 +62,6 @@
                     game.ProbabilityDensity();
                     break;
             }
-
-            this.GameString = game.ToString();
 
             this.Play_UpdateScreen();
 
