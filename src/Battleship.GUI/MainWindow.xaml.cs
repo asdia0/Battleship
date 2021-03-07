@@ -368,6 +368,9 @@
             this.Simulate_SP.Visibility = Visibility.Collapsed;
 
             // FIND
+            this.Find_Status.Content = string.Empty;
+            this.Find_Sunk_Status.Content = string.Empty;
+
             this.Find_SquareStates.ItemsSource = this.SquareStates;
 
             this.Find_SP.Visibility = Visibility.Collapsed;

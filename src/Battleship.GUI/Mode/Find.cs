@@ -40,21 +40,12 @@
         /// <param name="e">Event.</param>
         public void Find_SubmitButton_OnClick(object sender, RoutedEventArgs e)
         {
-            this.MoveCount++;
+            this.Find_Status.Content = string.Empty;
 
             if (this.MoveCount > 0)
             {
                 this.Find_Undo.IsEnabled = true;
             }
-
-            this.PreviousGrid = new Grid(Grid);
-
-            Grid.ToSearch.Remove(this.BestSquare);
-            Grid.ToAttack.Remove(this.BestSquare);
-            Grid.UnsearchedSquares.Remove(this.BestSquare);
-
-            this.BestSquare.BeenSearched = true;
-            this.SearchedSquares.Add(this.BestSquare);
 
             if (this.Find_CanProceed(Grid))
             {
@@ -83,6 +74,7 @@
             }
             else
             {
+                this.Find_Status.Content = "Error: Invalid input.";
                 this.Find_SquareStates.IsEnabled = false;
                 this.Find_Submit.IsEnabled = false;
             }
@@ -95,21 +87,79 @@
         /// <param name="e">Event.</param>
         public void Find_SunkSubmitButton_OnClick(object sender, RoutedEventArgs e)
         {
+            this.Find_Sunk_Status.Content = string.Empty;
+
             string raw = this.Find_Sunk_SquaresText.Text;
             string shipIDS = this.Find_Sunk_ShipText.Text;
 
             if (!int.TryParse(shipIDS, out int shipID))
             {
                 this.Find_Sunk_Status.Content = "Error: Ship ID should be an integer.";
+                return;
             }
 
             if (Grid.OriginalShips.Count - 1 < shipID)
             {
                 this.Find_Sunk_Status.Content = "Error: No ship was found.";
+                return;
             }
 
+            // test out input
+            Grid dummy = new Grid(Grid);
+
             string[] xy = raw.Replace(")", string.Empty).Split(",(");
-            Ship ship = Grid.OriginalShips[shipID];
+            Ship ship = dummy.OriginalShips[shipID];
+
+            ship.OriginalOccupiedSquares.Clear();
+
+            foreach (string xys in xy)
+            {
+                string s = xys.Replace("(", string.Empty);
+                int x = int.Parse(s.Split(",")[0]);
+                int y = int.Parse(s.Split(",")[1]);
+
+                int sqID1 = ((y - 1) * Settings.GridWidth) + x - 1;
+
+                ship.OriginalOccupiedSquares.Add(dummy.Squares[sqID1]);
+            }
+
+            foreach (Square square in ship.OriginalOccupiedSquares)
+            {
+                square.IsSunk = true;
+                square.HadShip = true;
+                square.IsHit = false;
+            }
+
+            ship.IsSunk = true;
+            dummy.Ships.Remove(ship);
+
+            int sunkSquares = 0;
+            int sunkShips = 0;
+
+            foreach (Square sq in dummy.Squares)
+            {
+                if (sq.IsSunk == true)
+                {
+                    sunkSquares++;
+                }
+            }
+
+            foreach (Ship ship2 in dummy.OriginalShips)
+            {
+                if (ship2.IsSunk == true)
+                {
+                    sunkShips += ship2.Length;
+                }
+            }
+
+            if (sunkShips != sunkSquares)
+            {
+                this.Find_Sunk_Status.Content = "Error: Sunk squares do not match.";
+                return;
+            }
+
+            string[] xy1 = raw.Replace(")", string.Empty).Split(",(");
+            Ship ship1 = Grid.OriginalShips[shipID];
 
             ship.OriginalOccupiedSquares.Clear();
 
@@ -140,6 +190,16 @@
             this.Find();
         }
 
+        public void Find_SunkCancelButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.Find_SP_Input.Visibility = Visibility.Visible;
+            this.Find_Sunk_SP.Visibility = Visibility.Collapsed;
+
+            this.Find_Sunk_ShipText.Clear();
+            this.Find_Sunk_SquaresText.Clear();
+            this.Find_Sunk_Status.Content = string.Empty;
+        }
+
         /// <summary>
         /// Fired when the Undo button is clicked.
         /// </summary>
@@ -164,11 +224,6 @@
         /// </summary>
         public void Find()
         {
-            if (this.MoveCount == 0)
-            {
-                this.Find_Undo.IsEnabled = false;
-            }
-
             Grid.ToSearch.Clear();
             foreach (Square sq1 in Grid.Squares)
             {
@@ -248,6 +303,17 @@
             bitmap.SetPixel(this.BestSquare.ToCoor().Item1 - 1, this.BestSquare.ToCoor().Item2 - 1, Color.FromArgb(66, 155, 66));
 
             this.Image2.Source = this.BitmapToImageSource(this.ResizeBitmap(bitmap, 500, 500));
+
+            this.MoveCount++;
+
+            this.PreviousGrid = Grid;
+
+            Grid.ToSearch.Remove(this.BestSquare);
+            Grid.ToAttack.Remove(this.BestSquare);
+            Grid.UnsearchedSquares.Remove(this.BestSquare);
+
+            this.BestSquare.BeenSearched = true;
+            this.SearchedSquares.Add(this.BestSquare);
         }
 
         /// <summary>
