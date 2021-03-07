@@ -16,7 +16,6 @@
         <Menu IsMainMenu="True" Grid.ColumnSpan="3">
             <MenuItem Header="File">
                 <MenuItem Header="New game" Click="NewGame_OnClick"/>
-                <MenuItem Header="Load game" Click="LoadGame_OnClick"/>
                 <MenuItem Name="SaveGame" Header="Save game" Click="SaveGame_OnClick"/>
 
             </MenuItem>

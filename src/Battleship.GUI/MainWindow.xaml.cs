@@ -146,15 +146,6 @@
         }
 
         /// <summary>
-        /// Fired when the Load Game button is clicked.
-        /// </summary>
-        /// <param name="sender">Reference.</param>
-        /// <param name="e">Event.</param>
-        public void LoadGame_OnClick(object sender, RoutedEventArgs e)
-        {
-        }
-
-        /// <summary>
         /// Fired when the Save Game button is clicked.
         /// </summary>
         /// <param name="sender">Reference.</param>
