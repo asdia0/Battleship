@@ -44,9 +44,8 @@
                     Settings.GridWidth = Core.Settings.GridWidth = (int)width;
 
                     Settings.Grid = new Grid();
-                    Settings.Grid.AddDefaultShips();
 
-                    MainWindow.Grid = new Grid(Settings.Grid);
+                    MainWindow.Grid = new Grid();
 
                     this.Status.Content = "Successfully edited grid.";
 
