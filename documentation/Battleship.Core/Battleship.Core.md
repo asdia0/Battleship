@@ -1,6 +1,6 @@
 # Battleship.Core Namespace
 
-Contains logical classes for the gmae Battleship.
+Contains logical classes for the game Battleship.
 
 ## Classes
 
