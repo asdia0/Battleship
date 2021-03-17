@@ -20,6 +20,14 @@
         private static int player2 = 0;
 
         /// <summary>
+        /// The entry point of the program.
+        /// </summary>
+        public static void Main()
+        {
+            Simulate(100);
+        }
+
+        /// <summary>
         /// Simulates a number of games.
         /// </summary>
         /// <param name="numberOfGames">Number of games to simulate.</param>
@@ -39,7 +47,7 @@
                 elapsedTime.Start();
 
                 Game game = new Game();
-                game.CreateGame();
+                game.CreateGame(2, 2);
 
                 elapsedTime.Stop();
 
@@ -65,7 +73,7 @@
                 TimeSpan tot = TimeSpan.FromSeconds((double)totalTime);
 
                 Console.Clear();
-                Console.WriteLine($"Percent complete: {decimal.Divide(i + 1, numberOfGames) * 100}\nCurrent Dimension: {Settings.GridHeight}x{Settings.GridWidth}\nWhite won: {player1}\nBlack won: {player2}\n\nStatistics\nMinimum: {gameMoves.Min()}\nMaximum: {gameMoves.Max()}\nAverage: {decimal.Divide(sumMoves, i + 1)}\nMedian: {Median(gameMoves)}\nMode: {Mode(gameMoves)}\n\nTime\nTotal time elapsed: {tot.Hours} hours {tot.Minutes} minutes {tot.Seconds} seconds {tot.Milliseconds} milliseconds\nAverage time elapsed: {avg.Hours} hours {avg.Minutes} minutes {avg.Seconds} seconds {avg.Milliseconds} milliseconds");
+                Console.WriteLine($"Dimension: {Settings.GridHeight}x{Settings.GridWidth}\nWhite won: {player1}\nBlack won: {player2}\n\nStatistics\nMinimum: {gameMoves.Min()}\nMaximum: {gameMoves.Max()}\nAverage: {decimal.Divide(sumMoves, i + 1)}\nMedian: {Median(gameMoves)}\nMode: {Mode(gameMoves)}\n\nTime\nTotal time elapsed: {tot.Hours} hours {tot.Minutes} minutes {tot.Seconds} seconds {tot.Milliseconds} milliseconds\nAverage time elapsed: {avg.Hours} hours {avg.Minutes} minutes {avg.Seconds} seconds {avg.Milliseconds} milliseconds");
             }
 
             //using (StreamWriter outputFile = File.AppendText("HTTest1.csv"))
@@ -375,14 +383,6 @@
                         break;
                 }
             }
-        }
-
-        /// <summary>
-        /// The entry point of the program.
-        /// </summary>
-        public static void Main()
-        {
-            Simulate(100);
         }
 
         /// <summary>

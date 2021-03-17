@@ -108,6 +108,7 @@
         /// </summary>
         public void HuntTarget()
         {
+            Square attackedSquare;
             string playername;
             Grid p1;
             Grid p2;
@@ -125,39 +126,31 @@
                 p2 = this.Player1;
             }
 
-            // HUNT
+            this.UpdateToSearch(p1, p2);
+
             if (p1.ToSearch.Count == 0)
             {
-                Square attackedSq = p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
-
-                this.Search(p1, p2, attackedSq);
-
-                this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
-
-                if (attackedSq.HadShip == false)
-                {
-                    this.Turn ^= true;
-                }
+                // HUNT
+                attackedSquare = p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
             }
-
-            // TARGET
             else
             {
-                Square attackedSq = p1.ToSearch.First();
+                // TARGET
+                attackedSquare = p1.ToSearch.ToList()[new Random().Next(p1.ToSearch.Count)];
+            }
 
-                this.Search(p1, p2, attackedSq);
+            this.Search(p1, p2, attackedSquare);
 
-                this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
+            this.MoveList.Add(new Move(playername, attackedSquare.ToCoor()));
 
-                if (attackedSq.HadShip != true)
+            if (attackedSquare.HadShip != true)
+            {
+                if (this.Turn)
                 {
-                    if (this.Turn)
-                    {
-                        this.Moves++;
-                    }
-
-                    this.Turn ^= true;
+                    this.Moves++;
                 }
+
+                this.Turn ^= true;
             }
         }
 
@@ -167,7 +160,6 @@
         public void ProbabilityDensity()
         {
             string playername;
-            Square attackedSq;
             Grid p1;
             Grid p2;
 
@@ -185,95 +177,139 @@
             }
 
             /*
-             * DEFINITE
-             * 1. If a 'hit' square is surrounded by misses in 3 directions, there must be a ship pointing in the fourth direction.
-             * 2. If a certain spot on the board could only hold one certain ship, no other ships can cross any of those squares.
+             * MUST
+             * 1. A hit square only has 1 unsearched adjacent square
+             * 2. A ship only has 1 possible arrangement
 
-             * DISQUALIFY
-             * 3. Misses and sunk ships are obstructions
+             * MIGHT
+             * 3. A square has a hit adjacent square
+             * 
+             * MUST NOT
              * 4. Ships that are not sunk can't be located entirely on 'hit' squares.
              */
 
-            foreach (Square sq in p2.Squares)
+            // 1. A hit square only has 1 unsearched adjacent square
+            foreach (Square square in p2.Squares)
             {
-                this.TooManyMisses(p1, sq);
+                if (square.IsHit != true)
+                {
+                    continue;
+                }
+
+                List<Square> unsearchedSquares = new List<Square>();
+
+                foreach (Square adjSquare in square.GetAdjacentSquares())
+                {
+                    if (!adjSquare.BeenSearched)
+                    {
+                        unsearchedSquares.Add(adjSquare);
+                    }
+                }
+
+                if (unsearchedSquares.Count == 1)
+                {
+                    Square attackSq = unsearchedSquares[0];
+                    this.Search(p1, p2, attackSq);
+
+                    this.MoveList.Add(new Move(playername, attackSq.ToCoor()));
+
+                    if (attackSq.HadShip != true)
+                    {
+                        if (this.Turn)
+                        {
+                            this.Moves++;
+                        }
+
+                        this.Turn ^= true;
+                    }
+
+                    return;
+                }
             }
 
-            // 2.
-            this.OnlyOneArrangement(p1, p2);
-
-            if (p1.ToAttack.Any())
+            // 2. A ship only has 1 possible arrangement
+            foreach (Ship ship in p2.Ships)
             {
-                attackedSq = Program.HighestHCS(p1.ToAttack.ToList()).First();
+                List<List<int>> arrangements = ship.GetArrangements();
+
+                if (arrangements.Count == 1)
+                {
+                    foreach (int squareID in arrangements[0])
+                    {
+                        Square square = p2.Squares[squareID];
+                        if (!square.BeenSearched)
+                        {
+                            this.Search(p1, p2, square);
+
+                            this.MoveList.Add(new Move(playername, square.ToCoor()));
+
+                            if (square.HadShip != true)
+                            {
+                                if (this.Turn)
+                                {
+                                    this.Moves++;
+                                }
+
+                                this.Turn ^= true;
+                            }
+
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // 3. A square has a hit adjacent square
+            this.UpdateToSearch(p1, p2);
+
+            Dictionary<Square, int> probability = new Dictionary<Square, int>();
+
+            if (p1.ToSearch.Count == 0)
+            {
+                // All unsearched squares
+
+                foreach (Square square in p2.Squares)
+                {
+                    {
+                        if (!square.BeenSearched)
+                        {
+                            probability.Add(square, 0);
+                        }
+                    }
+                }
             }
             else
             {
-                Dictionary<int, double> probability = new Dictionary<int, double>();
+                // All squares in .ToSearch()
 
-                // domain: unsearched squares
-                if (!p1.ToSearch.Any())
+                foreach (Square square in p1.ToSearch)
                 {
-                    List<Square> l = Program.HighestHCS(p2.UnsearchedSquares);
-
-                    foreach (Square sq in l)
-                    {
-                        probability.Add(sq.ID, 0);
-                    }
-
-                    foreach (Ship ship in p2.Ships)
-                    {
-                        List<List<int>> arrL = ship.GetArrangements();
-                        foreach (List<int> arr in arrL)
-                        {
-                            foreach (int sqID in arr)
-                            {
-                                if (l.Contains(p2.Squares[sqID]))
-                                {
-                                    probability[sqID] += (double)decimal.Divide(1, arrL.Count);
-                                }
-                            }
-                        }
-                    }
+                    probability.Add(square, 0);
                 }
-
-                // domain: squares adjacent to hit squares
-                else
-                {
-                    List<Square> l = Program.HighestHCS(p1.ToSearch.ToList());
-
-                    foreach (Square sq in l)
-                    {
-                        probability.Add(sq.ID, 0);
-                    }
-
-                    foreach (Ship ship in p2.Ships)
-                    {
-                        List<List<int>> arrL = ship.GetArrangements();
-                        foreach (List<int> arr in arrL)
-                        {
-                            foreach (int sqID in arr)
-                            {
-                                if (l.Contains(p2.Squares[sqID]))
-                                {
-                                    probability[sqID]++;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                double[] source = probability.Values.ToArray();
-                int i = 0;
-                double[][] result = source.GroupBy(s => i++ / 10).Select(g => g.ToArray()).ToArray();
-
-                attackedSq = p2.Squares[(int)probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key];
             }
 
-            this.Search(p1, p2, attackedSq);
+            foreach (Ship ship in p2.Ships)
+            {
+                foreach (List<int> arrangement in ship.GetArrangements())
+                {
+                    foreach (int squareID in arrangement)
+                    {
+                        Square sq = p2.Squares[squareID];
+                        if (probability.ContainsKey(sq))
+                        {
+                            probability[sq]++;
+                        }
+                    }
+                }
+            }
 
-            this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
+            Square attackedSquare = probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
 
-            if (attackedSq.HadShip != true)
+            this.Search(p1, p2, attackedSquare);
+
+            this.MoveList.Add(new Move(playername, attackedSquare.ToCoor()));
+
+            if (attackedSquare.HadShip != true)
             {
                 if (this.Turn)
                 {
@@ -299,8 +335,6 @@
 
             sq.BeenSearched = true;
             p2.UnsearchedSquares.Remove(sq);
-            p1.ToAttack.Remove(sq);
-            p1.ToSearch.Remove(sq);
 
             if (sq.HasShip == true)
             {
@@ -441,56 +475,25 @@
             }
         }
 
-        private void TooManyMisses(Grid p1, Square sq)
+        private void UpdateToSearch(Grid p1, Grid p2)
         {
-            if (sq.HadShip == true && sq.IsSunk != true)
+            p1.ToSearch.Clear();
+
+            foreach (Square square in p2.Squares)
             {
-                List<int> sqID = new List<int>()
+                if (square.IsHit != true)
                 {
-                    sq.ID - 1,
-                    sq.ID + 1,
-                    sq.ID - Settings.GridWidth,
-                    sq.ID + Settings.GridWidth,
-                };
-
-                List<Square> potentialSqs = new List<Square>();
-
-                foreach (int id in sqID)
-                {
-                    if (id > -1 && id < (Settings.GridHeight * Settings.GridWidth))
-                    {
-                        // is a valid square if it has not been searched
-                        if (!sq.Grid.Squares[id].BeenSearched)
-                        {
-                            potentialSqs.Add(sq.Grid.Squares[id]);
-                        }
-                    }
+                    continue;
                 }
 
-                if (potentialSqs.Count == 1)
+                foreach (Square adjSquare in square.GetAdjacentSquares())
                 {
-                    p1.ToAttack.Add(potentialSqs.First());
-                }
-            }
-        }
-
-        private void OnlyOneArrangement(Grid p1, Grid p2)
-        {
-            foreach (Ship ship in p2.Ships)
-            {
-                List<List<int>> arrL = ship.GetArrangements();
-
-                if (arrL.Count == 1)
-                {
-                    foreach (int sqID in arrL.First())
+                    if (p1.ToSearch.Contains(adjSquare) || adjSquare.BeenSearched)
                     {
-                        Square sq = p2.Squares[sqID];
-
-                        if (!sq.BeenSearched && !p1.ToAttack.Contains(sq))
-                        {
-                            p1.ToAttack.Add(sq);
-                        }
+                        continue;
                     }
+
+                    p1.ToSearch.Add(adjSquare);
                 }
             }
         }

@@ -20,6 +20,13 @@
         /// <summary>
         /// List of ships on the grid.
         /// </summary>
-        public static List<Ship> ShipList = new List<Ship>();
+        public static List<Ship> ShipList = new List<Ship>
+        {
+            new Ship(0, 5, 1),
+            new Ship(1, 4, 1),
+            new Ship(2, 3, 1),
+            new Ship(3, 3, 1),
+            new Ship(4, 2, 1),
+        };
     }
 }
