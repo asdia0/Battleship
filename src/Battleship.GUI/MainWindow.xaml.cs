@@ -58,11 +58,6 @@
             Settings.Grid.AddDefaultShips();
             Grid = new Core.Grid(Settings.Grid);
 
-            foreach (Ship ship in Settings.Grid.Ships)
-            {
-                Core.Settings.ShipList.Add(ship);
-            }
-
             this.Simulate_GamesText.Foreground = System.Windows.Media.Brushes.Gray;
             this.Simulate_GamesText.Text = "Number of games to simulate";
             this.Simulate_GamesText.GotKeyboardFocus += new System.Windows.Input.KeyboardFocusChangedEventHandler(this.Textbox_GotKeyboardFocus);
