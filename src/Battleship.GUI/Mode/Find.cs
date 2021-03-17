@@ -252,7 +252,7 @@
             this.Find_Sunk_SP.Visibility = Visibility.Collapsed;
 
             // Find Best Square
-            (Square sq, Dictionary<int, int> prob) = Program.FindBestSquare(Grid);
+            (Square sq, Dictionary<Square, int> prob) = Program.FindBestSquare(Grid);
 
             this.BestSquare = sq;
 
@@ -270,11 +270,19 @@
             // Update Image
             Bitmap bitmap = new Bitmap(Settings.GridWidth, Settings.GridHeight);
 
+            foreach (Square square in Grid.Squares)
+            {
+                if (!prob.ContainsKey(square))
+                {
+                    prob.Add(square, 0);
+                }
+            }
+
             for (var x = 0; x < bitmap.Width; x++)
             {
                 for (var y = 0; y < bitmap.Height; y++)
                 {
-                    double percentage = (double)decimal.Divide(prob[x + (y * Settings.GridWidth)], prob.Values.Max());
+                    double percentage = (double)decimal.Divide(prob[Grid.Squares[x + (y * Settings.GridWidth)]], prob.Values.Max());
 
                     Color start = Color.FromArgb(1, 84, 90);
                     Color center = Color.FromArgb(57, 122, 126);
