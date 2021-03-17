@@ -22,7 +22,7 @@
             </MenuItem>
             <MenuItem Header="Mode">
                 <MenuItem Header="Find" Click="Find_Start"/>
-                <MenuItem Header="Play" Click="PLay_OnClick"/>
+                <MenuItem Header="Play" Click="Play_OnClick"/>
                 <MenuItem Header="Simulate" Click="Simulate_OnClick"/>
             </MenuItem>
         </Menu>

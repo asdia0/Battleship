@@ -47,36 +47,35 @@
                 this.Find_Undo.IsEnabled = true;
             }
 
-            if (this.Find_CanProceed(Grid))
-            {
-                switch (this.Find_SquareStates.SelectedIndex)
-                {
-                    // MISS
-                    case 0:
-                        this.BestSquare.BeenSearched = true;
-                        this.BestSquare.IsMiss = true;
-                        this.Find();
-                        break;
-
-                    // HIT
-                    case 1:
-                        this.BestSquare.IsHit = true;
-                        this.BestSquare.HadShip = true;
-                        this.Find();
-                        break;
-
-                    // SINK
-                    case 2:
-                        this.Find_SP_Input.Visibility = Visibility.Collapsed;
-                        this.Find_Sunk_SP.Visibility = Visibility.Visible;
-                        break;
-                }
-            }
-            else
+            if (!this.Find_CanProceed(Grid))
             {
                 this.Find_Status.Content = "Error: Invalid input.";
                 this.Find_SquareStates.IsEnabled = false;
                 this.Find_Submit.IsEnabled = false;
+                return;
+            }
+
+            switch (this.Find_SquareStates.SelectedIndex)
+            {
+                // MISS
+                case 0:
+                    this.BestSquare.BeenSearched = true;
+                    this.BestSquare.IsMiss = true;
+                    this.Find();
+                    break;
+
+                // HIT
+                case 1:
+                    this.BestSquare.IsHit = true;
+                    this.BestSquare.HadShip = true;
+                    this.Find();
+                    break;
+
+                // SINK
+                case 2:
+                    this.Find_SP_Input.Visibility = Visibility.Collapsed;
+                    this.Find_Sunk_SP.Visibility = Visibility.Visible;
+                    break;
             }
         }
 
@@ -190,6 +189,11 @@
             this.Find();
         }
 
+        /// <summary>
+        /// Fired when the Sunk Cancel button is clicked.
+        /// </summary>
+        /// <param name="sender">Reference.</param>
+        /// <param name="e">Event.</param>
         public void Find_SunkCancelButton_OnClick(object sender, RoutedEventArgs e)
         {
             this.Find_SP_Input.Visibility = Visibility.Visible;
@@ -207,6 +211,7 @@
         /// <param name="e">Event.</param>
         public void Find_UndoButton_OnClick(object sender, RoutedEventArgs e)
         {
+            // TODO: Squares turn white after an undo.
             Grid = this.PreviousGrid;
 
             this.Find_Undo.IsEnabled = false;
@@ -317,23 +322,23 @@
         }
 
         /// <summary>
-        /// Clamp a value to 0-255.
+        /// Checks if the user input is valid.
         /// </summary>
-        /// <param name="i">Integer to clamp.</param>
-        /// <returns>An integer from 0 to 255.</returns>
-        public int Clamp(int i)
+        /// <param name="grid">The grid.</param>
+        /// <returns>A boolean.</returns>
+        public bool Find_CanProceed(Grid grid)
         {
-            if (i < 0)
+            // TODO: Determine impossible positions (eg. hit square (group) surrounded completely).
+            foreach (Ship ship in grid.Ships)
             {
-                return 0;
+                if (ship.GetArrangements().Count == 0)
+                {
+                    this.Find_Status.Content = "Error: Impossible position reached.";
+                    return false;
+                }
             }
 
-            if (i > 255)
-            {
-                return 255;
-            }
-
-            return i;
+            return true;
         }
 
         /// <summary>
@@ -381,25 +386,6 @@
             {
                 return this.ColorInterp(center, end, (percentage - 0.5) / 0.5);
             }
-        }
-
-        /// <summary>
-        /// Checks if the user input is valid.
-        /// </summary>
-        /// <param name="grid">The grid.</param>
-        /// <returns>A boolean.</returns>
-        public bool Find_CanProceed(Grid grid)
-        {
-            foreach (Ship ship in grid.Ships)
-            {
-                if (ship.GetArrangements().Count == 0)
-                {
-                    this.Find_Status.Content = "Error: Impossible position reached.";
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }

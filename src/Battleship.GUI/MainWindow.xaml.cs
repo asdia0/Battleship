@@ -187,7 +187,7 @@
         /// </summary>
         /// <param name="sender">Reference.</param>
         /// <param name="e">Event.</param>
-        public void PLay_OnClick(object sender, RoutedEventArgs e)
+        public void Play_OnClick(object sender, RoutedEventArgs e)
         {
             this.Title = "Battleship: Play";
 
