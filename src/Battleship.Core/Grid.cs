@@ -89,47 +89,11 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Grid"/> class from a string.
-        /// </summary>
-        /// <param name="format">The string to convert the grid from.</param>
-        public Grid(string format)
-        {
-            // . = unsearched
-            // ' = miss
-            // O = hit
-            // @ = sunk
-            this.AddSquares();
-
-            for (int i = 0; i < format.Count(); i++)
-            {
-                char c = format.ToCharArray()[i];
-
-                switch (c)
-                {
-                    case 'O':
-                        this.Squares[i].HadShip = true;
-                        this.Squares[i].BeenSearched = true;
-                        this.UnoccupiedSquares.Remove(this.Squares[i]);
-                        break;
-                    case '\'':
-                        this.Squares[i].BeenSearched = true;
-                        this.UnoccupiedSquares.Remove(this.Squares[i]);
-                        break;
-                    case '@':
-                        this.Squares[i].IsSunk = true;
-                        this.Squares[i].BeenSearched = true;
-                        this.UnoccupiedSquares.Remove(this.Squares[i]);
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
         /// Adds 100 squares to the grid.
         /// </summary>
         public void AddSquares()
         {
-            for (int i = 0; i < Settings.GridWidth * Settings.GridHeight; i++)
+            for (int i = 0; i < (Settings.GridWidth * Settings.GridHeight); i++)
             {
                 Square sq = new Square(this, i);
                 this.Squares.Add(sq);
@@ -160,8 +124,8 @@
                 }
             }
 
-            int availRows = 11 - (square.ID % Settings.GridWidth);
-            int availCols = 11 - (int)Math.Floor((decimal)square.ID / Settings.GridHeight);
+            int availRows = Settings.GridWidth + 1 - (square.ID % Settings.GridWidth);
+            int availCols = Settings.GridHeight + 1 - (int)Math.Floor((decimal)square.ID / Settings.GridHeight);
 
             // horizontal
             if (alignment && ship.Length <= availRows)
@@ -174,6 +138,11 @@
                     {
                         return false;
                     }
+                }
+
+                for (int i = 0; i < ship.Length; i++)
+                {
+                    int sqID = i + square.ID;
 
                     this.Squares[sqID].Ship = ship;
                     this.Squares[sqID].HasShip = true;
@@ -194,12 +163,17 @@
             {
                 for (int i = 0; i < ship.Length; i++)
                 {
-                    int sqID = (i * Settings.GridHeight) + square.ID;
+                    int sqID = (i * Settings.GridWidth) + square.ID;
 
                     if (sqID >= this.Squares.Count || this.Squares[sqID].HasShip == true)
                     {
                         return false;
                     }
+                }
+
+                for (int i = 0; i < ship.Length; i++)
+                {
+                    int sqID = (i * Settings.GridWidth) + square.ID;
 
                     this.Squares[sqID].Ship = ship;
                     this.Squares[sqID].HasShip = true;

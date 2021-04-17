@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using System.Timers;
 
@@ -13,18 +12,12 @@
     {
         private static Timer delayTimer;
 
-        private static int sumMoves = 0;
-
-        private static int player1 = 0;
-
-        private static int player2 = 0;
-
         /// <summary>
         /// The entry point of the program.
         /// </summary>
         public static void Main()
         {
-            Simulate(100);
+            Simulate(1000);
         }
 
         /// <summary>
@@ -33,53 +26,172 @@
         /// <param name="numberOfGames">Number of games to simulate.</param>
         public static void Simulate(int numberOfGames)
         {
-            decimal totalTime = 0;
+            Console.WriteLine($"n = {numberOfGames}\n");
 
-            string fileContent = string.Empty;
-
-            List<dynamic> gameMoves = new List<dynamic>();
-
-            for (int i = 0; i < numberOfGames; i++)
+            for (int gameType = 0; gameType < 9; gameType++)
             {
-                string winner = string.Empty;
+                int moveCount = 0;
+                int firstWins = 0;
+                int secondWins = 0;
 
-                Stopwatch elapsedTime = new Stopwatch();
-                elapsedTime.Start();
-
-                Game game = new Game();
-                game.CreateGame(2, 2);
-
-                elapsedTime.Stop();
-
-                gameMoves.Add(game.Moves);
-
-                sumMoves += game.Moves;
-                if (game.Winner == true)
+                switch (gameType)
                 {
-                    winner = "Player 1";
-                    player1++;
+                    case 0:
+                        for (int gameCount = 0; gameCount < numberOfGames; gameCount++)
+                        {
+                            Game game = new Game();
+                            game.CreateGame(0, 0);
+                            moveCount += game.Moves;
+                            if (game.Winner == true)
+                            {
+                                firstWins++;
+                            }
+                            else if (game.Winner == false)
+                            {
+                                secondWins++;
+                            }
+                        }
+                        Console.WriteLine("Random - Random");
+                        break;
+                    case 1:
+                        for (int gameCount = 0; gameCount < numberOfGames; gameCount++)
+                        {
+                            Game game = new Game();
+                            game.CreateGame(0, 1);
+                            moveCount += game.Moves;
+                            if (game.Winner == true)
+                            {
+                                firstWins++;
+                            }
+                            else if (game.Winner == false)
+                            {
+                                secondWins++;
+                            }
+                        }
+                        Console.WriteLine("Random - Hunt Target");
+                        break;
+                    case 2:
+                        for (int gameCount = 0; gameCount < numberOfGames; gameCount++)
+                        {
+                            Game game = new Game();
+                            game.CreateGame(0, 2);
+                            moveCount += game.Moves;
+                            if (game.Winner == true)
+                            {
+                                firstWins++;
+                            }
+                            else if (game.Winner == false)
+                            {
+                                secondWins++;
+                            }
+                        }
+                        Console.WriteLine("Random - Probability Density");
+                        break;
+                    case 3:
+                        for (int gameCount = 0; gameCount < numberOfGames; gameCount++)
+                        {
+                            Game game = new Game();
+                            game.CreateGame(1, 0);
+                            moveCount += game.Moves;
+                            if (game.Winner == true)
+                            {
+                                firstWins++;
+                            }
+                            else if (game.Winner == false)
+                            {
+                                secondWins++;
+                            }
+                        }
+                        Console.WriteLine("Hunt Target - Random");
+                        break;
+                    case 4:
+                        for (int gameCount = 0; gameCount < numberOfGames; gameCount++)
+                        {
+                            Game game = new Game();
+                            game.CreateGame(1, 1);
+                            moveCount += game.Moves;
+                            if (game.Winner == true)
+                            {
+                                firstWins++;
+                            }
+                            else if (game.Winner == false)
+                            {
+                                secondWins++;
+                            }
+                        }
+                        Console.WriteLine("Hunt Target - Hunt Target");
+                        break;
+                    case 5:
+                        for (int gameCount = 0; gameCount < numberOfGames; gameCount++)
+                        {
+                            Game game = new Game();
+                            game.CreateGame(1, 2);
+                            moveCount += game.Moves;
+                            if (game.Winner == true)
+                            {
+                                firstWins++;
+                            }
+                            else if (game.Winner == false)
+                            {
+                                secondWins++;
+                            }
+                        }
+                        Console.WriteLine("Hunt Target - Probability Density");
+                        break;
+                    case 6:
+                        for (int gameCount = 0; gameCount < numberOfGames; gameCount++)
+                        {
+                            Game game = new Game();
+                            game.CreateGame(2, 0);
+                            moveCount += game.Moves;
+                            if (game.Winner == true)
+                            {
+                                firstWins++;
+                            }
+                            else if (game.Winner == false)
+                            {
+                                secondWins++;
+                            }
+                        }
+                        Console.WriteLine("Probability Density - Random");
+                        break;
+                    case 7:
+                        for (int gameCount = 0; gameCount < numberOfGames; gameCount++)
+                        {
+                            Game game = new Game();
+                            game.CreateGame(2, 1);
+                            moveCount += game.Moves;
+                            if (game.Winner == true)
+                            {
+                                firstWins++;
+                            }
+                            else if (game.Winner == false)
+                            {
+                                secondWins++;
+                            }
+                        }
+                        Console.WriteLine("Probability Density - Hunt Target");
+                        break;
+                    case 8:
+                        for (int gameCount = 0; gameCount < numberOfGames; gameCount++)
+                        {
+                            Game game = new Game();
+                            game.CreateGame(2, 2);
+                            moveCount += game.Moves;
+                            if (game.Winner == true)
+                            {
+                                firstWins++;
+                            }
+                            else if (game.Winner == false)
+                            {
+                                secondWins++;
+                            }
+                        }
+                        Console.WriteLine("Probability Density - Probability Density");
+                        break;
                 }
-                else
-                {
-                    winner = "Player 2";
-                    player2++;
-                }
-
-                fileContent += $"{Settings.GridHeight},{Settings.GridWidth},Random,{winner},{game.Moves}\n";
-
-                totalTime += decimal.Divide(elapsedTime.ElapsedMilliseconds, 1000);
-
-                TimeSpan avg = TimeSpan.FromSeconds((double)decimal.Divide(totalTime, i + 1));
-                TimeSpan tot = TimeSpan.FromSeconds((double)totalTime);
-
-                Console.Clear();
-                Console.WriteLine($"Dimension: {Settings.GridHeight}x{Settings.GridWidth}\nWhite won: {player1}\nBlack won: {player2}\n\nStatistics\nMinimum: {gameMoves.Min()}\nMaximum: {gameMoves.Max()}\nAverage: {decimal.Divide(sumMoves, i + 1)}\nMedian: {Median(gameMoves)}\nMode: {Mode(gameMoves)}\n\nTime\nTotal time elapsed: {tot.Hours} hours {tot.Minutes} minutes {tot.Seconds} seconds {tot.Milliseconds} milliseconds\nAverage time elapsed: {avg.Hours} hours {avg.Minutes} minutes {avg.Seconds} seconds {avg.Milliseconds} milliseconds");
-            }
-
-            //using (StreamWriter outputFile = File.AppendText("HTTest1.csv"))
-            //{
-            //    outputFile.WriteLine(fileContent);
-            //}
+                Console.WriteLine($"| 1st player won\t| {firstWins}\t|\n| 2nd player won\t| {secondWins}\t|\n| Avg. moves\t\t| {Math.Round(decimal.Divide(moveCount, numberOfGames), 2)}\t|\n");
+            } 
         }
 
         /// <summary>
