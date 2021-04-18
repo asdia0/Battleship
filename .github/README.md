@@ -7,6 +7,7 @@ For prebuilt binary releases, see the [Releases](https://github.com/asdia0/Battl
 * Game simulator
 * Play against the computer
 * Find the best square to search
+* Find the optimal ship layout
 * Probability heat map
 * Add and edit ships
 * Edit grid dimensions
