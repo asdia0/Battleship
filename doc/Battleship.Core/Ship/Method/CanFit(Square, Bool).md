@@ -20,5 +20,5 @@ Determines if the [ship](../Ship.md) is horizontally or vertically placed.
 
 ## Returns
 
-Bool
+Bool  
 `true` if the [ship](../Ship.md) can fit. `false` if otherwise.
