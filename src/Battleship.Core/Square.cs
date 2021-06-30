@@ -155,8 +155,8 @@
         {
             get
             {
-                int x = (this.ID % Settings.GridWidth) + 1;
-                int y = (int)Math.Floor((double)(this.ID / Settings.GridWidth)) + 1;
+                int x = (this.ID % this.Grid.Width) + 1;
+                int y = (int)Math.Floor((double)(this.ID / this.Grid.Width)) + 1;
 
                 return new Position(x, y);
             }
@@ -225,6 +225,89 @@
         {
             this.Grid = grid;
             this.ID = id;
+        }
+
+        /// <summary>
+        /// Gets n squares from a certain direction from the square.
+        /// </summary>
+        /// <param name="n">The number of squares to get.</param>
+        /// <param name="direction">The direction to take.</param>
+        /// <returns>A specified number of squares in a specified direction.</returns>
+        public HashSet<Square> GetNSquaresInDirection(int n, Direction direction)
+        {
+            HashSet<Square> res = new HashSet<Square>();
+
+            int available = 0;
+
+            switch (direction)
+            {
+                case Direction.North:
+                    available = this.Grid.Length - this.Position.Y;
+
+                    if (n < available)
+                    {
+                        throw new BattleshipException($"{n} is too big. Try a smaller value.");
+                    }
+
+                    for (int north = 1; north <= available; north++)
+                    {
+                        int id = this.ID + (north * this.Grid.Width);
+
+                        res.Add(this.Grid.Squares[id]);
+                    }
+
+                    break;
+                case Direction.South:
+                    available = this.Position.Y - 1;
+
+                    if (n < available)
+                    {
+                        throw new BattleshipException($"{n} is too big. Try a smaller value.");
+                    }
+
+                    for (int south = 1; south <= available; south++)
+                    {
+                        int id = this.ID - (south * this.Grid.Width);
+
+                        res.Add(this.Grid.Squares[id]);
+                    }
+
+                    break;
+                case Direction.West:
+                    available = this.Position.X - 1;
+
+                    if (n < available)
+                    {
+                        throw new BattleshipException($"{n} is too big. Try a smaller value.");
+                    }
+
+                    for (int west = 1; west <= available; west++)
+                    {
+                        int id = this.ID - west;
+
+                        res.Add(this.Grid.Squares[id]);
+                    }
+
+                    break;
+                case Direction.East:
+                    available = this.Grid.Width - this.Position.X;
+
+                    if (n < available)
+                    {
+                        throw new BattleshipException($"{n} is too big. Try a smaller value.");
+                    }
+
+                    for (int east = 1; east <= available; east++)
+                    {
+                        int id = this.ID + east;
+
+                        res.Add(this.Grid.Squares[id]);
+                    }
+
+                    break;
+            }
+
+            return res;
         }
     }
 }
