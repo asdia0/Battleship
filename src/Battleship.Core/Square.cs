@@ -217,7 +217,7 @@
                         return SquareStatus.Miss;
                     }
 
-                    if (this.Ship.Sunk)
+                    if (this.Ship.Status == ShipStatus.Sunk)
                     {
                         return SquareStatus.Sunk;
                     }

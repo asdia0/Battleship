@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Defines a ship on the grid.
@@ -9,49 +10,260 @@
     public class Ship
     {
         /// <summary>
-        /// The alignment of the ship. True = horizontal.
+        /// Determines if <see cref="ID"/> has been set.
         /// </summary>
-        public bool? Alignment = null;
+        private bool IDSet = false;
 
         /// <summary>
-        /// The ship's name.
+        /// Determines if <see cref="Breadth"/> has been set.
         /// </summary>
-        public string Name;
+        private bool BreadthSet = false;
 
         /// <summary>
-        /// The squares the ship had occupied.
+        /// Determines if <see cref="Length"/> has been set.
         /// </summary>
-        public List<Square> OriginalOccupiedSquares = new List<Square>();
+        private bool LengthSet = false;
 
         /// <summary>
-        /// The ship's type.
+        /// Determines if <see cref="Grid"/> has been set.
         /// </summary>
-        public int ID;
+        private bool GridSet = false;
 
         /// <summary>
-        /// The ship's breadth.
+        /// Determines if <see cref="Squares"/> has been set.
         /// </summary>
-        public int Breadth = 1;
+        private bool SquaresSet = false;
 
         /// <summary>
-        /// The ship's length.
+        /// <see cref="ID"/>'s value.
         /// </summary>
-        public int Length;
+        private int _ID;
 
         /// <summary>
-        /// The squares that the ship currently occupies.
+        /// <see cref="Breadth"/>'s value.
         /// </summary>
-        public List<Square> CurrentOccupiedSquares = new List<Square>();
+        private int _Breadth;
 
         /// <summary>
-        /// The ship's grid.
+        /// <see cref="Length"/>'s value.
         /// </summary>
-        public Grid Grid;
+        private int _Length;
 
         /// <summary>
-        /// Determines whether the ship is sunk.
+        /// <see cref="Grid"/>'s value.
         /// </summary>
-        public bool IsSunk = false;
+        private Grid _Grid;
+
+        /// <summary>
+        /// <see cref="Squares"/>'s value.
+        /// </summary>
+        private HashSet<Square> _Squares;
+
+        /// <summary>
+        /// Gets or sets the ship's alignment.
+        /// </summary>
+        public Alignment Alignment { get; set; }
+
+        /// <summary>
+        /// Gets or sets the ship's name.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the ship's ID.
+        /// </summary>
+        public int ID
+        {
+            get
+            {
+                return this._ID;
+            }
+
+            set
+            {
+                if (!this.IDSet)
+                {
+                    this._ID = value;
+                }
+                else
+                {
+                    throw new BattleshipException("ID has already been set.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the ship's breadth.
+        /// </summary>
+        public int Breadth
+        {
+            get
+            {
+                return this._Breadth;
+            }
+
+            set
+            {
+                if (!this.BreadthSet)
+                {
+                    if (value < 1 || value > this.Grid.Breadth)
+                    {
+                        throw new BattleshipException($"Breadth must be between 1 and {this.Grid.Breadth} inclusive.");
+                    }
+                    else
+                    {
+                        this._Breadth = value;
+                    }
+                }
+                else
+                {
+                    throw new BattleshipException("Breadth has already been set.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the ship's length.
+        /// </summary>
+        public int Length
+        {
+            get
+            {
+                return this._Length;
+            }
+
+            set
+            {
+                if (!this.LengthSet)
+                {
+                    if (value < 1 || value > this.Grid.Length)
+                    {
+                        throw new BattleshipException($"Length must be between 1 and {this.Grid.Length}.");
+                    }
+                    else
+                    {
+                        this._Length = value;
+                    }
+                }
+                else
+                {
+                    throw new BattleshipException("Length has already been set.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the ship's grid.
+        /// </summary>
+        public Grid Grid
+        {
+            get
+            {
+                return this._Grid;
+            }
+
+            set
+            {
+                if (!this.GridSet)
+                {
+                    this._Grid = value;
+                }
+                else
+                {
+                    throw new BattleshipException("Grid has already been set.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the ship's squares.
+        /// </summary>
+        public HashSet<Square> Squares
+        {
+            get
+            {
+                return this._Squares;
+            }
+
+            set
+            {
+                if (!this.SquaresSet)
+                {
+                    if (value.Count != (this.Length * this.Breadth))
+                    {
+                        throw new BattleshipException("Number of squares must match the ship's length and breadth.");
+                    }
+
+                    this._Squares = value;
+                }
+                else
+                {
+                    throw new BattleshipException("Squares has already been set.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the unsearched squares in <see cref="Squares"/>.
+        /// </summary>
+        public HashSet<Square> UnsearchedSquares
+        {
+            get
+            {
+                return this.Squares.Where(i => i.Searched == false).ToHashSet();
+            }
+        }
+
+        /// <summary>
+        /// Gets the ship's status.
+        /// </summary>
+        public ShipStatus Status
+        {
+            get
+            {
+                return this.UnsearchedSquares.Count == 0 ? ShipStatus.Sunk : ShipStatus.Operational;
+            }
+        }
+
+        /// <summary>
+        /// Gets the collection of all of the ship's potential arrangements.
+        /// </summary>
+        public HashSet<HashSet<int>> Arrangements
+        {
+            get
+            {
+                HashSet<HashSet<int>> res = new HashSet<HashSet<int>>();
+
+                foreach (Square sq in this.Grid.Squares)
+                {
+                    if (this.CanFit(sq, Alignment.Horizontal))
+                    {
+                        HashSet<int> arr = new HashSet<int>();
+
+                        for (int i = 0; i < this.Length; i++)
+                        {
+                            arr.Add(sq.ID + i);
+                        }
+
+                        res.Add(arr);
+                    }
+
+                    if (this.CanFit(sq, Alignment.Vertical))
+                    {
+                        HashSet<int> arr = new HashSet<int>();
+
+                        for (int i = 0; i < this.Length; i++)
+                        {
+                            arr.Add(sq.ID + (i * Settings.GridWidth));
+                        }
+
+                        res.Add(arr);
+                    }
+                }
+
+                return res;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Ship"/> class.
@@ -68,195 +280,44 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Ship"/> class.
-        /// </summary>
-        /// <param name="id">The ship's ID.</param>
-        /// <param name="length">The ship's length.</param>
-        /// <param name="breadth">The ship's breadth.</param>
-        public Ship(int id, int length, int breadth)
-        {
-            this.Length = length;
-            this.ID = id;
-            this.Breadth = breadth;
-        }
-
-        /// <summary>
-        /// Increases the probability of the squares that a ship can fit on.
-        /// </summary>
-        /// <param name="probability">The current probability dictionary.</param>
-        /// <param name="sq">Base square to place the ship on.</param>
-        /// <param name="alignment">Alignment of the ship.</param>
-        /// <returns>The new probability dictionary.</returns>
-        public Dictionary<int, int> IncreaseProbability(Dictionary<int, int> probability, Square sq, bool alignment)
-        {
-            Dictionary<int, int> res = probability;
-
-            int availRows = Settings.GridWidth - (sq.ID % Settings.GridHeight);
-            int availCols = Settings.GridHeight - (int)Math.Floor((double)(sq.ID / Settings.GridWidth));
-
-            // horizontal
-            if (alignment && this.Length <= availRows)
-            {
-                int failures = 0;
-
-                for (int j = 0; j < this.Length; j++)
-                {
-                    Square square = this.Grid.Squares[j + sq.ID];
-                    if ((square.BeenSearched && square.HadShip == true) || square.IsSunk == true)
-                    {
-                        failures++;
-                    }
-                }
-
-                if (failures == 0)
-                {
-                    for (int j = 0; j < this.Length; j++)
-                    {
-                        if (res.ContainsKey(j + sq.ID))
-                        {
-                            res[j + sq.ID]++;
-                        }
-                    }
-                }
-            }
-
-            // vertical
-            if (!alignment && this.Length <= availCols)
-            {
-                int failures = 0;
-
-                for (int j = 0; j < this.Length; j++)
-                {
-                    Square square = this.Grid.Squares[(j * Settings.GridWidth) + sq.ID];
-                    if ((square.BeenSearched && square.HadShip == true) || square.IsSunk == true)
-                    {
-                        failures++;
-                    }
-                }
-
-                if (failures == 0)
-                {
-                    for (int j = 0; j < this.Length; j++)
-                    {
-                        if (res.ContainsKey((j * Settings.GridWidth) + sq.ID))
-                        {
-                            res[(j * Settings.GridWidth) + sq.ID]++;
-                        }
-                    }
-                }
-            }
-
-            return res;
-        }
-
-        /// <summary>
         /// Determines whether the ship can fit on the grid.
         /// </summary>
-        /// <param name="sq">The starting square where the ship will be "placed".</param>
+        /// <param name="square">The starting square where the ship will be "placed".</param>
         /// <param name="alignment">The alignment of the ship. True means horizontal and false means vertical.</param>
         /// <returns>A boolean.</returns>
-        public bool CanFit(Square sq, bool alignment)
+        public bool CanFit(Square square, Alignment alignment)
         {
-            int availRows = Settings.GridWidth - (sq.ID % Settings.GridHeight);
-            int availCols = Settings.GridHeight - (int)Math.Floor((double)(sq.ID / Settings.GridWidth));
+            HashSet<Square> squares = new HashSet<Square>();
 
-            // horizontal
-            if (alignment && this.Length <= availRows)
+            switch (alignment)
             {
-                int hits = 0;
-
-                for (int j = 0; j < this.Length; j++)
-                {
-                    Square square = this.Grid.Squares[j + sq.ID];
-
-                    // is an obstruction if it is a miss or has been sunk
-                    if (square.IsMiss == true || square.IsSunk == true)
+                case Alignment.Horizontal:
+                    for (int i = 1; i <= this.Length; i++)
                     {
-                        return false;
+                        squares.UnionWith(square.GetNSquaresInDirection(this.Breadth, Direction.East));
                     }
 
-                    if (sq.IsHit == true)
+                    break;
+                case Alignment.Vertical:
+                    for (int i = 1; i <= this.Breadth; i++)
                     {
-                        hits++;
+                        squares.UnionWith(square.GetNSquaresInDirection(this.Length, Direction.East));
                     }
-                }
 
-                if (hits == this.Length)
-                {
-                    return false;
-                }
-
-                return true;
+                    break;
             }
 
-            // vertical
-            if (!alignment && this.Length <= availCols)
+            // No obstructions
+            if (!squares.Where(i => (i.Status == SquareStatus.Miss || i.Status == SquareStatus.Sunk)).Any())
             {
-                int hits = 0;
-
-                for (int j = 0; j < this.Length; j++)
+                // Not all squares are hit
+                if (squares.Where(i => i.Status == SquareStatus.Hit).Count() != (this.Length * this.Breadth))
                 {
-                    Square square = this.Grid.Squares[(j * Settings.GridWidth) + sq.ID];
-
-                    // is an obstruction if it is a miss or has been sunk
-                    if (square.IsMiss == true || square.IsSunk == true)
-                    {
-                        return false;
-                    }
-
-                    if (sq.IsHit == true)
-                    {
-                        hits++;
-                    }
+                    return true;
                 }
-
-                if (hits == this.Length)
-                {
-                    return false;
-                }
-
-                return true;
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Gets all possible arrangements of the ship.
-        /// </summary>
-        /// <returns>A list of lists of <see cref="Square"/> IDs.</returns>
-        public List<List<int>> GetArrangements()
-        {
-            List<List<int>> res = new List<List<int>>();
-
-            foreach (Square sq in this.Grid.Squares)
-            {
-                if (this.CanFit(sq, true))
-                {
-                    List<int> arr = new List<int>();
-
-                    for (int i = 0; i < this.Length; i++)
-                    {
-                        arr.Add(sq.ID + i);
-                    }
-
-                    res.Add(arr);
-                }
-
-                if (this.CanFit(sq, false))
-                {
-                    List<int> arr = new List<int>();
-
-                    for (int i = 0; i < this.Length; i++)
-                    {
-                        arr.Add(sq.ID + (i * Settings.GridWidth));
-                    }
-
-                    res.Add(arr);
-                }
-            }
-
-            return res;
         }
     }
 }
