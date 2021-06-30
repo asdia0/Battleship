@@ -188,6 +188,31 @@
         }
 
         /// <summary>
+        /// Gets the square's status.
+        /// </summary>
+        public SquareStatus Status
+        {
+            get
+            {
+                if (this.Searched)
+                {
+                    if (this.Ship == null)
+                    {
+                        return SquareStatus.Miss;
+                    }
+                    else
+                    {
+                        return SquareStatus.Sunk;
+                    }
+                }
+                else
+                {
+                    return SquareStatus.Unsearched;
+                }
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Square"/> class.
         /// </summary>
         /// <param name="grid">The square's grid.</param>
