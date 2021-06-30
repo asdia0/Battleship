@@ -114,6 +114,10 @@
                 {
                     this._Searched = true;
                 }
+                else
+                {
+                    throw new BattleshipException("Searched has alredy been set.");
+                }
             }
         }
 
