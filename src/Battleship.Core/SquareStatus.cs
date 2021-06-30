@@ -16,8 +16,8 @@
         Miss,
 
         /// <summary>
-        /// Square was sunk (<see cref="Square.Searched"/> = true AND <see cref="Square.Ship"/> != null).
+        /// Square was hit (<see cref="Square.Searched"/> = true AND <see cref="Square.Ship"/> != null).
         /// </summary>
-        Sunk,
+        Hit,
     }
 }

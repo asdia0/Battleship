@@ -206,7 +206,7 @@
                     }
                     else
                     {
-                        return SquareStatus.Sunk;
+                        return SquareStatus.Hit;
                     }
                 }
                 else
