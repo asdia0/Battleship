@@ -31,11 +31,6 @@
         private string _Name;
 
         /// <summary>
-        /// <see cref="Game"/>'s value.
-        /// </summary>
-        private Game _Game;
-
-        /// <summary>
         /// Gets or sets the player's grid.
         /// </summary>
         public Grid Grid
@@ -82,39 +77,14 @@
         }
 
         /// <summary>
-        /// Gets or sets the game the player is in.
-        /// </summary>
-        public Game Game
-        {
-            get
-            {
-                return this._Game;
-            }
-
-            set
-            {
-                if (!this.GameSet)
-                {
-                    this._Game = value;
-                }
-                else
-                {
-                    throw new BattleshipException("Game has already been set.");
-                }
-            }
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class.
         /// </summary>
         /// <param name="name">The player's name.</param>
         /// <param name="grid">The player's grid.</param>
-        /// <param name="game">The game the player is in.</param>
-        public Player(string name, Grid grid, Game game)
+        public Player(string name, Grid grid)
         {
             this.Name = name;
             this.Grid = grid;
-            this.Game = game;
         }
     }
 }
