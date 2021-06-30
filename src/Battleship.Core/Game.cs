@@ -10,42 +10,123 @@
     public class Game
     {
         /// <summary>
-        /// List of moves made.
+        /// Determines whether <see cref="Player1"/> has been set.
         /// </summary>
-        public List<Move> MoveList = new List<Move>();
+        private bool Player1Set = false;
 
         /// <summary>
-        /// The winner of the game.
+        /// Determines whether <see cref="Player2"/> has been set.
         /// </summary>
-        public bool? Winner = null;
+        private bool Player2Set = false;
 
         /// <summary>
-        /// Number of moves.
+        /// <see cref="Player1"/>'s value.
         /// </summary>
-        public int Moves;
+        private Player _Player1;
 
         /// <summary>
-        /// Player 1's grid.
+        /// <see cref="Player2"/>'s value.
         /// </summary>
-        public Grid Player1;
+        private Player _Player2;
 
         /// <summary>
-        /// Player 2's grid.
+        /// Gets the list of moves made.
         /// </summary>
-        public Grid Player2;
+        public List<Move> MoveList { get; }
 
         /// <summary>
-        /// Keeps track of which player to move. True = player 1, false = player 2.
+        /// Gets the winner of the game.
         /// </summary>
-        public bool Turn = true;
+        public Player? Winner
+        {
+            get
+            {
+                if (this.Player1.Grid.OperationalShips.Count == 0)
+                {
+                    return this.Player2;
+                }
+                else if (this.Player2.Grid.OperationalShips.Count == 0)
+                {
+                    return this.Player1;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the first player.
+        /// </summary>
+        public Player Player1
+        {
+            get
+            {
+                return this._Player1;
+            }
+
+            set
+            {
+                if (!this.Player1Set)
+                {
+                    this._Player1 = value;
+                }
+                else
+                {
+                    throw new BattleshipException("Player 1 has already been set.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the second player.
+        /// </summary>
+        public Player Player2
+        {
+            get
+            {
+                return this._Player2;
+            }
+
+            set
+            {
+                if (!this.Player2Set)
+                {
+                    this._Player2 = value;
+                }
+                else
+                {
+                    throw new BattleshipException("Player 2 has already been set.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the current turn.
+        /// </summary>
+        public Turn Turn
+        {
+            get
+            {
+                return this.MoveList.Count % 2 == 0 ? Turn.Player1 : Turn.Player2;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class.
         /// </summary>
-        public Game()
+        /// <param name="player1">The first player.</param>
+        /// <param name="player2">The second player.</param>
+        public Game(Player player1, Player player2)
         {
-            this.Player1 = new Grid();
-            this.Player2 = new Grid();
+            this.Player1 = player1;
+            this.Player2 = player2;
+
+            while (this.Winner == null)
+            {
+                this.Random();
+            }
         }
 
         /// <summary>
@@ -54,14 +135,30 @@
         /// <returns>The stringified version of the game.</returns>
         public override string ToString()
         {
-            string res = $"[Player 1 \"{this.Player1}\"]\n[Player 2 \"{this.Player2}\"]\n\n";
+            string res = $"[{this.Player1.Name} \"{this.Player1}\"]\n[{this.Player2.Name} \"{this.Player2}\"]\n\n";
 
             foreach (Move move in this.MoveList)
             {
-                res += $"{move.Player}: ({move.X},{move.Y})\n";
+                res += move.ToString();
             }
 
             return res;
+        }
+
+        /// <summary>
+        /// Returns essential information for <see cref="Random"/>, <see cref="HuntTarget"/> and <see cref="ProbabilityDensity"/>.
+        /// </summary>
+        /// <returns>Essential information.</returns>
+        public (Player player, Grid player1, Grid player2) ConfigureTurn()
+        {
+            if (this.Turn == Turn.Player1)
+            {
+                return (this.Player1, this.Player1.Grid, this.Player2.Grid);
+            }
+            else
+            {
+                return (this.Player1, this.Player2.Grid, this.Player1.Grid);
+            }
         }
 
         /// <summary>
@@ -69,38 +166,13 @@
         /// </summary>
         public void Random()
         {
-            string playername;
-            Grid p1;
-            Grid p2;
-
-            if (this.Turn)
-            {
-                playername = "Player 1";
-                p1 = this.Player1;
-                p2 = this.Player2;
-            }
-            else
-            {
-                playername = "Player 2";
-                p1 = this.Player2;
-                p2 = this.Player1;
-            }
+            (Player player, Grid p1, Grid p2) = this.ConfigureTurn();
 
             Square attackedSq = p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
 
-            this.Search(p1, p2, attackedSq);
+            this.Search(p1, attackedSq);
 
-            this.MoveList.Add(new Move(playername, attackedSq.ToCoor()));
-
-            if (attackedSq.HadShip != true)
-            {
-                if (this.Turn)
-                {
-                    this.Moves++;
-                }
-
-                this.Turn ^= true;
-            }
+            this.MoveList.Add(new Move(player, attackedSq));
         }
 
         /// <summary>
@@ -109,24 +181,7 @@
         public void HuntTarget()
         {
             Square attackedSquare;
-            string playername;
-            Grid p1;
-            Grid p2;
-
-            if (this.Turn)
-            {
-                playername = "Player 1";
-                p1 = this.Player1;
-                p2 = this.Player2;
-            }
-            else
-            {
-                playername = "Player 2";
-                p1 = this.Player2;
-                p2 = this.Player1;
-            }
-
-            this.UpdateToSearch(p1, p2);
+            (Player player, Grid p1, Grid p2) = this.ConfigureTurn();
 
             if (p1.ToSearch.Count == 0)
             {
@@ -139,19 +194,9 @@
                 attackedSquare = p1.ToSearch.ToList()[new Random().Next(p1.ToSearch.Count)];
             }
 
-            this.Search(p1, p2, attackedSquare);
+            this.Search(p1, attackedSquare);
 
-            this.MoveList.Add(new Move(playername, attackedSquare.ToCoor()));
-
-            if (attackedSquare.HadShip != true)
-            {
-                if (this.Turn)
-                {
-                    this.Moves++;
-                }
-
-                this.Turn ^= true;
-            }
+            this.MoveList.Add(new Move(player, attackedSquare));
         }
 
         /// <summary>
@@ -159,31 +204,14 @@
         /// </summary>
         public void ProbabilityDensity()
         {
-            string playername;
-            Grid p1;
-            Grid p2;
-
-            if (this.Turn)
-            {
-                p1 = this.Player1;
-                p2 = this.Player2;
-                playername = "Player 1";
-            }
-            else
-            {
-                playername = "Player 2";
-                p1 = this.Player2;
-                p2 = this.Player1;
-            }
+            (Player player, Grid p1, Grid p2) = this.ConfigureTurn();
 
             /*
              * MUST
              * 1. A hit square only has 1 unsearched adjacent square
              * 2. A ship only has 1 possible arrangement
-
              * MIGHT
              * 3. A square has a hit adjacent square
-             * 
              * MUST NOT
              * 4. Ships that are not sunk can't be located entirely on 'hit' squares.
              */
@@ -191,14 +219,14 @@
             // 1. A hit square only has 1 unsearched adjacent square
             foreach (Square square in p2.Squares)
             {
-                if (square.IsHit != true)
+                if (square.Status != SquareStatus.Hit)
                 {
                     continue;
                 }
 
                 List<Square> unsearchedSquares = new List<Square>();
 
-                foreach (Square adjSquare in square.GetAdjacentSquares())
+                foreach (Square adjSquare in square.AdjacentSquares)
                 {
                     if (!adjSquare.Searched)
                     {
@@ -209,19 +237,9 @@
                 if (unsearchedSquares.Count == 1)
                 {
                     Square attackSq = unsearchedSquares[0];
-                    this.Search(p1, p2, attackSq);
+                    this.Search(p1, attackSq);
 
-                    this.MoveList.Add(new Move(playername, attackSq.ToCoor()));
-
-                    if (attackSq.HadShip != true)
-                    {
-                        if (this.Turn)
-                        {
-                            this.Moves++;
-                        }
-
-                        this.Turn ^= true;
-                    }
+                    this.MoveList.Add(new Move(player, attackSq));
 
                     return;
                 }
@@ -230,28 +248,18 @@
             // 2. A ship only has 1 possible arrangement
             foreach (Ship ship in p2.OperationalShips)
             {
-                List<List<int>> arrangements = ship.GetArrangements();
+                HashSet<HashSet<int>> arrangements = ship.Arrangements;
 
                 if (arrangements.Count == 1)
                 {
-                    foreach (int squareID in arrangements[0])
+                    foreach (int squareID in arrangements.First())
                     {
                         Square square = p2.Squares[squareID];
                         if (!square.Searched)
                         {
-                            this.Search(p1, p2, square);
+                            this.Search(p1, square);
 
-                            this.MoveList.Add(new Move(playername, square.ToCoor()));
-
-                            if (square.HadShip != true)
-                            {
-                                if (this.Turn)
-                                {
-                                    this.Moves++;
-                                }
-
-                                this.Turn ^= true;
-                            }
+                            this.MoveList.Add(new Move(player, square));
 
                             return;
                         }
@@ -260,14 +268,11 @@
             }
 
             // 3. A square has a hit adjacent square
-            this.UpdateToSearch(p1, p2);
-
             Dictionary<Square, int> probability = new Dictionary<Square, int>();
 
             if (p1.ToSearch.Count == 0)
             {
                 // All unsearched squares
-
                 foreach (Square square in p2.Squares)
                 {
                     {
@@ -281,16 +286,16 @@
             else
             {
                 // All squares in .ToSearch()
-
                 foreach (Square square in p1.ToSearch)
                 {
                     probability.Add(square, 0);
                 }
             }
 
+            // Get probability
             foreach (Ship ship in p2.OperationalShips)
             {
-                foreach (List<int> arrangement in ship.GetArrangements())
+                foreach (HashSet<int> arrangement in ship.Arrangements)
                 {
                     foreach (int squareID in arrangement)
                     {
@@ -305,195 +310,50 @@
 
             Square attackedSquare = probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
 
-            this.Search(p1, p2, attackedSquare);
+            this.Search(p1, attackedSquare);
 
-            this.MoveList.Add(new Move(playername, attackedSquare.ToCoor()));
-
-            if (attackedSquare.HadShip != true)
-            {
-                if (this.Turn)
-                {
-                    this.Moves++;
-                }
-
-                this.Turn ^= true;
-            }
+            this.MoveList.Add(new Move(player, attackedSquare));
         }
 
         /// <summary>
         /// Searches a square.
         /// </summary>
-        /// <param name="p1">Player 1's grid.</param>
-        /// <param name="p2">Player 2's grid.</param>
-        /// <param name="sq">The square to search.</param>
-        public void Search(Grid p1, Grid p2, Square sq)
+        /// <param name="player">The player.</param>
+        /// <param name="square">The square to search.</param>
+        public void Search(Grid player, Square square)
         {
-            if (sq.Searched)
+            if (square.Searched)
             {
-                throw new Exception($"Square {sq.ID} has already been searched.");
+                throw new BattleshipException($"Square {square.ID} has already been searched.");
             }
 
-            sq.BeenSearched = true;
-            p2.UnsearchedSquares.Remove(sq);
+            square.Searched = true;
 
-            if (sq.HasShip == true)
+            // square has ship
+            if (square.Ship != null)
             {
-                this.AddTargets(p1, p2, sq.ID);
-
-                sq.HasShip = false;
-                sq.IsHit = true;
-
-                foreach (Ship sp in sq.Grid.OperationalShips.ToList())
-                {
-                    if (sp.CurrentOccupiedSquares.Contains(sq))
-                    {
-                        sp.CurrentOccupiedSquares.Remove(sq);
-
-                        if (sp.CurrentOccupiedSquares.Count == 0)
-                        {
-                            p2.OperationalShips.Remove(sp);
-
-                            sp.IsSunk = true;
-
-                            foreach (Square square in sp.OriginalOccupiedSquares)
-                            {
-                                square.IsSunk = true;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                sq.IsMiss = true;
-            }
-        }
-
-        /// <summary>
-        /// Starts a new game.
-        /// </summary>
-        public void CreateGame()
-        {
-            this.StartGame();
-
-            while (this.Player1.OperationalShips.Count > 0 && this.Player2.OperationalShips.Count > 0)
-            {
-                this.Random();
+                this.AddTargets(player, square);
             }
 
-            this.EndGame();
-        }
-
-        /// <summary>
-        /// Starts a new game.
-        /// </summary>
-        /// <param name="algorithm1">The algorithm of Player 1.</param>
-        /// <param name="algorithm2">The algorithm of Player 2.</param>
-        public void CreateGame(int algorithm1, int algorithm2)
-        {
-            this.StartGame();
-
-            while (this.Player1.OperationalShips.Count > 0 && this.Player2.OperationalShips.Count > 0)
-            {
-                if (this.Turn)
-                {
-                    switch (algorithm1)
-                    {
-                        case 0:
-                            this.Random();
-                            break;
-                        case 1:
-                            this.HuntTarget();
-                            break;
-                        case 2:
-                            this.ProbabilityDensity();
-                            break;
-                    }
-                }
-                else
-                {
-                    switch (algorithm2)
-                    {
-                        case 0:
-                            this.Random();
-                            break;
-                        case 1:
-                            this.HuntTarget();
-                            break;
-                        case 2:
-                            this.ProbabilityDensity();
-                            break;
-                    }
-                }
-            }
-
-            this.EndGame();
-        }
-
-        /// <summary>
-        /// Sets up the game.
-        /// </summary>
-        private void StartGame()
-        {
-            this.Player1.AddShipsRandomly(Settings.ShipList);
-            this.Player2.AddShipsRandomly(Settings.ShipList);
-        }
-
-        /// <summary>
-        /// Ends the game.
-        /// </summary>
-        private void EndGame()
-        {
-            if (this.Player1.OperationalShips.Any())
-            {
-                this.Winner = true;
-            }
-
-            if (this.Player2.OperationalShips.Any())
-            {
-                this.Winner = false;
-            }
+            player.ToSearch.Remove(square);
+            player.ToAttack.Remove(square);
         }
 
         /// <summary>
         /// Adds squares to the target list.
         /// </summary>
-        /// <param name="p1">Player 1.</param>
-        /// <param name="p2">Player 2.</param>
-        /// <param name="squareID">Square to check's ID.</param>
-        private void AddTargets(Grid p1, Grid p2, int squareID)
+        /// <param name="player">The player.</param>
+        /// <param name="square">The square to check.</param>
+        private void AddTargets(Grid player, Square square)
         {
-            if (p2.Squares[squareID].Searched && p2.Squares[squareID].HadShip == true && p2.Squares[squareID].IsSunk != true)
+            if (square.Searched && square.Ship != null && square.Status != SquareStatus.Sunk)
             {
-                foreach (Square sq in p2.Squares[squareID].GetAdjacentSquares())
+                foreach (Square sq in square.AdjacentSquares)
                 {
-                    if (!sq.Searched && !p1.ToSearch.Contains(sq))
+                    if (!sq.Searched && !player.ToSearch.Contains(sq))
                     {
-                        p1.ToSearch.Add(sq);
+                        player.ToSearch.Add(sq);
                     }
-                }
-            }
-        }
-
-        private void UpdateToSearch(Grid p1, Grid p2)
-        {
-            p1.ToSearch.Clear();
-
-            foreach (Square square in p2.Squares)
-            {
-                if (square.IsHit != true)
-                {
-                    continue;
-                }
-
-                foreach (Square adjSquare in square.GetAdjacentSquares())
-                {
-                    if (p1.ToSearch.Contains(adjSquare) || adjSquare.Searched)
-                    {
-                        continue;
-                    }
-
-                    p1.ToSearch.Add(adjSquare);
                 }
             }
         }
