@@ -9,49 +9,183 @@
     public class Square
     {
         /// <summary>
-        /// The square's grid.
+        /// Determines whether <see cref="Grid"/> has been set.
         /// </summary>
-        public Grid Grid;
+        private bool GridSet = false;
 
         /// <summary>
-        /// The square's unique identification tag.
+        /// Determines whether <see cref="ID"/> has been set.
         /// </summary>
-        public int ID;
+        private bool IDSet = false;
 
         /// <summary>
-        /// Determines whether the square has been searched.
+        /// <see cref="Grid"/>'s value.
         /// </summary>
-        public bool BeenSearched;
+        private Grid _Grid;
 
         /// <summary>
-        /// Determines whether the square ever had a ship on it.
+        /// <see cref="ID"/>'s value.
         /// </summary>
-        public bool? HadShip = null;
+        private int _ID;
 
         /// <summary>
-        /// Determines whether the square has an enemy ship on it.
+        /// <see cref="Searched"/>'s value.
         /// </summary>
-        public bool? HasShip = null;
+        private bool _Searched = false;
 
         /// <summary>
-        /// Determines whether the square has a sunken ship on it.
+        /// <see cref="Ship"/>'s value.
         /// </summary>
-        public bool? IsSunk = null;
+        private Ship? _Ship = null;
 
         /// <summary>
-        /// Determines whether the square has been searched and does not have a ship on it.
+        /// Gets or sets the square's grid.
         /// </summary>
-        public bool? IsMiss = null;
+        public Grid Grid
+        {
+            get
+            {
+                return this._Grid;
+            }
+
+            set
+            {
+                if (!this.GridSet)
+                {
+                    this._Grid = value;
+                }
+                else
+                {
+                    throw new BattleshipException("Grid has already been set.");
+                }
+            }
+        }
 
         /// <summary>
-        /// Determines whether the square has been searched and does has a ship on it.
+        /// Gets or sets the square's unique identification tag.
         /// </summary>
-        public bool? IsHit = null;
+        public int ID
+        {
+            get
+            {
+                return this._ID;
+            }
+
+            set
+            {
+                if (!this.IDSet)
+                {
+                    int maxID = (Settings.GridWidth * Settings.GridHeight) - 1;
+
+                    if (value < 0 || value > maxID)
+                    {
+                        throw new BattleshipException($"ID must be between 0 and {maxID} inclusive.");
+                    }
+
+                    if (this.Grid.Squares[value] == null)
+                    {
+                        this._ID = value;
+                    }
+                    else
+                    {
+                        throw new BattleshipException($"Square with ID {value} already exists in grid.");
+                    }
+                }
+                else
+                {
+                    throw new BattleshipException("ID has already been set.");
+                }
+            }
+        }
 
         /// <summary>
-        /// The ship on the square.
+        /// Gets or sets a value indicating whether the square has been searched.
         /// </summary>
-        public Ship? Ship;
+        public bool Searched
+        {
+            get
+            {
+                return this._Searched;
+            }
+
+            set
+            {
+                if (!this._Searched)
+                {
+                    this._Searched = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="Core.Ship"/> on the square. Null if there is no such ship.
+        /// </summary>
+        public Ship? Ship
+        {
+            get
+            {
+                return this._Ship;
+            }
+
+            set
+            {
+                if (value == null)
+                {
+                    throw new BattleshipException("Cannot set Ship as null.");
+                }
+                else if (this._Ship == null)
+                {
+                    this._Ship = value;
+                }
+                else
+                {
+                    throw new BattleshipException("Ship has already been set.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the square's position.
+        /// </summary>
+        public Position Position
+        {
+            get
+            {
+                int x = (this.ID % Settings.GridWidth) + 1;
+                int y = (int)Math.Floor((double)(this.ID / Settings.GridWidth)) + 1;
+
+                return new Position(x, y);
+            }
+        }
+
+        /// <summary>
+        /// Gets a collection of adjacent squares.
+        /// </summary>
+        public HashSet<Square> AdjacentSquares
+        {
+            get
+            {
+                HashSet<Square> res = new HashSet<Square>();
+
+                List<int> sqID = new List<int>()
+                {
+                    this.ID - 1,
+                    this.ID + 1,
+                    this.ID - Settings.GridWidth,
+                    this.ID + Settings.GridWidth,
+                };
+
+                foreach (int id in sqID)
+                {
+                    if (id > -1 && id < (Settings.GridHeight * Settings.GridWidth))
+                    {
+                        res.Add(this.Grid.Squares[id]);
+                    }
+                }
+
+                return res;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Square"/> class.
@@ -60,132 +194,8 @@
         /// <param name="id">The square's unique identification tag.</param>
         public Square(Grid grid, int id)
         {
-            if (id < 0 || id > (Settings.GridWidth * Settings.GridHeight) - 1)
-            {
-                throw new Exception("Invalid Square ID.");
-            }
-
             this.Grid = grid;
             this.ID = id;
-        }
-
-        /// <summary>
-        /// Gets the x- and y-coordinates.
-        /// </summary>
-        /// <returns>The x- and y-coordinates.</returns>
-        public (int, int) ToCoor()
-        {
-            int xCoor = (this.ID % Settings.GridWidth) + 1;
-            int yCoor = (int)Math.Floor((double)(this.ID / Settings.GridWidth)) + 1;
-
-            return (xCoor, yCoor);
-        }
-
-        /// <summary>
-        /// Gets a list of adjacent squares.
-        /// </summary>
-        /// <returns>A list of adjacent squares.</returns>
-        public List<Square> GetAdjacentSquares()
-        {
-            List<Square> res = new List<Square>();
-
-            List<int> sqID = new List<int>()
-            {
-                this.ID - 1,
-                this.ID + 1,
-                this.ID - Settings.GridWidth,
-                this.ID + Settings.GridWidth,
-            };
-
-            foreach (int id1 in sqID)
-            {
-                if (id1 > -1 && id1 < (Settings.GridHeight * Settings.GridWidth))
-                {
-                    res.Add(this.Grid.Squares[id1]);
-                }
-            }
-
-            return res;
-        }
-
-        /// <summary>
-        /// Gets the number of hit adjacent squares (HAS).
-        /// </summary>
-        /// <returns>The number of HAS.</returns>
-        public int GetNumberOfHitAdjacentSquares()
-        {
-            int numberOfAdjacentHitSquares = 0;
-            foreach (Square sq in this.GetAdjacentSquares())
-            {
-                if (sq.HadShip == true)
-                {
-                    numberOfAdjacentHitSquares++;
-                }
-            }
-
-            return numberOfAdjacentHitSquares;
-        }
-
-        /// <summary>
-        /// Gets the number of hit connected squares (HCS).
-        /// </summary>
-        /// <returns>The number of HCS.</returns>
-        public int GetNumberOfHitConnectedSquares()
-        {
-            int res = 0;
-            for (int x = 1; x <= (9 - this.ToCoor().Item1); x++)
-            {
-                Square sq = this.Grid.Squares[this.ID + x];
-                if (sq.IsHit == true)
-                {
-                    res++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            for (int x = 1; x <= (this.ToCoor().Item1 - 1); x++)
-            {
-                Square sq = this.Grid.Squares[this.ID - x];
-                if (sq.IsHit == true)
-                {
-                    res++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            for (int y = 1; y <= (9 - this.ToCoor().Item2); y++)
-            {
-                Square sq = this.Grid.Squares[this.ID + (y * Settings.GridWidth)];
-                if (sq.IsHit == true)
-                {
-                    res++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            for (int y = 1; y < (this.ToCoor().Item2 - 1); y++)
-            {
-                Square sq = this.Grid.Squares[this.ID - (y * Settings.GridWidth)];
-                if (sq.IsHit == true)
-                {
-                    res++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            return res;
         }
     }
 }
