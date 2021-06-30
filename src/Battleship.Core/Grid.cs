@@ -20,6 +20,11 @@
         private bool BreadthSet = false;
 
         /// <summary>
+        /// Determines whether <see cref="OriginalShips"/> has been set.
+        /// </summary>
+        private bool OriginalShipsSet = false;
+
+        /// <summary>
         /// <see cref="Length"/>'s value.
         /// </summary>
         private int _Length;
@@ -30,9 +35,32 @@
         private int _Breadth;
 
         /// <summary>
-        /// Gets a list of all <see cref="Ship"/>s on the grid..
+        /// <see cref="OriginalShips"/> value.
         /// </summary>
-        public List<Ship> OriginalShips { get; }
+        private List<Ship> _OriginalShips;
+
+        /// <summary>
+        /// Gets or sets a list of all <see cref="Ship"/>s on the grid..
+        /// </summary>
+        public List<Ship> OriginalShips
+        {
+            get
+            {
+                return this._OriginalShips;
+            }
+
+            set
+            {
+                if (!this.OriginalShipsSet)
+                {
+                    this._OriginalShips = value;
+                }
+                else
+                {
+                    throw new BattleshipException("OriginalShips has already been set.");
+                }
+            }
+        }
 
         /// <summary>
         /// Gets a collection of all operational <see cref="Ship"/>s on the grid.
@@ -137,11 +165,12 @@
         {
             this.Length = length;
             this.Breadth = breadth;
-            this.Squares = new List<Square>(this.Length * this.Breadth);
+            this.Squares = new List<Square>();
+            this.OriginalShips = new List<Ship>();
 
             for (int id = 0; id < (this.Length * this.Breadth); id++)
             {
-                this.Squares[id] = new Square(this, id);
+                this.Squares.Add(new Square(this, id));
             }
         }
 
