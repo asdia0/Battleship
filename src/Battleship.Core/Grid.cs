@@ -200,16 +200,16 @@
                 switch (alignment)
                 {
                     case Alignment.Horizontal:
-                        for (int i = 1; i <= ship.Breadth; i++)
+                        for (int i = 0; i < ship.Breadth; i++)
                         {
-                            squares.UnionWith(square.GetNSquaresInDirection(ship.Length, Direction.East));
+                            squares.UnionWith(this.Squares[square.ID + (this.Length * i)].GetNSquaresInDirection(ship.Length, Direction.East));
                         }
 
                         break;
                     case Alignment.Vertical:
-                        for (int i = 1; i <= ship.Length; i++)
+                        for (int i = 0; i < ship.Length; i++)
                         {
-                            squares.UnionWith(square.GetNSquaresInDirection(ship.Breadth, Direction.South));
+                            squares.UnionWith(this.Squares[square.ID + i].GetNSquaresInDirection(ship.Breadth, Direction.South));
                         }
 
                         break;

@@ -300,16 +300,30 @@
             switch (alignment)
             {
                 case Alignment.Horizontal:
-                    for (int i = 1; i <= this.Breadth; i++)
+                    for (int i = 0; i < this.Breadth; i++)
                     {
-                        squares.UnionWith(square.GetNSquaresInDirection(this.Length, Direction.East));
+                        try
+                        {
+                            squares.UnionWith(this.Grid.Squares[square.ID + (this.Length * i)].GetNSquaresInDirection(this.Length, Direction.East));
+                        }
+                        catch (BattleshipException e)
+                        {
+                            return false;
+                        }
                     }
 
                     break;
                 case Alignment.Vertical:
-                    for (int i = 1; i <= this.Length; i++)
+                    for (int i = 0; i < this.Length; i++)
                     {
-                        squares.UnionWith(square.GetNSquaresInDirection(this.Breadth, Direction.South));
+                        try
+                        {
+                            squares.UnionWith(this.Grid.Squares[square.ID + i].GetNSquaresInDirection(this.Breadth, Direction.South));
+                        }
+                        catch (BattleshipException e)
+                        {
+                            return false;
+                        }
                     }
 
                     break;

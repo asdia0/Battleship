@@ -262,12 +262,12 @@
                 case Direction.North:
                     available = this.Grid.Breadth - this.Position.Y;
 
-                    if (n < available)
+                    if (n > available)
                     {
                         throw new BattleshipException($"{n} is too big. Try a smaller value.");
                     }
 
-                    for (int north = 1; north <= available; north++)
+                    for (int north = 1; north <= n; north++)
                     {
                         int id = this.ID + (north * this.Grid.Length);
 
@@ -278,12 +278,12 @@
                 case Direction.South:
                     available = this.Position.Y - 1;
 
-                    if (n < available)
+                    if (n > available)
                     {
                         throw new BattleshipException($"{n} is too big. Try a smaller value.");
                     }
 
-                    for (int south = 1; south <= available; south++)
+                    for (int south = 1; south <= n; south++)
                     {
                         int id = this.ID - (south * this.Grid.Length);
 
@@ -294,12 +294,12 @@
                 case Direction.West:
                     available = this.Position.X - 1;
 
-                    if (n < available)
+                    if (n > available)
                     {
                         throw new BattleshipException($"{n} is too big. Try a smaller value.");
                     }
 
-                    for (int west = 1; west <= available; west++)
+                    for (int west = 1; west <= n; west++)
                     {
                         int id = this.ID - west;
 
@@ -310,12 +310,12 @@
                 case Direction.East:
                     available = this.Grid.Length - this.Position.X;
 
-                    if (n < available)
+                    if (n > available)
                     {
                         throw new BattleshipException($"{n} is too big. Try a smaller value.");
                     }
 
-                    for (int east = 1; east <= available; east++)
+                    for (int east = 1; east <= n; east++)
                     {
                         int id = this.ID + east;
 
