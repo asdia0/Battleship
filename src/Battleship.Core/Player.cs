@@ -16,11 +16,6 @@
         private bool NameSet = false;
 
         /// <summary>
-        /// Determines whether <see cref="Game"/> has been set.
-        /// </summary>
-        private bool GameSet = false;
-
-        /// <summary>
         /// <see cref="Grid"/>'s value.
         /// </summary>
         private Grid _Grid;
