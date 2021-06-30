@@ -23,3 +23,6 @@ dotnet_diagnostic.CS8632.severity = none
 
 # SA1005: Single line comments should begin with single space
 dotnet_diagnostic.SA1005.severity = none
+
+# SA1201: Elements should appear in the correct order
+dotnet_diagnostic.SA1201.severity = none
