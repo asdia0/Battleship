@@ -75,7 +75,7 @@
             {
                 if (!this.IDSet)
                 {
-                    int maxID = (Settings.GridWidth * Settings.GridHeight) - 1;
+                    int maxID = (this.Grid.Length * this.Grid.Breadth) - 1;
 
                     if (value < 0 || value > maxID)
                     {
