@@ -6,9 +6,9 @@
     public struct Move
     {
         /// <summary>
-        /// Gets the name of the player that searched the square.
+        /// Gets player that searched the square.
         /// </summary>
-        public string Player { get; }
+        public Player Player { get; }
 
         /// <summary>
         /// Gets the square searched.
@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="player">The player who made the move.</param>
         /// <param name="square">The square searched.</param>
-        public Move(string player, Square square)
+        public Move(Player player, Square square)
         {
             this.Player = player;
             this.Square = square;
