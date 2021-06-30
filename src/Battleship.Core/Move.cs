@@ -25,5 +25,14 @@
             this.Player = player;
             this.Square = square;
         }
+
+        /// <summary>
+        /// Converts the move to a string.
+        /// </summary>
+        /// <returns>The move as a string.</returns>
+        public override string ToString()
+        {
+            return $"{this.Player.Name}: {this.Square.Position}";
+        }
     }
 }
