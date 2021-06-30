@@ -13,6 +13,6 @@
         /// <summary>
         /// Vertical alignment.
         /// </summary>
-        Vertical
+        Vertical,
     }
 }
