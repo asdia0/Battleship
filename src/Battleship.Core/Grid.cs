@@ -20,11 +20,6 @@
         private bool BreadthSet = false;
 
         /// <summary>
-        /// Determines whether <see cref="Player"/> has been set.
-        /// </summary>
-        private bool PlayerSet = false;
-
-        /// <summary>
         /// <see cref="Length"/>'s value.
         /// </summary>
         private int _Length;
@@ -33,34 +28,6 @@
         /// <see cref="Breadth"/>'s value.
         /// </summary>
         private int _Breadth;
-
-        /// <summary>
-        /// <see cref="Player"/>'s value;
-        /// </summary>
-        private Player _Player;
-
-        /// <summary>
-        /// The player.
-        /// </summary>
-        public Player Player
-        {
-            get
-            {
-                return this._Player;
-            }
-
-            set
-            {
-                if (!this.PlayerSet)
-                {
-                    this._Player = value;
-                }
-                else
-                {
-                    throw new BattleshipException("Player has already been set.");
-                }
-            }
-        }
 
         /// <summary>
         /// Gets a list of all <see cref="Ship"/>s on the grid..
@@ -164,12 +131,10 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Grid"/> class.
         /// </summary>
-        /// <param name="player">The player.</param>
         /// <param name="length">The length of the grid.</param>
         /// <param name="breadth">The braedth of the grid.</param>
-        public Grid(Player player, int length, int breadth)
+        public Grid(int length, int breadth)
         {
-            this.Player = player;
             this.Length = length;
             this.Breadth = breadth;
             this.Squares = new List<Square>(this.Length * this.Breadth);
