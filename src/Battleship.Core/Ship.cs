@@ -102,7 +102,7 @@
                 for (int j = 0; j < this.Length; j++)
                 {
                     Square square = this.Grid.Squares[j + sq.ID];
-                    if ((square.Searched && square.HadShip == true) || square.IsSunk == true)
+                    if ((square.BeenSearched && square.HadShip == true) || square.IsSunk == true)
                     {
                         failures++;
                     }
@@ -128,7 +128,7 @@
                 for (int j = 0; j < this.Length; j++)
                 {
                     Square square = this.Grid.Squares[(j * Settings.GridWidth) + sq.ID];
-                    if ((square.Searched && square.HadShip == true) || square.IsSunk == true)
+                    if ((square.BeenSearched && square.HadShip == true) || square.IsSunk == true)
                     {
                         failures++;
                     }
