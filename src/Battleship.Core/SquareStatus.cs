@@ -21,7 +21,7 @@
         Hit,
 
         /// <summary>
-        /// Square's ship was sunk (<see cref="Square.Searched"/> = true AND <see cref="Square.Ship.Sunk"/> == true).
+        /// Square's ship was sunk (<see cref="Square.Searched"/> = true AND <see cref="Square.Ship"/>.Sunk == true).
         /// </summary>
         Sunk,
     }
