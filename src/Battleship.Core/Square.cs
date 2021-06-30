@@ -251,7 +251,7 @@
 
                     for (int north = 1; north <= available; north++)
                     {
-                        int id = this.ID + (north * this.Grid.Width);
+                        int id = this.ID + (north * this.Grid.Breadth);
 
                         res.Add(this.Grid.Squares[id]);
                     }
@@ -267,7 +267,7 @@
 
                     for (int south = 1; south <= available; south++)
                     {
-                        int id = this.ID - (south * this.Grid.Width);
+                        int id = this.ID - (south * this.Grid.Breadth);
 
                         res.Add(this.Grid.Squares[id]);
                     }
@@ -290,7 +290,7 @@
 
                     break;
                 case Direction.East:
-                    available = this.Grid.Width - this.Position.X;
+                    available = this.Grid.Breadth - this.Position.X;
 
                     if (n < available)
                     {
