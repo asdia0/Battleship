@@ -65,13 +65,13 @@
 
             this.Play_UpdateScreen();
 
-            if (!this.computer.Ships.Any())
+            if (!this.computer.OperationalShips.Any())
             {
                 MessageBox.Show("You won!", "Congratulations!");
                 this.Play_SquareText.IsEnabled = false;
             }
 
-            if (!this.human.Ships.Any())
+            if (!this.human.OperationalShips.Any())
             {
                 MessageBox.Show("You lost.", "Try again next time.");
                 this.Play_SquareText.IsEnabled = false;
@@ -188,7 +188,7 @@
                 int x = square1.ToCoor().Item1 - 1;
                 int y = square1.ToCoor().Item2 - 1;
 
-                if (square1.BeenSearched)
+                if (square1.Searched)
                 {
                     bitmap1.SetPixel(x, y, Color.FromArgb(128, 128, 128));
                 }
@@ -212,7 +212,7 @@
                 int x = square2.ToCoor().Item1 - 1;
                 int y = square2.ToCoor().Item2 - 1;
 
-                if (square2.BeenSearched)
+                if (square2.Searched)
                 {
                     bitmap2.SetPixel(x, y, Color.FromArgb(128, 128, 128));
                 }

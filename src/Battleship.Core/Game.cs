@@ -200,7 +200,7 @@
 
                 foreach (Square adjSquare in square.GetAdjacentSquares())
                 {
-                    if (!adjSquare.BeenSearched)
+                    if (!adjSquare.Searched)
                     {
                         unsearchedSquares.Add(adjSquare);
                     }
@@ -228,7 +228,7 @@
             }
 
             // 2. A ship only has 1 possible arrangement
-            foreach (Ship ship in p2.Ships)
+            foreach (Ship ship in p2.OperationalShips)
             {
                 List<List<int>> arrangements = ship.GetArrangements();
 
@@ -237,7 +237,7 @@
                     foreach (int squareID in arrangements[0])
                     {
                         Square square = p2.Squares[squareID];
-                        if (!square.BeenSearched)
+                        if (!square.Searched)
                         {
                             this.Search(p1, p2, square);
 
@@ -271,7 +271,7 @@
                 foreach (Square square in p2.Squares)
                 {
                     {
-                        if (!square.BeenSearched)
+                        if (!square.Searched)
                         {
                             probability.Add(square, 0);
                         }
@@ -288,7 +288,7 @@
                 }
             }
 
-            foreach (Ship ship in p2.Ships)
+            foreach (Ship ship in p2.OperationalShips)
             {
                 foreach (List<int> arrangement in ship.GetArrangements())
                 {
@@ -328,7 +328,7 @@
         /// <param name="sq">The square to search.</param>
         public void Search(Grid p1, Grid p2, Square sq)
         {
-            if (sq.BeenSearched)
+            if (sq.Searched)
             {
                 throw new Exception($"Square {sq.ID} has already been searched.");
             }
@@ -343,7 +343,7 @@
                 sq.HasShip = false;
                 sq.IsHit = true;
 
-                foreach (Ship sp in sq.Grid.Ships.ToList())
+                foreach (Ship sp in sq.Grid.OperationalShips.ToList())
                 {
                     if (sp.CurrentOccupiedSquares.Contains(sq))
                     {
@@ -351,7 +351,7 @@
 
                         if (sp.CurrentOccupiedSquares.Count == 0)
                         {
-                            p2.Ships.Remove(sp);
+                            p2.OperationalShips.Remove(sp);
 
                             sp.IsSunk = true;
 
@@ -376,7 +376,7 @@
         {
             this.StartGame();
 
-            while (this.Player1.Ships.Count > 0 && this.Player2.Ships.Count > 0)
+            while (this.Player1.OperationalShips.Count > 0 && this.Player2.OperationalShips.Count > 0)
             {
                 this.Random();
             }
@@ -393,7 +393,7 @@
         {
             this.StartGame();
 
-            while (this.Player1.Ships.Count > 0 && this.Player2.Ships.Count > 0)
+            while (this.Player1.OperationalShips.Count > 0 && this.Player2.OperationalShips.Count > 0)
             {
                 if (this.Turn)
                 {
@@ -444,12 +444,12 @@
         /// </summary>
         private void EndGame()
         {
-            if (this.Player1.Ships.Any())
+            if (this.Player1.OperationalShips.Any())
             {
                 this.Winner = true;
             }
 
-            if (this.Player2.Ships.Any())
+            if (this.Player2.OperationalShips.Any())
             {
                 this.Winner = false;
             }
@@ -463,11 +463,11 @@
         /// <param name="squareID">Square to check's ID.</param>
         private void AddTargets(Grid p1, Grid p2, int squareID)
         {
-            if (p2.Squares[squareID].BeenSearched && p2.Squares[squareID].HadShip == true && p2.Squares[squareID].IsSunk != true)
+            if (p2.Squares[squareID].Searched && p2.Squares[squareID].HadShip == true && p2.Squares[squareID].IsSunk != true)
             {
                 foreach (Square sq in p2.Squares[squareID].GetAdjacentSquares())
                 {
-                    if (!sq.BeenSearched && !p1.ToSearch.Contains(sq))
+                    if (!sq.Searched && !p1.ToSearch.Contains(sq))
                     {
                         p1.ToSearch.Add(sq);
                     }
@@ -488,7 +488,7 @@
 
                 foreach (Square adjSquare in square.GetAdjacentSquares())
                 {
-                    if (p1.ToSearch.Contains(adjSquare) || adjSquare.BeenSearched)
+                    if (p1.ToSearch.Contains(adjSquare) || adjSquare.Searched)
                     {
                         continue;
                     }

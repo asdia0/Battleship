@@ -10,44 +10,123 @@
     public class Grid
     {
         /// <summary>
-        /// List of squares searched by opponent.
+        /// Determines whether <see cref="Length"/> has been set.
         /// </summary>
-        public List<Square> SearchedSquares = new List<Square>();
+        private bool LengthSet = false;
 
         /// <summary>
-        /// List of all the ships.
+        /// Determines whether <see cref="Breadth"/> has been set.
         /// </summary>
-        public List<Ship> OriginalShips = new List<Ship>();
+        private bool BreadthSet = false;
 
         /// <summary>
-        /// The active ships on the grid.
+        /// <see cref="Length"/>'s value.
         /// </summary>
-        public List<Ship> Ships = new List<Ship>();
+        private int _Length;
 
         /// <summary>
-        /// The grid's squares.
+        /// <see cref="Breadth"/>'s value.
         /// </summary>
-        public List<Square> Squares = new List<Square>();
+        private int _Breadth;
 
         /// <summary>
-        /// List of enemy squares to search.
+        /// Gets a list of all <see cref="Ship"/>s on the grid..
         /// </summary>
-        public HashSet<Square> ToSearch = new HashSet<Square>();
+        public List<Ship> OriginalShips { get; }
 
         /// <summary>
-        /// List of enemy squares to attack.
+        /// Gets a collection of all operational <see cref="Ship"/>s on the grid.
         /// </summary>
-        public HashSet<Square> ToAttack = new HashSet<Square>();
+        public HashSet<Ship> OperationalShips
+        {
+            get
+            {
+                return this.OriginalShips.Where(i => i.Status == ShipStatus.Operational).ToHashSet();
+            }
+        }
 
         /// <summary>
-        /// List of the grid's unsearched squares.
+        /// Gets a list of the grid's <see cref="Square"/>s.
         /// </summary>
-        public List<Square> UnsearchedSquares = new List<Square>();
+        public List<Square> Squares { get; }
 
         /// <summary>
-        /// List of the grid's unoccupied squares.
+        /// Gets a collection of enemy squares to search.
         /// </summary>
-        public List<Square> UnoccupiedSquares = new List<Square>();
+        public HashSet<Square> ToSearch { get; }
+
+        /// <summary>
+        /// Gets a collection of enemy squares to attack.
+        /// </summary>
+        public HashSet<Square> ToAttack { get; }
+
+        /// <summary>
+        /// Gets a collection of the grid's unsearched <see cref="Square"/>s.
+        /// </summary>
+        public List<Square> UnsearchedSquares
+        {
+            get
+            {
+                return this.Squares.Where(i => i.Status == SquareStatus.Unsearched).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Gets a collection of the grid's unoccupied <see cref="Square"/>s.
+        /// </summary>
+        public List<Square> UnoccupiedSquares
+        {
+            get
+            {
+                return this.Squares.Where(i => i.Ship == null).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the grid's length.
+        /// </summary>
+        public int Length
+        {
+            get
+            {
+                return this._Length;
+            }
+
+            set
+            {
+                if (!LengthSet)
+                {
+                    this._Length = value;
+                }
+                else
+                {
+                    throw new BattleshipException("Length has already been set.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the grid's length.
+        /// </summary>
+        public int Breadth
+        {
+            get
+            {
+                return this._Breadth;
+            }
+
+            set
+            {
+                if (!BreadthSet)
+                {
+                    this._Breadth = value;
+                }
+                else
+                {
+                    throw new BattleshipException("Breadth has already been set.");
+                }
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Grid"/> class.
@@ -83,7 +162,7 @@
                 sq.IsSunk = square.IsSunk;
                 if (square.Ship != null)
                 {
-                    sq.Ship = this.Ships[square.Ship.ID];
+                    sq.Ship = this.OperationalShips[square.Ship.ID];
                 }
             }
         }
@@ -109,88 +188,22 @@
         /// <param name="ship">The ship to be added.</param>
         /// <param name="alignment">The ship's alignment.</param>
         /// <returns>The task result.</returns>
-        public bool AddShip(Square square, Ship ship, bool alignment)
+        public bool AddShip(Square square, Ship ship, Alignment alignment)
         {
-            if (ship.Grid != square.Grid)
+            if (ship.Grid != this)
             {
-                throw new Exception("Attempted to add ship to non-local square.");
+                throw new BattleshipException("Ship must be local.");
             }
 
-            foreach (Ship sp in this.Ships)
+            if (square.Grid != this)
             {
-                if (sp.ID == ship.ID)
-                {
-                    throw new Exception($"You cannot have two {ship.ID}s.");
-                }
+                throw new BattleshipException("Square must be local.");
             }
 
-            int availRows = Settings.GridWidth + 1 - (square.ID % Settings.GridWidth);
-            int availCols = Settings.GridHeight + 1 - (int)Math.Floor((decimal)square.ID / Settings.GridHeight);
-
-            // horizontal
-            if (alignment && ship.Length <= availRows)
+            if (ship.CanFit(square, alignment))
             {
-                for (int i = 0; i < ship.Length; i++)
-                {
-                    int sqID = i + square.ID;
-
-                    if (sqID >= this.Squares.Count || this.Squares[sqID].HasShip == true)
-                    {
-                        return false;
-                    }
-                }
-
-                for (int i = 0; i < ship.Length; i++)
-                {
-                    int sqID = i + square.ID;
-
-                    this.Squares[sqID].Ship = ship;
-                    this.Squares[sqID].HasShip = true;
-                    this.Squares[sqID].HadShip = true;
-                    ship.CurrentOccupiedSquares.Add(this.Squares[sqID]);
-                    ship.OriginalOccupiedSquares.Add(this.Squares[sqID]);
-                    this.UnoccupiedSquares.Remove(this.Squares[sqID]);
-                }
-
-                this.Ships.Add(ship);
-                this.OriginalShips.Add(ship);
-                ship.Alignment = true;
-                return true;
+                switch ()
             }
-
-            // vertical
-            else if (!alignment && ship.Length <= availCols)
-            {
-                for (int i = 0; i < ship.Length; i++)
-                {
-                    int sqID = (i * Settings.GridWidth) + square.ID;
-
-                    if (sqID >= this.Squares.Count || this.Squares[sqID].HasShip == true)
-                    {
-                        return false;
-                    }
-                }
-
-                for (int i = 0; i < ship.Length; i++)
-                {
-                    int sqID = (i * Settings.GridWidth) + square.ID;
-
-                    this.Squares[sqID].Ship = ship;
-                    this.Squares[sqID].HasShip = true;
-                    this.Squares[sqID].HadShip = true;
-                    ship.CurrentOccupiedSquares.Add(this.Squares[sqID]);
-                    ship.OriginalOccupiedSquares.Add(this.Squares[sqID]);
-                    this.UnoccupiedSquares.Remove(this.Squares[sqID]);
-                }
-
-                this.OriginalShips.Add(ship);
-                this.Ships.Add(ship);
-                ship.Alignment = false;
-
-                return true;
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -203,29 +216,17 @@
 
             foreach (Square sq in this.Squares)
             {
-                if (sq.HadShip == true)
+                if (sq.Ship != null)
                 {
-                    res += "O";
+                    res += $"[{sq.Ship.ID}]";
                 }
                 else
                 {
-                    res += ".";
+                    res += "[ ]";
                 }
             }
 
             return res;
-        }
-
-        /// <summary>
-        /// Adds the default ships in the original version of Battleship to the grid.
-        /// </summary>
-        public void AddDefaultShips()
-        {
-            this.AddShip(this.Squares[0], new Ship(this, 5, 1), false);
-            this.AddShip(this.Squares[1], new Ship(this, 4, 1), false);
-            this.AddShip(this.Squares[2], new Ship(this, 3, 1), false);
-            this.AddShip(this.Squares[3], new Ship(this, 3, 1), false);
-            this.AddShip(this.Squares[4], new Ship(this, 2, 1), false);
         }
 
         /// <summary>

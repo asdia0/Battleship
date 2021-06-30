@@ -243,7 +243,7 @@
 
                 foreach (Square sq in this.Grid.Squares)
                 {
-                    if (this.CanFit(sq, Alignment.Horizontal))
+                    if (this.CanFit(sq, Alignment.Horizontal, true))
                     {
                         HashSet<int> arr = new HashSet<int>();
 
@@ -255,7 +255,7 @@
                         res.Add(arr);
                     }
 
-                    if (this.CanFit(sq, Alignment.Vertical))
+                    if (this.CanFit(sq, Alignment.Vertical, true))
                     {
                         HashSet<int> arr = new HashSet<int>();
 
@@ -291,8 +291,9 @@
         /// </summary>
         /// <param name="square">The starting square where the ship will be "placed".</param>
         /// <param name="alignment">The alignment of the ship. True means horizontal and false means vertical.</param>
+        /// <param name="acceptHitSquares">Determines if the ship can fit on squares whose status is <see cref="SquareStatus.Hit"/>.</param>
         /// <returns>A boolean.</returns>
-        public bool CanFit(Square square, Alignment alignment)
+        public bool CanFit(Square square, Alignment alignment, bool acceptHitSquares)
         {
             HashSet<Square> squares = new HashSet<Square>();
 
@@ -317,10 +318,21 @@
             // No obstructions
             if (!squares.Where(i => (i.Status == SquareStatus.Miss || i.Status == SquareStatus.Sunk)).Any())
             {
-                // Not all squares are hit
-                if (squares.Where(i => i.Status == SquareStatus.Hit).Count() != (this.Length * this.Breadth))
+                if (acceptHitSquares)
                 {
-                    return true;
+                    // Not all squares are hit
+                    if (squares.Where(i => i.Status == SquareStatus.Hit).Count() != (this.Length * this.Breadth))
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    // No squares are hit
+                    if (!squares.Where(i => i.Status == SquareStatus.Hit).Any())
+                    {
+                        return true;
+                    }
                 }
             }
 

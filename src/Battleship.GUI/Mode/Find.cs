@@ -130,7 +130,7 @@
             }
 
             ship.IsSunk = true;
-            dummy.Ships.Remove(ship);
+            dummy.OperationalShips.Remove(ship);
 
             int sunkSquares = 0;
             int sunkShips = 0;
@@ -181,7 +181,7 @@
             }
 
             ship.IsSunk = true;
-            Grid.Ships.Remove(ship);
+            Grid.OperationalShips.Remove(ship);
 
             this.Find_Sunk_ShipText.Clear();
             this.Find_Sunk_SquaresText.Clear();
@@ -337,7 +337,7 @@
         public bool Find_CanProceed(Grid grid)
         {
             // TODO: Determine impossible positions (eg. hit square (group) surrounded completely).
-            foreach (Ship ship in grid.Ships)
+            foreach (Ship ship in grid.OperationalShips)
             {
                 if (ship.GetArrangements().Count == 0)
                 {

@@ -225,7 +225,7 @@
 
                 foreach (Square adjSquare in square.GetAdjacentSquares())
                 {
-                    if (!adjSquare.BeenSearched)
+                    if (!adjSquare.Searched)
                     {
                         unsearchedSquares.Add(adjSquare);
                     }
@@ -238,7 +238,7 @@
             }
 
             // 2. A ship only has 1 possible arrangement
-            foreach (Ship ship in player.Ships)
+            foreach (Ship ship in player.OperationalShips)
             {
                 List<List<int>> arrangements = ship.GetArrangements();
 
@@ -247,7 +247,7 @@
                     foreach (int squareID in arrangements[0])
                     {
                         Square square = player.Squares[squareID];
-                        if (!square.BeenSearched)
+                        if (!square.Searched)
                         {
                             return (square, new Dictionary<Square, int>(){{ square, 100 }});
                         }
@@ -267,7 +267,7 @@
 
                 foreach (Square adjSquare in square.GetAdjacentSquares())
                 {
-                    if (player.ToSearch.Contains(adjSquare) || adjSquare.BeenSearched)
+                    if (player.ToSearch.Contains(adjSquare) || adjSquare.Searched)
                     {
                         continue;
                     }
@@ -285,7 +285,7 @@
                 foreach (Square square in player.Squares)
                 {
                     {
-                        if (!square.BeenSearched)
+                        if (!square.Searched)
                         {
                             probability.Add(square, 0);
                         }
@@ -302,7 +302,7 @@
                 }
             }
 
-            foreach (Ship ship in player.Ships)
+            foreach (Ship ship in player.OperationalShips)
             {
                 foreach (List<int> arrangement in ship.GetArrangements())
                 {
@@ -343,7 +343,7 @@
         /// <summary>
         /// Finds best square.
         /// </summary>
-        public static void Find()
+        public static void GetBestSquare()
         {
             List<Ship> shipList = new List<Ship>
             {
@@ -360,10 +360,10 @@
                 Ship sp = new Ship(player, ship.Length, ship.Breadth);
 
                 player.OriginalShips.Add(sp);
-                player.Ships.Add(sp);
+                player.OperationalShips.Add(sp);
             }
 
-            while (player.Ships.Count > 0)
+            while (player.OperationalShips.Count > 0)
             {
                 Console.Clear();
                 (Square sq, Dictionary<Square, int> e) = FindBestSquare(player);
@@ -375,7 +375,7 @@
                 player.ToSearch.Clear();
                 foreach (Square sq1 in player.Squares)
                 {
-                    if (!sq1.BeenSearched)
+                    if (!sq1.Searched)
                     {
                         foreach (Square adjSq in sq1.GetAdjacentSquares())
                         {
@@ -404,7 +404,7 @@
                         Console.WriteLine("Squares sunk: ");
                         string raw = Console.ReadLine();
                         string[] xy = raw.Replace(")", string.Empty).Split(",(");
-                        foreach (Ship ship in player.Ships.ToList())
+                        foreach (Ship ship in player.OperationalShips.ToList())
                         {
                             if (ship.ID == id)
                             {
@@ -427,13 +427,31 @@
                                 }
 
                                 ship.IsSunk = true;
-                                player.Ships.Remove(ship);
+                                player.OperationalShips.Remove(ship);
                             }
                         }
 
                         break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Finds the optimal ship layout.
+        /// </summary>
+        public static Grid GetOptimalShipLayout()
+        {
+            Grid grid = new Grid();
+            grid.AddShipsRandomly(Settings.ShipList);
+
+            // Get template
+            while (grid.IsLegal)
+            {
+                FindBestSquare(grid).Item1.IsMiss = true;
+            }
+
+            // Fit ships
+
         }
 
         /// <summary>

@@ -166,7 +166,7 @@
 
             Square sq = Settings.Grid.Squares[this.SquareID.SelectedIndex];
 
-            if (sq.BeenSearched)
+            if (sq.Searched)
             {
                 if (sq.IsMiss == true)
                 {

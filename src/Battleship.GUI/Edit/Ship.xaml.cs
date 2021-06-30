@@ -34,14 +34,14 @@
 
             this.ShipIDSource.Add(string.Empty);
 
-            foreach (Ship sp in Settings.Grid.Ships)
+            foreach (Ship sp in Settings.Grid.OperationalShips)
             {
                 this.ShipIDSource.Add(sp.ID);
             }
 
             this.ShipID.ItemsSource = this.ShipIDSource;
 
-            this.SelectedShip = Settings.Grid.Ships[0];
+            this.SelectedShip = Settings.Grid.OperationalShips[0];
 
             this.AddShip.IsEnabled = false;
             this.RemoveShip.IsEnabled = true;
@@ -69,7 +69,7 @@
 
                 foreach (Square square in res.Item2)
                 {
-                    if (!square.BeenSearched)
+                    if (!square.Searched)
                     {
                         this.SelectedShip.CurrentOccupiedSquares.Add(square);
                     }
@@ -125,7 +125,7 @@
         /// <param name="e">Event.</param>
         private void RemoveShip_OnClick(object sender, EventArgs e)
         {
-            Settings.Grid.Ships.Remove(this.SelectedShip);
+            Settings.Grid.OperationalShips.Remove(this.SelectedShip);
             Settings.Grid.OriginalShips.Remove(this.SelectedShip);
 
             int id = 0;
@@ -386,7 +386,7 @@
         {
             Core.Settings.ShipList.Clear();
 
-            foreach (Ship ship in Settings.Grid.Ships)
+            foreach (Ship ship in Settings.Grid.OperationalShips)
             {
                 Core.Settings.ShipList.Add(ship);
             }
