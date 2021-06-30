@@ -261,7 +261,7 @@
 
                         for (int i = 0; i < this.Length; i++)
                         {
-                            arr.Add(sq.ID + (i * Settings.GridWidth));
+                            arr.Add(sq.ID + (i * this.Grid.Length));
                         }
 
                         res.Add(arr);
