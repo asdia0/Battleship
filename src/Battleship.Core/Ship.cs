@@ -309,7 +309,7 @@
                 case Alignment.Vertical:
                     for (int i = 1; i <= this.Length; i++)
                     {
-                        squares.UnionWith(square.GetNSquaresInDirection(this.Breadth, Direction.East));
+                        squares.UnionWith(square.GetNSquaresInDirection(this.Breadth, Direction.South));
                     }
 
                     break;
