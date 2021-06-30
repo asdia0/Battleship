@@ -155,8 +155,8 @@
         {
             get
             {
-                int x = (this.ID % this.Grid.Width) + 1;
-                int y = (int)Math.Floor((double)(this.ID / this.Grid.Width)) + 1;
+                int x = (this.ID % this.Grid.Breadth) + 1;
+                int y = (int)Math.Floor((double)(this.ID / this.Grid.Breadth)) + 1;
 
                 return new Position(x, y);
             }
