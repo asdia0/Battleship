@@ -3,34 +3,27 @@
     /// <summary>
     /// Defines a move.
     /// </summary>
-    public class Move
+    public struct Move
     {
         /// <summary>
-        /// Player that searched the square.
+        /// Gets the name of the player that searched the square.
         /// </summary>
-        public string Player;
+        public string Player { get; }
 
         /// <summary>
-        /// The x-coordinate of the square searched.
+        /// Gets the square searched.
         /// </summary>
-        public int X;
+        public Square Square { get; }
 
         /// <summary>
-        /// The y-coordinate of the square searched.
-        /// </summary>
-        public int Y;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Move"/> class.
+        /// Initializes a new instance of the <see cref="Move"/> struct.
         /// </summary>
         /// <param name="player">The player who made the move.</param>
-        /// <param name="tuple">The coordinates of the square changed.</param>
-        public Move(string player, (int, int) tuple)
+        /// <param name="square">The square searched.</param>
+        public Move(string player, Square square)
         {
             this.Player = player;
-
-            this.X = tuple.Item1;
-            this.Y = tuple.Item2;
+            this.Square = square;
         }
     }
 }
