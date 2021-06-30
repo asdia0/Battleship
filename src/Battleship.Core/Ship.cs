@@ -83,7 +83,14 @@
             {
                 if (!this.IDSet)
                 {
-                    this._ID = value;
+                    if (this.Grid.OriginalShips.Count >= value)
+                    {
+                        throw new BattleshipException($"Ship with ID {value} already exists.");
+                    }
+                    else
+                    {
+                        this._ID = value;
+                    }
                 }
                 else
                 {
