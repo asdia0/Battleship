@@ -280,8 +280,8 @@
         /// <param name="breadth">The ship's breadth.</param>
         public Ship(Grid grid, int length, int breadth)
         {
-            this.Length = length;
             this.Grid = grid;
+            this.Length = length;
             this.ID = grid.OriginalShips.Count;
             this.Breadth = breadth;
         }
