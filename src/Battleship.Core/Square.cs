@@ -171,21 +171,33 @@
             {
                 HashSet<Square> res = new HashSet<Square>();
 
-                List<int> sqID = new List<int>()
+                try
                 {
-                    this.ID - 1,
-                    this.ID + 1,
-                    this.ID - Settings.GridWidth,
-                    this.ID + Settings.GridWidth,
-                };
-
-                foreach (int id in sqID)
-                {
-                    if (id > -1 && id < (Settings.GridHeight * Settings.GridWidth))
-                    {
-                        res.Add(this.Grid.Squares[id]);
-                    }
+                    res.UnionWith(this.GetNSquaresInDirection(1, Direction.North));
                 }
+                catch (BattleshipException e)
+                { }
+
+                try
+                {
+                    res.UnionWith(this.GetNSquaresInDirection(1, Direction.East));
+                }
+                catch (BattleshipException e)
+                { }
+
+                try
+                {
+                    res.UnionWith(this.GetNSquaresInDirection(1, Direction.South));
+                }
+                catch (BattleshipException e)
+                { }
+
+                try
+                {
+                    res.UnionWith(this.GetNSquaresInDirection(1, Direction.West));
+                }
+                catch (BattleshipException e)
+                { }
 
                 return res;
             }
