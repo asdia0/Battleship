@@ -1,7 +1,7 @@
 ﻿namespace Battleship.Core
 {
     /// <summary>
-    /// Types of statuses for a <see cref="Square"/>.
+    /// Types of <see cref="Square"/> statuses.
     /// </summary>
     public enum SquareStatus
     {
