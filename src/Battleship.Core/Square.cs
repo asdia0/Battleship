@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Defines a square on the grid.
@@ -82,7 +83,7 @@
                         throw new BattleshipException($"ID must be between 0 and {maxID} inclusive.");
                     }
 
-                    if (this.Grid.Squares[value] == null)
+                    if (!this.Grid.Squares.Where(i => i.ID == value).Any())
                     {
                         this._ID = value;
                     }
