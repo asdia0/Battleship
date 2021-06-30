@@ -20,7 +20,7 @@
         private bool BreadthSet = false;
 
         /// <summary>
-        /// Determines whether <see cref="OriginalShips"/> has been set.
+        /// Determines whether <see cref="Ships"/> has been set.
         /// </summary>
         private bool OriginalShipsSet = false;
 
@@ -35,14 +35,14 @@
         private int _Breadth;
 
         /// <summary>
-        /// <see cref="OriginalShips"/> value.
+        /// <see cref="Ships"/> value.
         /// </summary>
         private List<Ship> _OriginalShips;
 
         /// <summary>
         /// Gets or sets a list of all <see cref="Ship"/>s on the grid..
         /// </summary>
-        public List<Ship> OriginalShips
+        public List<Ship> Ships
         {
             get
             {
@@ -69,7 +69,7 @@
         {
             get
             {
-                return this.OriginalShips.Where(i => i.Status == ShipStatus.Operational).ToHashSet();
+                return this.Ships.Where(i => i.Status == ShipStatus.Operational).ToHashSet();
             }
         }
 
@@ -166,7 +166,7 @@
             this.Length = length;
             this.Breadth = breadth;
             this.Squares = new List<Square>();
-            this.OriginalShips = new List<Ship>();
+            this.Ships = new List<Ship>();
 
             for (int id = 0; id < (this.Length * this.Breadth); id++)
             {

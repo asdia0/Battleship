@@ -83,7 +83,7 @@
             {
                 if (!this.IDSet)
                 {
-                    if (!this.Grid.OriginalShips.Where(i => i.ID == value).Any())
+                    if (!this.Grid.Ships.Where(i => i.ID == value).Any())
                     {
                         throw new BattleshipException($"Ship with ID {value} already exists.");
                     }
@@ -282,7 +282,7 @@
         {
             this.Grid = grid;
             this.Length = length;
-            this.ID = grid.OriginalShips.Count;
+            this.ID = grid.Ships.Count;
             this.Breadth = breadth;
         }
 
