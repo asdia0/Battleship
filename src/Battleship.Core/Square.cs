@@ -204,6 +204,11 @@
                     {
                         return SquareStatus.Miss;
                     }
+
+                    if (this.Ship.Sunk)
+                    {
+                        return SquareStatus.Sunk;
+                    }
                     else
                     {
                         return SquareStatus.Hit;
