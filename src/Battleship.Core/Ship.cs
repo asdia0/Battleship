@@ -292,16 +292,16 @@
             switch (alignment)
             {
                 case Alignment.Horizontal:
-                    for (int i = 1; i <= this.Length; i++)
+                    for (int i = 1; i <= this.Breadth; i++)
                     {
-                        squares.UnionWith(square.GetNSquaresInDirection(this.Breadth, Direction.East));
+                        squares.UnionWith(square.GetNSquaresInDirection(this.Length, Direction.East));
                     }
 
                     break;
                 case Alignment.Vertical:
-                    for (int i = 1; i <= this.Breadth; i++)
+                    for (int i = 1; i <= this.Length; i++)
                     {
-                        squares.UnionWith(square.GetNSquaresInDirection(this.Length, Direction.East));
+                        squares.UnionWith(square.GetNSquaresInDirection(this.Breadth, Direction.East));
                     }
 
                     break;

@@ -155,8 +155,8 @@
         {
             get
             {
-                int x = (this.ID % this.Grid.Breadth) + 1;
-                int y = (int)Math.Floor((double)(this.ID / this.Grid.Breadth)) + 1;
+                int x = (this.ID % this.Grid.Length) + 1;
+                int y = (int)Math.Floor((double)(this.ID / this.Grid.Length)) + 1;
 
                 return new Position(x, y);
             }
@@ -259,7 +259,7 @@
             switch (direction)
             {
                 case Direction.North:
-                    available = this.Grid.Length - this.Position.Y;
+                    available = this.Grid.Breadth - this.Position.Y;
 
                     if (n < available)
                     {
@@ -268,7 +268,7 @@
 
                     for (int north = 1; north <= available; north++)
                     {
-                        int id = this.ID + (north * this.Grid.Breadth);
+                        int id = this.ID + (north * this.Grid.Length);
 
                         res.Add(this.Grid.Squares[id]);
                     }
@@ -284,7 +284,7 @@
 
                     for (int south = 1; south <= available; south++)
                     {
-                        int id = this.ID - (south * this.Grid.Breadth);
+                        int id = this.ID - (south * this.Grid.Length);
 
                         res.Add(this.Grid.Squares[id]);
                     }
@@ -307,7 +307,7 @@
 
                     break;
                 case Direction.East:
-                    available = this.Grid.Breadth - this.Position.X;
+                    available = this.Grid.Length - this.Position.X;
 
                     if (n < available)
                     {
