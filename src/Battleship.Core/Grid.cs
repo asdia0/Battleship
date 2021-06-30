@@ -94,7 +94,7 @@
 
             set
             {
-                if (!LengthSet)
+                if (!this.LengthSet)
                 {
                     this._Length = value;
                 }
@@ -117,7 +117,7 @@
 
             set
             {
-                if (!BreadthSet)
+                if (!this.BreadthSet)
                 {
                     this._Breadth = value;
                 }
@@ -131,53 +131,17 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Grid"/> class.
         /// </summary>
-        public Grid()
+        /// <param name="length">The length of the grid.</param>
+        /// <param name="breadth">The braedth of the grid.</param>
+        public Grid(int length, int breadth)
         {
-            this.AddSquares();
-        }
+            this.Length = length;
+            this.Breadth = breadth;
+            this.Squares = new List<Square>(this.Length * this.Breadth);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Grid"/> class.
-        /// </summary>
-        /// <param name="grid">Grid to clone from.</param>
-        public Grid(Grid grid)
-        {
-            this.AddSquares();
-
-            foreach (Ship ship in grid.OriginalShips)
+            for (int id = 0; id < (this.Length * this.Breadth); id++)
             {
-                Square sq = this.Squares[ship.OriginalOccupiedSquares[0].ID];
-                Ship ship1 = new Ship(this, ship.Length, ship.Breadth);
-                this.AddShip(sq, ship1, (bool)ship.Alignment);
-            }
-
-            foreach (Square square in grid.Squares)
-            {
-                Square sq = this.Squares[square.ID];
-
-                sq.HadShip = square.HadShip;
-                sq.HasShip = square.HasShip;
-                sq.IsHit = square.IsHit;
-                sq.IsMiss = square.IsMiss;
-                sq.IsSunk = square.IsSunk;
-                if (square.Ship != null)
-                {
-                    sq.Ship = this.OperationalShips[square.Ship.ID];
-                }
-            }
-        }
-
-        /// <summary>
-        /// Adds 100 squares to the grid.
-        /// </summary>
-        public void AddSquares()
-        {
-            for (int i = 0; i < (Settings.GridWidth * Settings.GridHeight); i++)
-            {
-                Square sq = new Square(this, i);
-                this.Squares.Add(sq);
-                this.UnsearchedSquares.Add(sq);
-                this.UnoccupiedSquares.Add(sq);
+                this.Squares[id] = new Square(this, id);
             }
         }
 
@@ -200,10 +164,39 @@
                 throw new BattleshipException("Square must be local.");
             }
 
-            if (ship.CanFit(square, alignment))
+            if (ship.CanFit(square, alignment, false))
             {
-                switch ()
+                HashSet<Square> squares = new HashSet<Square>();
+
+                switch (alignment)
+                {
+                    case Alignment.Horizontal:
+                        for (int i = 1; i <= ship.Breadth; i++)
+                        {
+                            squares.UnionWith(square.GetNSquaresInDirection(ship.Length, Direction.East));
+                        }
+
+                        break;
+                    case Alignment.Vertical:
+                        for (int i = 1; i <= ship.Length; i++)
+                        {
+                            squares.UnionWith(square.GetNSquaresInDirection(ship.Breadth, Direction.South));
+                        }
+
+                        break;
+                }
+
+                foreach (Square sq in squares)
+                {
+                    sq.Ship = ship;
+                }
+
+                ship.Squares = squares;
+
+                return true;
             }
+
+            return false;
         }
 
         /// <summary>
@@ -248,7 +241,7 @@
                         horizontal = true;
                     }
 
-                    if (this.AddShip(this.UnoccupiedSquares[rnd.Next(this.UnoccupiedSquares.Count)], new Ship(this, ship.Length, ship.Breadth), horizontal))
+                    if (this.AddShip(this.UnoccupiedSquares[rnd.Next(this.UnoccupiedSquares.Count)], new Ship(this, ship.Length, ship.Breadth), horizontal ? Alignment.Horizontal : Alignment.Vertical))
                     {
                         break;
                     }
