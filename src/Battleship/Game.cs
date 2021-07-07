@@ -239,7 +239,7 @@
             }
             else
             {
-                // All squares in .ToSearch()
+                // All squares to search
                 foreach (Square square in p1.ToSearch)
                 {
                     probability.Add(square, 0);
