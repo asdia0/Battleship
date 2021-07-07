@@ -239,13 +239,13 @@
         {
             get
             {
-                HashSet<HashSet<int>> res = new HashSet<HashSet<int>>();
+                HashSet<HashSet<int>> res = new ();
 
                 foreach (Square sq in this.Grid.Squares)
                 {
                     if (this.CanFit(sq, Alignment.Horizontal, true))
                     {
-                        HashSet<int> arr = new HashSet<int>();
+                        HashSet<int> arr = new ();
 
                         for (int i = 0; i < this.Length; i++)
                         {
@@ -257,7 +257,7 @@
 
                     if (this.CanFit(sq, Alignment.Vertical, true))
                     {
-                        HashSet<int> arr = new HashSet<int>();
+                        HashSet<int> arr = new ();
 
                         for (int i = 0; i < this.Length; i++)
                         {
@@ -295,7 +295,7 @@
         /// <returns>A boolean.</returns>
         public bool CanFit(Square square, Alignment alignment, bool acceptHitSquares)
         {
-            HashSet<Square> squares = new HashSet<Square>();
+            HashSet<Square> squares = new ();
 
             switch (alignment)
             {

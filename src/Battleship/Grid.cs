@@ -141,7 +141,7 @@
 
             if (ship.CanFit(square, alignment, false))
             {
-                HashSet<Square> squares = new HashSet<Square>();
+                HashSet<Square> squares = new ();
 
                 switch (alignment)
                 {
@@ -226,7 +226,7 @@
         {
             foreach (Ship ship in shipList)
             {
-                Random rnd = new Random();
+                Random rnd = new ();
 
                 while (true)
                 {

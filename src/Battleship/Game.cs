@@ -178,7 +178,7 @@
                     continue;
                 }
 
-                List<Square> unsearchedSquares = new List<Square>();
+                List<Square> unsearchedSquares = new ();
 
                 foreach (Square adjSquare in square.AdjacentSquares)
                 {
@@ -222,7 +222,7 @@
             }
 
             // 3. A square has a hit adjacent square
-            Dictionary<Square, int> probability = new Dictionary<Square, int>();
+            Dictionary<Square, int> probability = new ();
 
             if (p1.ToSearch.Count == 0)
             {

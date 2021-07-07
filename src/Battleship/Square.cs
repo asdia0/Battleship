@@ -142,7 +142,7 @@
         {
             get
             {
-                HashSet<Square> res = new HashSet<Square>();
+                HashSet<Square> res = new ();
 
 #pragma warning disable
                 try
@@ -227,10 +227,9 @@
         /// <returns>A specified number of squares in a specified direction.</returns>
         public HashSet<Square> GetNSquaresInDirection(int n, Direction direction)
         {
-            HashSet<Square> res = new HashSet<Square>();
+            HashSet<Square> res = new ();
 
-            int available = 0;
-
+            int available;
             switch (direction)
             {
                 case Direction.North:

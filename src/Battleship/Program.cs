@@ -28,7 +28,7 @@
 
             Grid template = new (10, 10);
 
-            List<Ship> templateList = new List<Ship>()
+            List<Ship> templateList = new ()
             {
                 new (template, 1, 2),
                 new (template, 1, 3),
