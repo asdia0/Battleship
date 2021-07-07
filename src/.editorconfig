@@ -38,3 +38,6 @@ dotnet_diagnostic.SA1502.severity = none
 
 # IDE0044: Add readonly modifier
 dotnet_diagnostic.IDE0044.severity = none
+
+# CA1822: Mark members as static
+dotnet_diagnostic.CA1822.severity = none
