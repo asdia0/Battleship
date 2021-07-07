@@ -37,12 +37,12 @@
         }
 
         /// <summary>
-        /// Gets or sets the first player.
+        /// Gets the first player.
         /// </summary>
         public Player Player1 { get; }
 
         /// <summary>
-        /// Gets or sets the second player.
+        /// Gets the second player.
         /// </summary>
         public Player Player2 { get; }
 
@@ -64,7 +64,7 @@
         /// <param name="player2">The second player.</param>
         public Game(Player player1, Player player2)
         {
-            this.MoveList = new();
+            this.MoveList = new ();
             this.Player1 = player1;
             this.Player2 = player2;
 

@@ -6,12 +6,12 @@
     public class Player
     {
         /// <summary>
-        /// Gets or sets the player's grid.
+        /// Gets the player's grid.
         /// </summary>
         public Grid Grid { get; }
 
         /// <summary>
-        /// Gets or sets the player's name.
+        /// Gets the player's name.
         /// </summary>
         public string Name { get; }
 

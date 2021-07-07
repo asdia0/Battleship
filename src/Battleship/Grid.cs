@@ -91,12 +91,12 @@
         }
 
         /// <summary>
-        /// Gets or sets the grid's length.
+        /// Gets the grid's length.
         /// </summary>
         public int Length { get; }
 
         /// <summary>
-        /// Gets or sets the grid's length.
+        /// Gets the grid's length.
         /// </summary>
         public int Breadth { get; }
 
@@ -107,10 +107,10 @@
         /// <param name="breadth">The braedth of the grid.</param>
         public Grid(int length, int breadth)
         {
-            this.Ships = new();
-            this.Squares = new();
-            this.ToSearch = new();
-            this.ToAttack = new();
+            this.Ships = new ();
+            this.Squares = new ();
+            this.ToSearch = new ();
+            this.ToAttack = new ();
             this.Length = length;
             this.Breadth = breadth;
 

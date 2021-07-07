@@ -30,7 +30,7 @@
         private Ship? _Ship = null;
 
         /// <summary>
-        /// Gets or sets the square's grid.
+        /// Gets the square's grid.
         /// </summary>
         public Grid Grid { get; }
 
@@ -95,7 +95,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="Core.Ship"/> on the square. Null if there is no such ship.
+        /// Gets or sets the <see cref="Battleship.Ship"/> on the square. Null if there is no such ship.
         /// </summary>
         public Ship? Ship
         {
@@ -144,6 +144,7 @@
             {
                 HashSet<Square> res = new HashSet<Square>();
 
+#pragma warning disable
                 try
                 {
                     res.UnionWith(this.GetNSquaresInDirection(1, Direction.North));
@@ -171,6 +172,7 @@
                 }
                 catch (BattleshipException e)
                 { }
+#pragma warning restore
 
                 return res;
             }
