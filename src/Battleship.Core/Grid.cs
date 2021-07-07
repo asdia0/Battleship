@@ -10,29 +10,9 @@
     public class Grid
     {
         /// <summary>
-        /// Determines whether <see cref="Length"/> has been set.
-        /// </summary>
-        private bool LengthSet = false;
-
-        /// <summary>
-        /// Determines whether <see cref="Breadth"/> has been set.
-        /// </summary>
-        private bool BreadthSet = false;
-
-        /// <summary>
         /// Determines whether <see cref="Ships"/> has been set.
         /// </summary>
         private bool OriginalShipsSet = false;
-
-        /// <summary>
-        /// <see cref="Length"/>'s value.
-        /// </summary>
-        private int _Length;
-
-        /// <summary>
-        /// <see cref="Breadth"/>'s value.
-        /// </summary>
-        private int _Breadth;
 
         /// <summary>
         /// <see cref="Ships"/> value.
@@ -113,48 +93,12 @@
         /// <summary>
         /// Gets or sets the grid's length.
         /// </summary>
-        public int Length
-        {
-            get
-            {
-                return this._Length;
-            }
-
-            set
-            {
-                if (!this.LengthSet)
-                {
-                    this._Length = value;
-                }
-                else
-                {
-                    throw new BattleshipException("Length has already been set.");
-                }
-            }
-        }
+        public int Length { get; }
 
         /// <summary>
         /// Gets or sets the grid's length.
         /// </summary>
-        public int Breadth
-        {
-            get
-            {
-                return this._Breadth;
-            }
-
-            set
-            {
-                if (!this.BreadthSet)
-                {
-                    this._Breadth = value;
-                }
-                else
-                {
-                    throw new BattleshipException("Breadth has already been set.");
-                }
-            }
-        }
+        public int Breadth { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Grid"/> class.
@@ -202,14 +146,14 @@
                     case Alignment.Horizontal:
                         for (int i = 0; i < ship.Breadth; i++)
                         {
-                            squares.UnionWith(this.Squares[square.ID + (this.Length * i)].GetNSquaresInDirection(ship.Length, Direction.East));
+                            squares.UnionWith(this.Squares[square.ID - (this.Length * i)].GetNSquaresInDirection(ship.Length, Direction.East));
                         }
 
                         break;
                     case Alignment.Vertical:
                         for (int i = 0; i < ship.Length; i++)
                         {
-                            squares.UnionWith(this.Squares[square.ID + i].GetNSquaresInDirection(ship.Breadth, Direction.South));
+                            squares.UnionWith(this.Squares[square.ID - (this.Breadth * i)].GetNSquaresInDirection(ship.Breadth, Direction.East));
                         }
 
                         break;

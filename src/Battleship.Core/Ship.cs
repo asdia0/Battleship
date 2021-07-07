@@ -304,7 +304,11 @@
                     {
                         try
                         {
-                            squares.UnionWith(this.Grid.Squares[square.ID + (this.Length * i)].GetNSquaresInDirection(this.Length, Direction.East));
+                            squares.UnionWith(this.Grid.Squares[square.ID - (this.Length * i)].GetNSquaresInDirection(this.Length, Direction.East));
+                        }
+                        catch (ArgumentOutOfRangeException e)
+                        {
+                            return false;
                         }
                         catch (BattleshipException e)
                         {
@@ -318,7 +322,11 @@
                     {
                         try
                         {
-                            squares.UnionWith(this.Grid.Squares[square.ID + i].GetNSquaresInDirection(this.Breadth, Direction.South));
+                            squares.UnionWith(this.Grid.Squares[square.ID - (this.Breadth * i)].GetNSquaresInDirection(this.Breadth, Direction.East));
+                        }
+                        catch (ArgumentOutOfRangeException e)
+                        {
+                            return false;
                         }
                         catch (BattleshipException e)
                         {
@@ -345,7 +353,15 @@
                     // No squares are hit
                     if (!squares.Where(i => i.Status == SquareStatus.Hit).Any())
                     {
-                        return true;
+                        // No squares have a ship
+                        if (!squares.Where(i => i.Ship != null).Any())
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                 }
             }

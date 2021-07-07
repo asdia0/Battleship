@@ -10,19 +10,9 @@
     public class Square
     {
         /// <summary>
-        /// Determines whether <see cref="Grid"/> has been set.
-        /// </summary>
-        private bool GridSet = false;
-
-        /// <summary>
         /// Determines whether <see cref="ID"/> has been set.
         /// </summary>
         private bool IDSet = false;
-
-        /// <summary>
-        /// <see cref="Grid"/>'s value.
-        /// </summary>
-        private Grid _Grid;
 
         /// <summary>
         /// <see cref="ID"/>'s value.
@@ -42,25 +32,7 @@
         /// <summary>
         /// Gets or sets the square's grid.
         /// </summary>
-        public Grid Grid
-        {
-            get
-            {
-                return this._Grid;
-            }
-
-            set
-            {
-                if (!this.GridSet)
-                {
-                    this._Grid = value;
-                }
-                else
-                {
-                    throw new BattleshipException("Grid has already been set.");
-                }
-            }
-        }
+        public Grid Grid { get; }
 
         /// <summary>
         /// Gets or sets the square's unique identification tag.

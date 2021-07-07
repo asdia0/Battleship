@@ -10,26 +10,6 @@
     public class Game
     {
         /// <summary>
-        /// Determines whether <see cref="Player1"/> has been set.
-        /// </summary>
-        private bool Player1Set = false;
-
-        /// <summary>
-        /// Determines whether <see cref="Player2"/> has been set.
-        /// </summary>
-        private bool Player2Set = false;
-
-        /// <summary>
-        /// <see cref="Player1"/>'s value.
-        /// </summary>
-        private Player _Player1;
-
-        /// <summary>
-        /// <see cref="Player2"/>'s value.
-        /// </summary>
-        private Player _Player2;
-
-        /// <summary>
         /// Gets the list of moves made.
         /// </summary>
         public List<Move> MoveList { get; }
@@ -59,48 +39,12 @@
         /// <summary>
         /// Gets or sets the first player.
         /// </summary>
-        public Player Player1
-        {
-            get
-            {
-                return this._Player1;
-            }
-
-            set
-            {
-                if (!this.Player1Set)
-                {
-                    this._Player1 = value;
-                }
-                else
-                {
-                    throw new BattleshipException("Player 1 has already been set.");
-                }
-            }
-        }
+        public Player Player1 { get; }
 
         /// <summary>
         /// Gets or sets the second player.
         /// </summary>
-        public Player Player2
-        {
-            get
-            {
-                return this._Player2;
-            }
-
-            set
-            {
-                if (!this.Player2Set)
-                {
-                    this._Player2 = value;
-                }
-                else
-                {
-                    throw new BattleshipException("Player 2 has already been set.");
-                }
-            }
-        }
+        public Player Player2 { get; }
 
         /// <summary>
         /// Gets the current turn.
