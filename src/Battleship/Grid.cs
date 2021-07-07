@@ -237,7 +237,9 @@
                         horizontal = true;
                     }
 
-                    if (this.AddShip(this.UnoccupiedSquares[rnd.Next(this.UnoccupiedSquares.Count)], new Ship(this, ship.Length, ship.Breadth), horizontal ? Alignment.Horizontal : Alignment.Vertical))
+                    Ship addShip = new (this, ship.Length, ship.Breadth);
+
+                    if (this.AddShip(this.UnoccupiedSquares[rnd.Next(this.UnoccupiedSquares.Count)], addShip, horizontal ? Alignment.Horizontal : Alignment.Vertical))
                     {
                         break;
                     }
