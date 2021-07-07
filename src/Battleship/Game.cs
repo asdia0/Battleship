@@ -64,12 +64,22 @@
         /// <param name="player2">The second player.</param>
         public Game(Player player1, Player player2)
         {
+            this.MoveList = new();
             this.Player1 = player1;
             this.Player2 = player2;
 
             while (this.Winner == null)
             {
-                this.Random();
+                if (this.Turn == Turn.Player1)
+                {
+                    this.ProbabilityDensity();
+                }
+                else
+                {
+                    this.Random();
+                }
+
+                Console.WriteLine(this.MoveList.Last());
             }
         }
 
@@ -101,7 +111,7 @@
             }
             else
             {
-                return (this.Player1, this.Player2.Grid, this.Player1.Grid);
+                return (this.Player2, this.Player2.Grid, this.Player1.Grid);
             }
         }
 

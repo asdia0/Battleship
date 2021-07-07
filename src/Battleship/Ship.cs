@@ -302,13 +302,16 @@
                 case Alignment.Horizontal:
                     for (int i = 0; i < this.Breadth; i++)
                     {
-                        try
-                        {
-                            squares.UnionWith(this.Grid.Squares[square.ID - (this.Length * i)].GetNSquaresInDirection(this.Length, Direction.East));
-                        }
-                        catch (ArgumentOutOfRangeException e)
+                        int id = square.ID - (this.Length * i);
+
+                        if (id < 0)
                         {
                             return false;
+                        }
+
+                        try
+                        {
+                            squares.UnionWith(this.Grid.Squares[id].GetNSquaresInDirection(this.Length, Direction.East));
                         }
                         catch (BattleshipException e)
                         {
@@ -320,13 +323,16 @@
                 case Alignment.Vertical:
                     for (int i = 0; i < this.Length; i++)
                     {
-                        try
-                        {
-                            squares.UnionWith(this.Grid.Squares[square.ID - (this.Breadth * i)].GetNSquaresInDirection(this.Breadth, Direction.East));
-                        }
-                        catch (ArgumentOutOfRangeException e)
+                        int id = square.ID - (this.Breadth * i);
+
+                        if (id < 0)
                         {
                             return false;
+                        }
+
+                        try
+                        {
+                            squares.UnionWith(this.Grid.Squares[id].GetNSquaresInDirection(this.Breadth, Direction.East));
                         }
                         catch (BattleshipException e)
                         {

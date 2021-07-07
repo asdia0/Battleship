@@ -107,10 +107,12 @@
         /// <param name="breadth">The braedth of the grid.</param>
         public Grid(int length, int breadth)
         {
+            this.Ships = new();
+            this.Squares = new();
+            this.ToSearch = new();
+            this.ToAttack = new();
             this.Length = length;
             this.Breadth = breadth;
-            this.Squares = new List<Square>();
-            this.Ships = new List<Ship>();
 
             for (int id = 0; id < (this.Length * this.Breadth); id++)
             {
@@ -146,17 +148,36 @@
                     case Alignment.Horizontal:
                         for (int i = 0; i < ship.Breadth; i++)
                         {
-                            squares.UnionWith(this.Squares[square.ID - (this.Length * i)].GetNSquaresInDirection(ship.Length, Direction.East));
+                            int id = square.ID - (this.Length * i);
+
+                            if (id < 0)
+                            {
+                                return false;
+                            }
+
+                            squares.UnionWith(this.Squares[id].GetNSquaresInDirection(ship.Length, Direction.East));
                         }
 
                         break;
                     case Alignment.Vertical:
                         for (int i = 0; i < ship.Length; i++)
                         {
-                            squares.UnionWith(this.Squares[square.ID - (this.Breadth * i)].GetNSquaresInDirection(ship.Breadth, Direction.East));
+                            int id = square.ID - (this.Breadth * i);
+
+                            if (id < 0)
+                            {
+                                return false;
+                            }
+
+                            squares.UnionWith(this.Squares[id].GetNSquaresInDirection(ship.Breadth, Direction.East));
                         }
 
                         break;
+                }
+
+                if (squares.Where(i => i.Ship != null).Any())
+                {
+                    return false;
                 }
 
                 foreach (Square sq in squares)
@@ -165,6 +186,8 @@
                 }
 
                 ship.Squares = squares;
+
+                this.Ships.Add(ship);
 
                 return true;
             }

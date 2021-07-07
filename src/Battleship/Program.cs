@@ -13,7 +13,7 @@
         /// </summary>
         public static void Main()
         {
-            Simulate(100);
+            Simulate(1);
         }
 
         /// <summary>
@@ -43,6 +43,7 @@
                 Grid g2 = new (10, 10);
                 g1.AddShipsRandomly(templateList);
                 g2.AddShipsRandomly(templateList);
+
                 Player p1 = new ("Player 1", g1);
                 Player p2 = new ("Player 2", g2);
                 Game g = new (p1, p2);
