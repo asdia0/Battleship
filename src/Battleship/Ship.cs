@@ -336,10 +336,12 @@
                         {
                             squares.UnionWith(this.Grid.Squares[id].GetNSquaresInDirection(this.Breadth, Direction.East));
                         }
+#pragma warning disable
                         catch (BattleshipException e)
                         {
                             return false;
                         }
+#pragma warning restore
                     }
 
                     break;
