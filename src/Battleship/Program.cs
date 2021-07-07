@@ -30,11 +30,11 @@
 
             List<Ship> templateList = new ()
             {
-                new (template, 1, 2),
-                new (template, 1, 3),
-                new (template, 1, 3),
-                new (template, 1, 4),
-                new (template, 1, 5),
+                new (template, 2, 1),
+                new (template, 3, 1),
+                new (template, 3, 1),
+                new (template, 4, 1),
+                new (template, 5, 1),
             };
 
             for (int i = 0; i < numberOfGames; i++)

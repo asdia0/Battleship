@@ -78,8 +78,6 @@
                 {
                     this.Random();
                 }
-
-                Console.WriteLine(this.MoveList.Last());
             }
         }
 
@@ -249,6 +247,8 @@
             // Get probability
             foreach (Ship ship in p2.OperationalShips)
             {
+                Console.WriteLine(ship.Arrangements.Count);
+
                 foreach (HashSet<int> arrangement in ship.Arrangements)
                 {
                     foreach (int squareID in arrangement)
@@ -265,6 +265,8 @@
             Square attackedSquare = probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
 
             this.Search(p1, attackedSquare);
+
+            Console.WriteLine(attackedSquare.Position);
 
             this.MoveList.Add(new Move(player, attackedSquare));
         }

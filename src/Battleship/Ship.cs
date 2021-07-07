@@ -241,30 +241,16 @@
             {
                 HashSet<HashSet<int>> res = new ();
 
-                foreach (Square sq in this.Grid.Squares)
+                foreach (Square square in this.Grid.Squares)
                 {
-                    if (this.CanFit(sq, Alignment.Horizontal, true))
+                    if (this.CanFit(square, Alignment.Horizontal, true))
                     {
-                        HashSet<int> arr = new ();
-
-                        for (int i = 0; i < this.Length; i++)
-                        {
-                            arr.Add(sq.ID + i);
-                        }
-
-                        res.Add(arr);
+                        res.Add(square.GetNSquaresInDirection(this.Length, Direction.East).Select(i => i.ID).ToHashSet());
                     }
 
-                    if (this.CanFit(sq, Alignment.Vertical, true))
+                    if (this.CanFit(square, Alignment.Vertical, true))
                     {
-                        HashSet<int> arr = new ();
-
-                        for (int i = 0; i < this.Length; i++)
-                        {
-                            arr.Add(sq.ID + (i * this.Grid.Length));
-                        }
-
-                        res.Add(arr);
+                        res.Add(square.GetNSquaresInDirection(this.Length, Direction.South).Select(i => i.ID).ToHashSet());
                     }
                 }
 
@@ -296,55 +282,13 @@
         public bool CanFit(Square square, Alignment alignment, bool acceptHitSquares)
         {
             HashSet<Square> squares = new ();
-
-            switch (alignment)
+            try
             {
-                case Alignment.Horizontal:
-                    for (int i = 0; i < this.Breadth; i++)
-                    {
-                        int id = square.ID - (this.Length * i);
-
-                        if (id < 0)
-                        {
-                            return false;
-                        }
-
-                        try
-                        {
-                            squares.UnionWith(this.Grid.Squares[id].GetNSquaresInDirection(this.Length, Direction.East));
-                        }
-#pragma warning disable
-                        catch (BattleshipException e)
-                        {
-                            return false;
-                        }
-#pragma warning restore
-                    }
-
-                    break;
-                case Alignment.Vertical:
-                    for (int i = 0; i < this.Length; i++)
-                    {
-                        int id = square.ID - (this.Breadth * i);
-
-                        if (id < 0)
-                        {
-                            return false;
-                        }
-
-                        try
-                        {
-                            squares.UnionWith(this.Grid.Squares[id].GetNSquaresInDirection(this.Breadth, Direction.East));
-                        }
-#pragma warning disable
-                        catch (BattleshipException e)
-                        {
-                            return false;
-                        }
-#pragma warning restore
-                    }
-
-                    break;
+                squares.Union(square.GetNSquaresInDirection(this.Length, alignment == Alignment.Horizontal ? Direction.East : Direction.South));
+            }
+            catch
+            {
+                return false;
             }
 
             // No obstructions
