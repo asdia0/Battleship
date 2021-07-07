@@ -1,4 +1,4 @@
-﻿namespace Battleship.Core
+﻿namespace Battleship
 {
     /// <summary>
     /// Defines a player.
