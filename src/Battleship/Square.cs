@@ -227,7 +227,10 @@
         /// <returns>A specified number of squares in a specified direction.</returns>
         public HashSet<Square> GetNSquaresInDirection(int n, Direction direction)
         {
-            HashSet<Square> res = new ();
+            HashSet<Square> res = new()
+            {
+                this,
+            };
 
             int available;
             switch (direction)
@@ -235,12 +238,12 @@
                 case Direction.North:
                     available = this.Grid.Breadth - this.Position.Y;
 
-                    if (n > available)
+                    if ((n - 1) > available)
                     {
                         throw new BattleshipException($"{n} is too big. Try a smaller value.");
                     }
 
-                    for (int north = 1; north <= n; north++)
+                    for (int north = 1; north <= (n - 1); north++)
                     {
                         int id = this.ID + (north * this.Grid.Length);
 
@@ -251,12 +254,12 @@
                 case Direction.South:
                     available = this.Position.Y - 1;
 
-                    if (n > available)
+                    if ((n - 1) > available)
                     {
                         throw new BattleshipException($"{n} is too big. Try a smaller value.");
                     }
 
-                    for (int south = 1; south <= n; south++)
+                    for (int south = 1; south <= (n - 1); south++)
                     {
                         int id = this.ID - (south * this.Grid.Length);
 
@@ -267,12 +270,12 @@
                 case Direction.West:
                     available = this.Position.X - 1;
 
-                    if (n > available)
+                    if ((n - 1) > available)
                     {
                         throw new BattleshipException($"{n} is too big. Try a smaller value.");
                     }
 
-                    for (int west = 1; west <= n; west++)
+                    for (int west = 1; west <= (n - 1); west++)
                     {
                         int id = this.ID - west;
 
@@ -283,12 +286,12 @@
                 case Direction.East:
                     available = this.Grid.Length - this.Position.X;
 
-                    if (n > available)
+                    if ((n - 1) > available)
                     {
                         throw new BattleshipException($"{n} is too big. Try a smaller value.");
                     }
 
-                    for (int east = 1; east <= n; east++)
+                    for (int east = 1; east <= (n - 1); east++)
                     {
                         int id = this.ID + east;
 

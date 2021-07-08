@@ -141,39 +141,7 @@
 
             if (ship.CanFit(square, alignment, false))
             {
-                HashSet<Square> squares = new ();
-
-                switch (alignment)
-                {
-                    case Alignment.Horizontal:
-                        for (int i = 0; i < ship.Breadth; i++)
-                        {
-                            int id = square.ID - (this.Length * i);
-
-                            if (id < 0)
-                            {
-                                return false;
-                            }
-
-                            squares.UnionWith(this.Squares[id].GetNSquaresInDirection(ship.Length, Direction.East));
-                        }
-
-                        break;
-                    case Alignment.Vertical:
-                        for (int i = 0; i < ship.Length; i++)
-                        {
-                            int id = square.ID - (this.Breadth * i);
-
-                            if (id < 0)
-                            {
-                                return false;
-                            }
-
-                            squares.UnionWith(this.Squares[id].GetNSquaresInDirection(ship.Breadth, Direction.East));
-                        }
-
-                        break;
-                }
+                HashSet<Square> squares = square.GetNSquaresInDirection(ship.Length, alignment == Alignment.Horizontal ? Direction.East : Direction.South);
 
                 if (squares.Where(i => i.Ship != null).Any())
                 {
@@ -237,7 +205,7 @@
                         horizontal = true;
                     }
 
-                    Ship addShip = new (this, ship.Length, ship.Breadth);
+                    Ship addShip = new (this, ship.Length);
 
                     if (this.AddShip(this.UnoccupiedSquares[rnd.Next(this.UnoccupiedSquares.Count)], addShip, horizontal ? Alignment.Horizontal : Alignment.Vertical))
                     {

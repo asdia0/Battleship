@@ -15,11 +15,6 @@
         private bool IDSet = false;
 
         /// <summary>
-        /// Determines if <see cref="Breadth"/> has been set.
-        /// </summary>
-        private bool BreadthSet = false;
-
-        /// <summary>
         /// Determines if <see cref="Length"/> has been set.
         /// </summary>
         private bool LengthSet = false;
@@ -38,11 +33,6 @@
         /// <see cref="ID"/>'s value.
         /// </summary>
         private int _ID;
-
-        /// <summary>
-        /// <see cref="Breadth"/>'s value.
-        /// </summary>
-        private int _Breadth;
 
         /// <summary>
         /// <see cref="Length"/>'s value.
@@ -106,26 +96,7 @@
         {
             get
             {
-                return this._Breadth;
-            }
-
-            set
-            {
-                if (!this.BreadthSet)
-                {
-                    if (value < 1 || value > this.Grid.Breadth)
-                    {
-                        throw new BattleshipException($"Breadth must be between 1 and {this.Grid.Breadth} inclusive.");
-                    }
-                    else
-                    {
-                        this._Breadth = value;
-                    }
-                }
-                else
-                {
-                    throw new BattleshipException("Breadth has already been set.");
-                }
+                return 1;
             }
         }
 
@@ -263,13 +234,11 @@
         /// </summary>
         /// <param name="grid">The ship's grid.</param>
         /// <param name="length">The ship's length.</param>
-        /// <param name="breadth">The ship's breadth.</param>
-        public Ship(Grid grid, int length, int breadth)
+        public Ship(Grid grid, int length)
         {
             this.Grid = grid;
             this.ID = grid.Ships.Count;
             this.Length = length;
-            this.Breadth = breadth;
         }
 
         /// <summary>
