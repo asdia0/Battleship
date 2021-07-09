@@ -87,12 +87,9 @@
         /// <returns>The stringified version of the game.</returns>
         public override string ToString()
         {
-            string res = $"[{this.Player1.Name} \"{this.Player1}\"]\n[{this.Player2.Name} \"{this.Player2}\"]\n\n";
+            string res = $"[{this.Player1.Name}]\n{this.Player1.Grid}\n[{this.Player2.Name}] \n{this.Player2.Grid}\n\n";
 
-            foreach (Move move in this.MoveList)
-            {
-                res += move.ToString();
-            }
+            res += string.Join("\n", this.MoveList);
 
             return res;
         }
