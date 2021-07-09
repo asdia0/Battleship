@@ -64,7 +64,7 @@
         /// <param name="player2">The second player.</param>
         /// <param name="player1Strategy">Player 1's strategy.</param>
         /// <param name="player2Strategy">Player 2's strategy.</param>
-        public Game(Player player1, Player player2, Strategy player1Strategy, Strategy player2Strategy)
+        public Game(Player player1, Player player2, StrategyType player1Strategy, StrategyType player2Strategy)
         {
             this.MoveList = new ();
             this.Player1 = player1;
@@ -79,15 +79,15 @@
                 {
                     switch (player1Strategy)
                     {
-                        case Strategy.Random:
+                        case StrategyType.Random:
                             square = this.Random();
                             break;
 
-                        case Strategy.HuntTarget:
+                        case StrategyType.HuntTarget:
                             square = this.HuntTarget();
                             break;
 
-                        case Strategy.ProbabilityDensity:
+                        case StrategyType.ProbabilityDensity:
                             square = this.ProbabilityDensity();
                             break;
                     }
@@ -96,15 +96,15 @@
                 {
                     switch (player2Strategy)
                     {
-                        case Strategy.Random:
+                        case StrategyType.Random:
                             square = this.Random();
                             break;
 
-                        case Strategy.HuntTarget:
+                        case StrategyType.HuntTarget:
                             square = this.HuntTarget();
                             break;
 
-                        case Strategy.ProbabilityDensity:
+                        case StrategyType.ProbabilityDensity:
                             square = this.ProbabilityDensity();
                             break;
                     }

@@ -3,7 +3,7 @@
     /// <summary>
     /// Types of Battleship strategies.
     /// </summary>
-    public enum Strategy
+    public enum StrategyType
     {
         /// <summary>
         /// Moves are made at random.
