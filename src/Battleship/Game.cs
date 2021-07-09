@@ -133,7 +133,7 @@
         /// Returns essential information for <see cref="Random"/>, <see cref="HuntTarget"/> and <see cref="ProbabilityDensity"/>.
         /// </summary>
         /// <returns>Essential information.</returns>
-        public (Player player, Grid player1, Grid player2) ConfigureTurn()
+        public (Player player, Grid grid1, Grid grid2) ConfigureTurn()
         {
             if (this.Turn == Turn.Player1)
             {
@@ -150,7 +150,7 @@
         /// </summary>
         public Square Random()
         {
-            Grid p2 = this.ConfigureTurn().player2;
+            Grid p2 = this.ConfigureTurn().grid2;
 
             return p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
         }
