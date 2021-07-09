@@ -62,7 +62,9 @@
         /// </summary>
         /// <param name="player1">The first player.</param>
         /// <param name="player2">The second player.</param>
-        public Game(Player player1, Player player2)
+        /// <param name="player1Strategy">Player 1's strategy.</param>
+        /// <param name="player2Strategy">Player 2's strategy.</param>
+        public Game(Player player1, Player player2, Strategy player1Strategy, Strategy player2Strategy)
         {
             this.MoveList = new ();
             this.Player1 = player1;
@@ -72,11 +74,37 @@
             {
                 if (this.Turn == Turn.Player1)
                 {
-                    this.ProbabilityDensity();
+                    switch (player1Strategy)
+                    {
+                        case Strategy.Random:
+                            this.Random();
+                            break;
+
+                        case Strategy.HuntTarget:
+                            this.HuntTarget();
+                            break;
+
+                        case Strategy.ProbabilityDensity:
+                            this.ProbabilityDensity();
+                            break;
+                    }
                 }
                 else
                 {
-                    this.Random();
+                    switch (player2Strategy)
+                    {
+                        case Strategy.Random:
+                            this.Random();
+                            break;
+
+                        case Strategy.HuntTarget:
+                            this.HuntTarget();
+                            break;
+
+                        case Strategy.ProbabilityDensity:
+                            this.ProbabilityDensity();
+                            break;
+                    }
                 }
             }
         }
