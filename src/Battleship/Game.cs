@@ -247,8 +247,6 @@
             // Get probability
             foreach (Ship ship in p2.OperationalShips)
             {
-                Console.WriteLine(ship.Arrangements.Count);
-
                 foreach (HashSet<int> arrangement in ship.Arrangements)
                 {
                     foreach (int squareID in arrangement)
