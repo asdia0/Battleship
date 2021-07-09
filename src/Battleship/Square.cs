@@ -227,7 +227,7 @@
         /// <returns>A specified number of squares in a specified direction.</returns>
         public HashSet<Square> GetNSquaresInDirection(int n, Direction direction)
         {
-            HashSet<Square> res = new()
+            HashSet<Square> res = new ()
             {
                 this,
             };
