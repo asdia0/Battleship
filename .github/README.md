@@ -4,14 +4,16 @@ Battleship is a classic board game that involves two players attempting to destr
 For prebuilt binary releases, see the [Releases](https://github.com/asdia0/Battleship/releases) section. For help, open an issue [here](https://github.com/asdia0/Battleship/issues).
 
 ## Features
-* Game simulator
-* Play against the computer
-* Find the best square to search
-* Find the optimal ship layout
-* Probability heat map
-* Add and edit ships
-* Edit grid dimensions
-* Edit square states
+- Edit squares
+- Add and edit ships
+- Add and edit grids
+- Add and edit games
+- Simulate games
+- Find the optimal ship layout
+- Find the optimal square to search
+- Create a probability heat map of a given position
+- Determine if a position is reachable
+- Play against three algorithms
 
 ## Documentation
 All documentation can be found [here](https://github.com/asdia0/Battleship/tree/main/documentation).
