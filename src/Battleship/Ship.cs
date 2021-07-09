@@ -253,7 +253,7 @@
             HashSet<Square> squares = new ();
             try
             {
-                squares.Union(square.GetNSquaresInDirection(this.Length, alignment == Alignment.Horizontal ? Direction.East : Direction.South));
+                squares.UnionWith(square.GetNSquaresInDirection(this.Length, alignment == Alignment.Horizontal ? Direction.East : Direction.South));
             }
             catch
             {
