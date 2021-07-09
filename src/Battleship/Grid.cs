@@ -181,6 +181,11 @@
                 {
                     res += "[ ]";
                 }
+
+                if (sq.Position.X == this.Length)
+                {
+                    res += "\n";
+                }
             }
 
             return res;
