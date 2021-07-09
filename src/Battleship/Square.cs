@@ -55,7 +55,7 @@
                         throw new BattleshipException($"ID must be between 0 and {maxID} inclusive.");
                     }
 
-                    if (!this.Grid.Squares.Where(i => i.ID == value).Any())
+                    if (!this.Grid.Squares.Any(i => i.ID == value))
                     {
                         this._ID = value;
                     }
@@ -144,35 +144,12 @@
             {
                 HashSet<Square> res = new ();
 
-#pragma warning disable
-                try
-                {
-                    res.UnionWith(this.GetNSquaresInDirection(1, Direction.North));
-                }
-                catch (BattleshipException e)
-                { }
+                res.UnionWith(this.GetNSquaresInDirection(1, Direction.North));
+                res.UnionWith(this.GetNSquaresInDirection(1, Direction.East));
+                res.UnionWith(this.GetNSquaresInDirection(1, Direction.South));
+                res.UnionWith(this.GetNSquaresInDirection(1, Direction.West));
 
-                try
-                {
-                    res.UnionWith(this.GetNSquaresInDirection(1, Direction.East));
-                }
-                catch (BattleshipException e)
-                { }
-
-                try
-                {
-                    res.UnionWith(this.GetNSquaresInDirection(1, Direction.South));
-                }
-                catch (BattleshipException e)
-                { }
-
-                try
-                {
-                    res.UnionWith(this.GetNSquaresInDirection(1, Direction.West));
-                }
-                catch (BattleshipException e)
-                { }
-#pragma warning restore
+                res.Remove(this);
 
                 return res;
             }
@@ -240,7 +217,7 @@
 
                     if ((n - 1) > available)
                     {
-                        throw new BattleshipException($"{n} is too big. Try a smaller value.");
+                        return new ();
                     }
 
                     for (int north = 1; north <= (n - 1); north++)
@@ -256,7 +233,7 @@
 
                     if ((n - 1) > available)
                     {
-                        throw new BattleshipException($"{n} is too big. Try a smaller value.");
+                        return new ();
                     }
 
                     for (int south = 1; south <= (n - 1); south++)
@@ -272,7 +249,7 @@
 
                     if ((n - 1) > available)
                     {
-                        throw new BattleshipException($"{n} is too big. Try a smaller value.");
+                        return new ();
                     }
 
                     for (int west = 1; west <= (n - 1); west++)
@@ -288,7 +265,7 @@
 
                     if ((n - 1) > available)
                     {
-                        throw new BattleshipException($"{n} is too big. Try a smaller value.");
+                        return new ();
                     }
 
                     for (int east = 1; east <= (n - 1); east++)

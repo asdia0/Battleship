@@ -1,6 +1,5 @@
 ﻿namespace Battleship
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -73,7 +72,7 @@
             {
                 if (!this.IDSet)
                 {
-                    if (this.Grid.Ships.Where(i => i.ID == value).Any())
+                    if (this.Grid.Ships.Any(i => i.ID == value))
                     {
                         throw new BattleshipException($"Ship with ID {value} already exists.");
                     }
@@ -214,6 +213,11 @@
 
                 foreach (Square square in this.Grid.Squares)
                 {
+                    if (square.Status == SquareStatus.Miss || square.Status == SquareStatus.Sunk)
+                    {
+                        continue;
+                    }
+
                     if (this.CanFit(square, Alignment.Horizontal, true))
                     {
                         res.Add(square.GetNSquaresInDirection(this.Length, Direction.East).Select(i => i.ID).ToHashSet());
@@ -251,17 +255,16 @@
         public bool CanFit(Square square, Alignment alignment, bool acceptHitSquares)
         {
             HashSet<Square> squares = new ();
-            try
-            {
-                squares.UnionWith(square.GetNSquaresInDirection(this.Length, alignment == Alignment.Horizontal ? Direction.East : Direction.South));
-            }
-            catch
+
+            squares.UnionWith(square.GetNSquaresInDirection(this.Length, alignment == Alignment.Horizontal ? Direction.East : Direction.South));
+
+            if (squares.Count == 0)
             {
                 return false;
             }
 
             // No obstructions
-            if (!squares.Where(i => (i.Status == SquareStatus.Miss || i.Status == SquareStatus.Sunk)).Any())
+            if (!squares.Any(i => (i.Status == SquareStatus.Miss || i.Status == SquareStatus.Sunk)))
             {
                 if (acceptHitSquares)
                 {
@@ -274,10 +277,10 @@
                 else
                 {
                     // No squares are hit
-                    if (!squares.Where(i => i.Status == SquareStatus.Hit).Any())
+                    if (!squares.Any(i => i.Status == SquareStatus.Hit))
                     {
                         // No squares have a ship
-                        if (!squares.Where(i => i.Ship != null).Any())
+                        if (!squares.Any(i => i.Ship != null))
                         {
                             return true;
                         }

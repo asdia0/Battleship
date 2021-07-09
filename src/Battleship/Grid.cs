@@ -143,7 +143,7 @@
             {
                 HashSet<Square> squares = square.GetNSquaresInDirection(ship.Length, alignment == Alignment.Horizontal ? Direction.East : Direction.South);
 
-                if (squares.Where(i => i.Ship != null).Any())
+                if (squares.Any(i => i.Ship != null))
                 {
                     return false;
                 }
@@ -196,15 +196,15 @@
             {
                 Random rnd = new ();
 
+                bool horizontal = false;
+
+                if (rnd.Next(2) == 0)
+                {
+                    horizontal = true;
+                }
+
                 while (true)
                 {
-                    bool horizontal = false;
-
-                    if (rnd.Next(2) == 0)
-                    {
-                        horizontal = true;
-                    }
-
                     Ship addShip = new (this, ship.Length);
 
                     if (this.AddShip(this.UnoccupiedSquares[rnd.Next(this.UnoccupiedSquares.Count)], addShip, horizontal ? Alignment.Horizontal : Alignment.Vertical))
