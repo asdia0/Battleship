@@ -247,20 +247,38 @@
             {
                 Random rnd = new ();
 
-                bool horizontal = false;
-
-                if (rnd.Next(2) == 0)
-                {
-                    horizontal = true;
-                }
+                int counter = 0;
 
                 while (true)
                 {
+                    counter++;
+                    bool horizontal = false;
+
+                    if (rnd.Next(2) == 0)
+                    {
+                        horizontal = true;
+                    }
+
                     Ship addShip = new (this, ship.Length);
 
                     if (this.AddShip(this.UnoccupiedSquares[rnd.Next(this.UnoccupiedSquares.Count)], addShip, horizontal ? Alignment.Horizontal : Alignment.Vertical))
                     {
                         break;
+                    }
+
+                    if (counter > shipList.Count)
+                    {
+                        foreach (Ship localShip in this.Ships)
+                        {
+                            foreach (Square localSq in localShip.Squares)
+                            {
+                                int id = localSq.ID;
+                                this.Squares[id] = null;
+                                this.Squares[id] = new Square(this, id);
+                            }
+                        }
+
+                        this.Ships.Clear();
                     }
                 }
             }

@@ -55,7 +55,7 @@
                         throw new BattleshipException($"ID must be between 0 and {maxID} inclusive.");
                     }
 
-                    if (!this.Grid.Squares.Any(i => i.ID == value))
+                    if (!this.Grid.Squares.Any(i => i != null && i.ID == value))
                     {
                         this._ID = value;
                     }

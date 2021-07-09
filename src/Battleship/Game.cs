@@ -73,7 +73,7 @@
             while (this.Winner == null)
             {
                 Square square = null;
-                (Player player, Grid p1, Grid p2) = this.ConfigureTurn();
+                (Player player, Grid p1, _) = this.ConfigureTurn();
 
                 if (this.Turn == Turn.Player1)
                 {
@@ -163,7 +163,7 @@
         public Square HuntTarget()
         {
             Square attackedSquare;
-            (Player player, Grid p1, Grid p2) = this.ConfigureTurn();
+            (_, Grid p1, Grid p2) = this.ConfigureTurn();
 
             if (p1.ToSearch.Count == 0)
             {
@@ -197,6 +197,11 @@
              * 4. Ships that are not sunk can't be located entirely on 'hit' squares.
              */
 
+            if (p1.ToAttack.Any())
+            {
+                return p1.ToAttack.First();
+            }
+
             // 1. A hit square only has 1 unsearched adjacent square
             foreach (Square square in p2.Squares)
             {
@@ -228,13 +233,10 @@
 
                 if (arrangements.Count == 1)
                 {
-                    foreach (int squareID in arrangements.First())
+                    foreach (int id in arrangements.First().Where(i => p2.Squares[i].Status == SquareStatus.Unsearched))
                     {
-                        Square square = p2.Squares[squareID];
-                        if (!square.Searched)
-                        {
-                            return square;
-                        }
+                        p1.ToAttack.Add(p2.Squares[id]);
+                        return p1.ToAttack.First();
                     }
                 }
             }
