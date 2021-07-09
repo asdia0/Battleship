@@ -23,9 +23,10 @@ All documentation can be found [here](https://github.com/asdia0/Battleship/tree/
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/asdia0/Battleship/tags). 
 
 ## Authors
-**Asdia** - *Main developer* - [asdia0](https://github.com/asdia0)  
-**Jhas** - *Emotional support* - [T-Eason](https://github.com/T-Eason)  
-**MapleTree856** - *Epic Minecrafter* - [MapleTree856](https://github.com/MapleTree856)
+- [asdia0](https://github.com/asdia0)  
+- [T-Eason](https://github.com/T-Eason)  
+- [MapleTree856](https://github.com/MapleTree856)
+- [adeline000](https://github.com/adeline000)
 
 ## License
 This project is licensed under the GNU General Public License v3.0 - see [LICENSE](https://github.com/asdia0/Battleship/blob/main/LICENSE) for more details.
