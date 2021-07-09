@@ -148,6 +148,7 @@
         /// <summary>
         /// Attacks an enemy square randomly.
         /// </summary>
+        /// <returns>The square to attack.</returns>
         public Square Random()
         {
             Grid p2 = this.ConfigureTurn().grid2;
@@ -158,6 +159,7 @@
         /// <summary>
         /// Attacks an enmy square that is adjacent to a hit square. Implements parity.
         /// </summary>
+        /// <returns>The square to attack.</returns>
         public Square HuntTarget()
         {
             Square attackedSquare;
@@ -180,6 +182,7 @@
         /// <summary>
         /// Attacks an enemy square based on previous searches. Searches for all enemy ships at the same time.
         /// </summary>
+        /// <returns>The square to attack.</returns>
         public Square ProbabilityDensity()
         {
             (Player player, Grid p1, Grid p2) = this.ConfigureTurn();
