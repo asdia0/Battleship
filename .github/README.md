@@ -13,17 +13,11 @@ For prebuilt binary releases, see the [Releases](https://github.com/asdia0/Battl
 * Edit grid dimensions
 * Edit square states
 
-## Installing
-To install the application, download the [latest release](https://github.com/asdia0/Battleship/releases) and run `download/Battleship-vX.Y.Z.exe`.
-
 ### Requirements
 - Windows 10 OS
 
 ## Documentation
 All documentation can be found [here](https://github.com/asdia0/Battleship/tree/main/documentation).
-
-## Contributing
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the process for submitting pull requests to us.
 
 ## Versioning
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/asdia0/Battleship/tags). 
