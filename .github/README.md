@@ -1,5 +1,5 @@
 # Battleship
-Battleship is a classic board game that involves two players attempting to destroy all the other player’s ships. This game is usually played on a 10x10 board. Each player gets the chance to search a square each turn. If the player scores a hit, they get another shot. This continues until the player misses.
+Battleship is a classic board game that involves two players attempting to destroy all the other player’s ships. This game is usually played on a 10x10 board. Turns alternate bewteen the players. Each player gets the chance to search a square each turn.
 
 For prebuilt binary releases, see the [Releases](https://github.com/asdia0/Battleship/releases) section. For help, open an issue [here](https://github.com/asdia0/Battleship/issues).
 
