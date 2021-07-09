@@ -266,8 +266,6 @@
 
             this.Search(p1, attackedSquare);
 
-            Console.WriteLine(attackedSquare.Position);
-
             this.MoveList.Add(new Move(player, attackedSquare));
         }
 
