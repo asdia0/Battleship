@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
     using System.Linq;
 
     /// <summary>
@@ -189,6 +190,51 @@
             }
 
             return res;
+        }
+
+        /// <summary>
+        /// Converts a grid into a bitmap.
+        /// </summary>
+        /// <param name="length">The length of the bitmap.</param>
+        /// <param name="breadth">The breadth of the bitmap.</param>
+        /// <returns>A bitmap representing the grid. White = unsearched, grey = miss, red = hit, black = sunk.</returns>
+        public Bitmap ToBitMap(int length, int breadth)
+        {
+            Bitmap original = new (this.Length, this.Breadth);
+
+            Color white = Color.FromArgb(255, 255, 255);
+            Color grey = Color.FromArgb(192, 192, 192);
+            Color red = Color.FromArgb(240, 128, 128);
+            Color black = Color.FromArgb(0, 0, 0);
+
+            foreach (Square sq in this.Squares)
+            {
+                switch (sq.Status)
+                {
+                    case SquareStatus.Unsearched:
+                        original.SetPixel(sq.Position.X - 1, sq.Position.Y - 1, white);
+                        break;
+                    case SquareStatus.Miss:
+                        original.SetPixel(sq.Position.X - 1, sq.Position.Y - 1, grey);
+                        break;
+                    case SquareStatus.Hit:
+                        original.SetPixel(sq.Position.X - 1, sq.Position.Y - 1, red);
+                        break;
+                    case SquareStatus.Sunk:
+                        original.SetPixel(sq.Position.X - 1, sq.Position.Y - 1, black);
+                        break;
+                }
+            }
+
+            Bitmap result = new (length, breadth);
+            using (Graphics g = Graphics.FromImage(result))
+            {
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                g.DrawImage(original, 0, 0, length, breadth);
+            }
+
+            return result;
         }
 
         /// <summary>
