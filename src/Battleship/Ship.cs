@@ -90,7 +90,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the ship's breadth.
+        /// Gets the ship's breadth.
         /// </summary>
         public int Breadth
         {
