@@ -13,9 +13,6 @@ For prebuilt binary releases, see the [Releases](https://github.com/asdia0/Battl
 * Edit grid dimensions
 * Edit square states
 
-### Requirements
-- Windows 10 OS
-
 ## Documentation
 All documentation can be found [here](https://github.com/asdia0/Battleship/tree/main/documentation).
 
