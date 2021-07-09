@@ -72,20 +72,23 @@
 
             while (this.Winner == null)
             {
+                Square square = null;
+                (Player player, Grid p1, Grid p2) = this.ConfigureTurn();
+
                 if (this.Turn == Turn.Player1)
                 {
                     switch (player1Strategy)
                     {
                         case Strategy.Random:
-                            this.Random();
+                            square = this.Random();
                             break;
 
                         case Strategy.HuntTarget:
-                            this.HuntTarget();
+                            square = this.HuntTarget();
                             break;
 
                         case Strategy.ProbabilityDensity:
-                            this.ProbabilityDensity();
+                            square = this.ProbabilityDensity();
                             break;
                     }
                 }
@@ -94,18 +97,22 @@
                     switch (player2Strategy)
                     {
                         case Strategy.Random:
-                            this.Random();
+                            square = this.Random();
                             break;
 
                         case Strategy.HuntTarget:
-                            this.HuntTarget();
+                            square = this.HuntTarget();
                             break;
 
                         case Strategy.ProbabilityDensity:
-                            this.ProbabilityDensity();
+                            square = this.ProbabilityDensity();
                             break;
                     }
                 }
+
+                this.Search(p1, square);
+
+                this.MoveList.Add(new Move(player, square));
             }
         }
 
@@ -141,21 +148,17 @@
         /// <summary>
         /// Attacks an enemy square randomly.
         /// </summary>
-        public void Random()
+        public Square Random()
         {
-            (Player player, Grid p1, Grid p2) = this.ConfigureTurn();
+            Grid p2 = this.ConfigureTurn().player2;
 
-            Square attackedSq = p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
-
-            this.Search(p1, attackedSq);
-
-            this.MoveList.Add(new Move(player, attackedSq));
+            return p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
         }
 
         /// <summary>
         /// Attacks an enmy square that is adjacent to a hit square. Implements parity.
         /// </summary>
-        public void HuntTarget()
+        public Square HuntTarget()
         {
             Square attackedSquare;
             (Player player, Grid p1, Grid p2) = this.ConfigureTurn();
@@ -171,15 +174,13 @@
                 attackedSquare = p1.ToSearch.ToList()[new Random().Next(p1.ToSearch.Count)];
             }
 
-            this.Search(p1, attackedSquare);
-
-            this.MoveList.Add(new Move(player, attackedSquare));
+            return attackedSquare;
         }
 
         /// <summary>
         /// Attacks an enemy square based on previous searches. Searches for all enemy ships at the same time.
         /// </summary>
-        public void ProbabilityDensity()
+        public Square ProbabilityDensity()
         {
             (Player player, Grid p1, Grid p2) = this.ConfigureTurn();
 
@@ -213,12 +214,7 @@
 
                 if (unsearchedSquares.Count == 1)
                 {
-                    Square attackSq = unsearchedSquares[0];
-                    this.Search(p1, attackSq);
-
-                    this.MoveList.Add(new Move(player, attackSq));
-
-                    return;
+                    return unsearchedSquares[0];
                 }
             }
 
@@ -234,11 +230,7 @@
                         Square square = p2.Squares[squareID];
                         if (!square.Searched)
                         {
-                            this.Search(p1, square);
-
-                            this.MoveList.Add(new Move(player, square));
-
-                            return;
+                            return square;
                         }
                     }
                 }
@@ -285,11 +277,7 @@
                 }
             }
 
-            Square attackedSquare = probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
-
-            this.Search(p1, attackedSquare);
-
-            this.MoveList.Add(new Move(player, attackedSquare));
+            return probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
         }
 
         /// <summary>
