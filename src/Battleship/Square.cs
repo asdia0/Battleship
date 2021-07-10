@@ -144,10 +144,10 @@
             {
                 HashSet<Square> res = new ();
 
-                res.UnionWith(this.GetNSquaresInDirection(1, Direction.North));
-                res.UnionWith(this.GetNSquaresInDirection(1, Direction.East));
-                res.UnionWith(this.GetNSquaresInDirection(1, Direction.South));
-                res.UnionWith(this.GetNSquaresInDirection(1, Direction.West));
+                res.UnionWith(this.GetNSquaresInDirection(2, Direction.North));
+                res.UnionWith(this.GetNSquaresInDirection(2, Direction.East));
+                res.UnionWith(this.GetNSquaresInDirection(2, Direction.South));
+                res.UnionWith(this.GetNSquaresInDirection(2, Direction.West));
 
                 res.Remove(this);
 
