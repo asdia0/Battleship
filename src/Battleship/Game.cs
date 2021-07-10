@@ -83,11 +83,11 @@
                             break;
 
                         case StrategyType.HuntTarget:
-                            square = Strategy.HuntTarget(p1, p2);
+                            square = Strategy.HuntTarget(p2);
                             break;
 
                         case StrategyType.ProbabilityDensity:
-                            square = Strategy.ProbabilityDensity(player, p1, p2);
+                            square = Strategy.ProbabilityDensity(p1, p2);
                             break;
                     }
                 }
@@ -100,11 +100,11 @@
                             break;
 
                         case StrategyType.HuntTarget:
-                            square = Strategy.HuntTarget(p1, p2);
+                            square = Strategy.HuntTarget(p2);
                             break;
 
                         case StrategyType.ProbabilityDensity:
-                            square = Strategy.ProbabilityDensity(player, p1, p2);
+                            square = Strategy.ProbabilityDensity(p1, p2);
                             break;
                     }
                 }

@@ -19,19 +19,26 @@
         /// Attacks an enmy square that is adjacent to a hit square. Implements parity.
         /// </summary>
         /// <returns>The square to attack.</returns>
-        public static Square HuntTarget(Grid p1, Grid p2)
+        public static Square HuntTarget(Grid p2)
         {
             Square attackedSquare;
+            List<Square> hitSquares = p2.Squares.Where(i => i.Status == SquareStatus.Hit).ToList();
+            List<Square> adjHitSquares = new();
 
-            if (p1.ToSearch.Count == 0)
+            foreach (Square hitSquare in hitSquares)
             {
-                // HUNT
-                attackedSquare = p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
+                adjHitSquares.AddRange(hitSquare.AdjacentSquares.Where(i => i.Status == SquareStatus.Unsearched));
+            }
+
+            if (adjHitSquares.Any())
+            {
+                // TARGET
+                attackedSquare = adjHitSquares[new Random().Next(adjHitSquares.Count)];
             }
             else
             {
-                // TARGET
-                attackedSquare = p1.ToSearch.ToList()[new Random().Next(p1.ToSearch.Count)];
+                // HUNT
+                attackedSquare = p2.UnsearchedSquares[new Random().Next(p2.UnsearchedSquares.Count)];
             }
 
             return attackedSquare;
@@ -41,7 +48,7 @@
         /// Attacks an enemy square based on previous searches. Searches for all enemy ships at the same time.
         /// </summary>
         /// <returns>The square to attack.</returns>
-        public static Square ProbabilityDensity(Player player, Grid p1, Grid p2)
+        public static Square ProbabilityDensity(Grid p1, Grid p2)
         {
             /*
              * MUST
@@ -103,14 +110,9 @@
             if (p1.ToSearch.Count == 0)
             {
                 // All unsearched squares
-                foreach (Square square in p2.Squares)
+                foreach (Square square in p2.Squares.Where(i => i.Searched == false))
                 {
-                    {
-                        if (!square.Searched)
-                        {
-                            probability.Add(square, 0);
-                        }
-                    }
+                    probability.Add(square, 0);
                 }
             }
             else
