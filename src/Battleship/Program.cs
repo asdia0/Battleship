@@ -14,15 +14,45 @@
         /// </summary>
         public static void Main()
         {
-            for (int i = 5; i <= 15; i++)
+            //for (int i = 5; i <= 15; i++)
+            //{
+            //    SimulateMoves("data.tsv", i, i, 10000, StrategyType.Random);
+            //    SimulateMoves("data.tsv", i, i, 10000, StrategyType.HuntTarget);
+            //    SimulateMoves("data.tsv", i, i, 10000, StrategyType.ProbabilityDensity);
+            //}
+
+
+            Grid template = new(10, 10);
+
+            List<Ship> templateList = new()
             {
-                string res = string.Empty;
+                new(template, 2),
+                new(template, 3),
+                new(template, 3),
+                new(template, 4),
+                new(template, 5),
+            };
 
-                res += $"{i} Random {SimulateMoves(i, i, 10000, StrategyType.Random)}\n";
-                res += $"{i} Hunt Target {SimulateMoves(i, i, 10000, StrategyType.HuntTarget)}\n";
-                res += $"{i} Probability Density {SimulateMoves(i, i, 10000, StrategyType.ProbabilityDensity)}\n";
+            Grid optimal = Layout.Optimal(10, 10, templateList);
 
-                File.WriteAllText($"{i}.txt", res);
+            Grid grid1 = new Grid(10, 10);
+            Grid grid2 = new Grid(10, 10);
+            grid1.AddShipsOptimally(templateList);
+            grid2.AddShipsOptimally(templateList);
+
+            Console.WriteLine(grid1);
+            Console.WriteLine(grid2);
+
+            Game game = new Game(new Player("Player 1", grid1), new Player("Player 2", grid2), StrategyType.ProbabilityDensity, StrategyType.ProbabilityDensity);
+
+            foreach (Move move in game.MoveList)
+            {
+                if (move.Player.Name != "Player 1")
+                {
+                    continue;
+                }
+
+                Console.WriteLine((move.Player.Name, move.Square.Position, move.Square.Status));
             }
         }
 
@@ -86,7 +116,6 @@
                 Player p1 = new ("Player 1", g1);
                 Player p2 = new ("Player 2", g2);
                 Game g = new (p1, p2, player1strategy, player2strategy);
-                Console.WriteLine(g);
 
                 if (g.Winner.Name == "Player 1")
                 {
@@ -101,7 +130,7 @@
             return (first, second);
         }
 
-        public static decimal SimulateMoves(int length, int breadth, int numberOfGames, StrategyType strategy)
+        public static void SimulateMoves(string path, int length, int breadth, int numberOfGames, StrategyType strategy)
         {
             Grid template = new (length, breadth);
 
@@ -114,10 +143,9 @@
                 new (template, 5),
             };
 
-            int count = 0;
             for (int i = 0; i < numberOfGames; i++)
             {
-                Grid mc = new (length, breadth);
+                int count = 0;
                 Grid random = new (length, breadth);
                 random.AddShipsRandomly(templateList);
 
@@ -128,16 +156,14 @@
                     {
                         StrategyType.Random => Strategy.Random(random),
                         StrategyType.HuntTarget => Strategy.HuntTarget(random),
-                        StrategyType.ProbabilityDensity => Strategy.ProbabilityDensity(mc, random),
+                        StrategyType.ProbabilityDensity => Strategy.Optimal(random),
                         _ => throw new BattleshipException("Unrecognised strategy."),
                     };
                     square.Searched = true;
-                    mc.ToAttack.Clear();
-                    mc.ToSearch.Clear();
                 }
-            }
 
-            return (decimal)count/numberOfGames;
+                File.AppendAllText(path, $"{length}\t{breadth}\t{strategy}\t{count}\n");
+            }
         }
     }
 }

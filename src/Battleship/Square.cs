@@ -185,6 +185,8 @@
             }
         }
 
+        public bool CanChange { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Square"/> class.
         /// </summary>
@@ -194,6 +196,7 @@
         {
             this.Grid = grid;
             this.ID = id;
+            this.CanChange = true;
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Defines a game of Battleship.
@@ -87,7 +88,7 @@
                             break;
 
                         case StrategyType.ProbabilityDensity:
-                            square = Strategy.ProbabilityDensity(p1, p2);
+                            square = Strategy.Optimal(p2);
                             break;
                     }
                 }
@@ -104,7 +105,7 @@
                             break;
 
                         case StrategyType.ProbabilityDensity:
-                            square = Strategy.ProbabilityDensity(p1, p2);
+                            square = Strategy.Optimal(p2);
                             break;
                     }
                 }

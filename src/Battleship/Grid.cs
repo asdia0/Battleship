@@ -193,6 +193,34 @@
         }
 
         /// <summary>
+        /// Converts a grid into a string.
+        /// </summary>
+        /// <returns>A string representing a grid.</returns>
+        public string UnsearchedSquaresToString()
+        {
+            string res = string.Empty;
+
+            foreach (Square sq in this.Squares)
+            {
+                if (sq.Status == SquareStatus.Unsearched)
+                {
+                    res += $"[■]";
+                }
+                else
+                {
+                    res += "[ ]";
+                }
+
+                if (sq.Position.X == this.Length)
+                {
+                    res += "\n";
+                }
+            }
+
+            return res;
+        }
+
+        /// <summary>
         /// Converts a grid into a bitmap.
         /// </summary>
         /// <param name="length">The length of the bitmap.</param>
@@ -280,6 +308,27 @@
 
                         this.Ships.Clear();
                     }
+                }
+            }
+        }
+
+        public void AddShipsOptimally(List<Ship> shipList)
+        {
+            Grid optimalLayout = Layout.Optimal(this.Length, this.Breadth, shipList);
+
+            foreach (Ship optimalShip in optimalLayout.Ships)
+            {
+                Ship ship = new(this, optimalShip.Length);
+
+                this.Ships.Add(ship);
+
+                HashSet<Square> shipSquares = optimalShip.Squares.Select(i => this.Squares[i.ID]).ToHashSet();
+
+                ship.Squares = shipSquares;
+
+                foreach (Square square in shipSquares)
+                {
+                    square.Ship = ship;
                 }
             }
         }
