@@ -14,45 +14,49 @@
         /// </summary>
         public static void Main()
         {
-            //for (int i = 5; i <= 15; i++)
-            //{
-            //    SimulateMoves("data.tsv", i, i, 10000, StrategyType.Random);
-            //    SimulateMoves("data.tsv", i, i, 10000, StrategyType.HuntTarget);
-            //    SimulateMoves("data.tsv", i, i, 10000, StrategyType.ProbabilityDensity);
-            //}
-
-
-            Grid template = new(10, 10);
-
-            List<Ship> templateList = new()
+            for (int n = 6; n <= 15; n++)
             {
-                new(template, 2),
-                new(template, 3),
-                new(template, 3),
-                new(template, 4),
-                new(template, 5),
-            };
+                string path = $"Layout Optimal-Random ({n}).tsv";
 
-            Grid optimal = Layout.Optimal(10, 10, templateList);
+                File.WriteAllText(path, "Game ID\tWinner\tPlies");
 
-            Grid grid1 = new Grid(10, 10);
-            Grid grid2 = new Grid(10, 10);
-            grid1.AddShipsOptimally(templateList);
-            grid2.AddShipsOptimally(templateList);
-
-            Console.WriteLine(grid1);
-            Console.WriteLine(grid2);
-
-            Game game = new Game(new Player("Player 1", grid1), new Player("Player 2", grid2), StrategyType.ProbabilityDensity, StrategyType.ProbabilityDensity);
-
-            foreach (Move move in game.MoveList)
-            {
-                if (move.Player.Name != "Player 1")
+                for (int i = 0; i < 10000; i++)
                 {
-                    continue;
-                }
+                    Grid template = new(n, n);
 
-                Console.WriteLine((move.Player.Name, move.Square.Position, move.Square.Status));
+                    List<Ship> templateList = new()
+                    {
+                        new(template, 2),
+                        new(template, 3),
+                        new(template, 3),
+                        new(template, 4),
+                        new(template, 5),
+                    };
+
+                    string res = "\n" + i.ToString();
+
+                    Grid g1 = new(n, n);
+                    Grid g2 = new(n, n);
+                    g1.AddShipsOptimally(templateList);
+                    g2.AddShipsRandomly(templateList);
+
+                    Player p1 = new("Player 1", g1);
+                    Player p2 = new("Player 2", g2);
+                    Game g = new(p1, p2, StrategyType.Optimal, StrategyType.Optimal);
+
+                    if (g.Winner == p1)
+                    {
+                        res += $"\t1";
+                    }
+                    else if (g.Winner == p2)
+                    {
+                        res += $"\t0";
+                    }
+
+                    res += $"\t{g.MoveList.Count}";
+
+                    File.AppendAllText(path, res);
+                }
             }
         }
 
@@ -156,7 +160,7 @@
                     {
                         StrategyType.Random => Strategy.Random(random),
                         StrategyType.HuntTarget => Strategy.HuntTarget(random),
-                        StrategyType.ProbabilityDensity => Strategy.Optimal(random),
+                        StrategyType.Optimal => Strategy.Optimal(random),
                         _ => throw new BattleshipException("Unrecognised strategy."),
                     };
                     square.Searched = true;

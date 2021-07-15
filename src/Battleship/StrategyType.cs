@@ -18,6 +18,6 @@
         /// <summary>
         /// Goes through all possible ship arrangments and finds the square with the highest proability of having a ship on it.
         /// </summary>
-        ProbabilityDensity,
+        Optimal,
     }
 }

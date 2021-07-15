@@ -233,6 +233,34 @@
             }
         }
 
+        public HashSet<HashSet<int>> NoHitArrangements
+        {
+            get
+            {
+                HashSet<HashSet<int>> res = new();
+
+                foreach (Square square in this.Grid.Squares)
+                {
+                    if (square.Status == SquareStatus.Miss || square.Status == SquareStatus.Sunk)
+                    {
+                        continue;
+                    }
+
+                    if (this.CanFit(square, Alignment.Horizontal, false))
+                    {
+                        res.Add(square.GetNSquaresInDirection(this.Length, Direction.East).Select(i => i.ID).ToHashSet());
+                    }
+
+                    if (this.CanFit(square, Alignment.Vertical, false))
+                    {
+                        res.Add(square.GetNSquaresInDirection(this.Length, Direction.South).Select(i => i.ID).ToHashSet());
+                    }
+                }
+
+                return res;
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Ship"/> class.
         /// </summary>

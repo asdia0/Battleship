@@ -271,43 +271,43 @@
         /// <param name="shipList">List of ships to add.</param>
         public void AddShipsRandomly(List<Ship> shipList)
         {
-            foreach (Ship ship in shipList)
+            Random rnd = new();
+
+            int counter = 0;
+
+            while (this.Ships.Count != shipList.Count)
             {
-                Random rnd = new ();
-
-                int counter = 0;
-
-                while (true)
+                if (counter >= shipList.Count)
                 {
-                    counter++;
-                    bool horizontal = false;
-
-                    if (rnd.Next(2) == 0)
+                    foreach (Ship localShip in this.Ships)
                     {
-                        horizontal = true;
-                    }
-
-                    Ship addShip = new (this, ship.Length);
-
-                    if (this.AddShip(this.UnoccupiedSquares[rnd.Next(this.UnoccupiedSquares.Count)], addShip, horizontal ? Alignment.Horizontal : Alignment.Vertical))
-                    {
-                        break;
-                    }
-
-                    if (counter > shipList.Count)
-                    {
-                        foreach (Ship localShip in this.Ships)
+                        foreach (Square localSq in localShip.Squares)
                         {
-                            foreach (Square localSq in localShip.Squares)
-                            {
-                                int id = localSq.ID;
-                                this.Squares[id] = null;
-                                this.Squares[id] = new Square(this, id);
-                            }
+                            int id = localSq.ID;
+                            this.Squares[id] = null;
+                            this.Squares[id] = new Square(this, id);
                         }
-
-                        this.Ships.Clear();
                     }
+
+                    this.Ships.Clear();
+                    counter = 0;
+                }
+
+                Ship ship = shipList[counter];
+
+                counter++;
+                bool horizontal = false;
+
+                if (rnd.Next(2) == 0)
+                {
+                    horizontal = true;
+                }
+
+                Ship addShip = new (this, ship.Length);
+
+                if (this.AddShip(this.UnoccupiedSquares[rnd.Next(this.UnoccupiedSquares.Count)], addShip, horizontal ? Alignment.Horizontal : Alignment.Vertical))
+                {
+                    continue;
                 }
             }
         }

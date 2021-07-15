@@ -87,7 +87,7 @@
                             square = Strategy.HuntTarget(p2);
                             break;
 
-                        case StrategyType.ProbabilityDensity:
+                        case StrategyType.Optimal:
                             square = Strategy.Optimal(p2);
                             break;
                     }
@@ -104,7 +104,7 @@
                             square = Strategy.HuntTarget(p2);
                             break;
 
-                        case StrategyType.ProbabilityDensity:
+                        case StrategyType.Optimal:
                             square = Strategy.Optimal(p2);
                             break;
                     }

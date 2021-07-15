@@ -20,7 +20,7 @@
             {
                 foreach (Ship ship in shipList.ToList())
                 {
-                    HashSet<HashSet<int>> arrs = ship.Arrangements;
+                    HashSet<HashSet<int>> arrs = ship.NoHitArrangements;
 
                     HashSet<int> intersection = arrs
                         .Skip(1)
@@ -29,11 +29,36 @@
                             (h, e) => { h.IntersectWith(e); return h; }
                         );
 
-                    if (intersection.Any() || arrs.Count == shipList.Where(i => i.Length == ship.Length).Count())
+                    int numActualArrs = intersection.Any() ? 1 : 0;
+
+                    if (numActualArrs == 0)
                     {
-                        HashSet<int> arr = ship.Arrangements.Last();
+
+                        foreach (HashSet<int> arr1 in arrs.ToList())
+                        {
+                            foreach (HashSet<int> arr2 in arrs.ToList())
+                            {
+                                if (arr1 == arr2)
+                                {
+                                    continue;
+                                }
+
+                                if (arr1.Intersect(arr2).Any())
+                                {
+                                    numActualArrs++;
+                                    arrs.Remove(arr1);
+                                    arrs.Remove(arr2);
+                                }
+                            }
+                        }
+                    }
+
+                    if (numActualArrs <= shipList.Where(i => i.Length == ship.Length).Count())
+                    {
+                        HashSet<int> arr = ship.NoHitArrangements.Last();
 
                         HashSet<Square> shipSquares = arr.Select(i => res.Squares[i]).ToHashSet();
+
                         ship.Squares = shipSquares;
 
                         foreach (Square shipSq in shipSquares)
