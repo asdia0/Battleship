@@ -265,6 +265,25 @@
             return result;
         }
 
+        public void AddShipsFromGrid(Grid g)
+        {
+            foreach (Ship gShip in g.Ships)
+            {
+                Ship ship = new(this, gShip.Length);
+
+                this.Ships.Add(ship);
+
+                HashSet<Square> shipSquares = gShip.Squares.Select(i => this.Squares[i.ID]).ToHashSet();
+
+                ship.Squares = shipSquares;
+
+                foreach (Square square in shipSquares)
+                {
+                    square.Ship = ship;
+                }
+            }
+        }
+
         /// <summary>
         /// Adds ships in random positions.
         /// </summary>

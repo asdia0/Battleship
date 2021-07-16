@@ -23,21 +23,27 @@
                     HashSet<HashSet<int>> arrs = ship.NoHitArrangements;
 
                     HashSet<int> intersection = arrs
-                        .Skip(1)
-                        .Aggregate(
-                            new HashSet<int>(arrs.First()),
-                            (h, e) => { h.IntersectWith(e); return h; }
-                        );
+                           .Skip(1)
+                           .Aggregate(
+                               new HashSet<int>(arrs.First()),
+                               (h, e) => { h.IntersectWith(e); return h; }
+                           );
 
                     int numActualArrs = intersection.Any() ? 1 : 0;
 
                     if (numActualArrs == 0)
                     {
+                        HashSet<HashSet<int>> arrCopy = arrs.ToHashSet();
 
-                        foreach (HashSet<int> arr1 in arrs.ToList())
+                        foreach (HashSet<int> arr1 in arrCopy)
                         {
-                            foreach (HashSet<int> arr2 in arrs.ToList())
+                            foreach (HashSet<int> arr2 in arrCopy)
                             {
+                                if (!arrCopy.Contains(arr2))
+                                {
+                                    continue;
+                                }
+
                                 if (arr1 == arr2)
                                 {
                                     continue;
@@ -46,9 +52,13 @@
                                 if (arr1.Intersect(arr2).Any())
                                 {
                                     numActualArrs++;
-                                    arrs.Remove(arr1);
-                                    arrs.Remove(arr2);
+                                    arrCopy.Remove(arr2);
                                 }
+                            }
+
+                            if (!arrCopy.Contains(arr1))
+                            {
+                                continue;
                             }
                         }
                     }
@@ -69,7 +79,7 @@
                     }
                 }
 
-                (Square square, decimal prob) = Strategy.ProbabilityDensity(res, shipList);
+                (Square square, decimal prob) = Strategy.Optimal(res, shipList);
                 square.Searched = true;
             }
 

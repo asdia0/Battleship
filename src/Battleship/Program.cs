@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     /// <summary>
     /// Main class of the project.
@@ -20,24 +21,26 @@
 
                 File.WriteAllText(path, "Game ID\tWinner\tPlies");
 
+                Grid template = new(n, n);
+
+                List<Ship> templateList = new()
+                {
+                    new(template, 2),
+                    new(template, 3),
+                    new(template, 3),
+                    new(template, 4),
+                    new(template, 5),
+                };
+
+                Grid optimal = Layout.Optimal(n, n, templateList);
+
                 for (int i = 0; i < 10000; i++)
                 {
-                    Grid template = new(n, n);
-
-                    List<Ship> templateList = new()
-                    {
-                        new(template, 2),
-                        new(template, 3),
-                        new(template, 3),
-                        new(template, 4),
-                        new(template, 5),
-                    };
-
                     string res = "\n" + i.ToString();
 
                     Grid g1 = new(n, n);
                     Grid g2 = new(n, n);
-                    g1.AddShipsOptimally(templateList);
+                    g1.AddShipsFromGrid(optimal);
                     g2.AddShipsRandomly(templateList);
 
                     Player p1 = new("Player 1", g1);
@@ -58,6 +61,39 @@
                     File.AppendAllText(path, res);
                 }
             }
+
+            //for (int n = 6; n <= 15; n++)
+            //{
+            //    int wins = 0;
+            //    List<int> games = new();
+
+            //    string num = n.ToString();
+            //    if (num.Length == 1)
+            //    {
+            //        num = "0" + num;
+            //    }
+
+            //    List<string> raw = File.ReadAllLines(@$"C:\Users\eytan\source\repos\asdia0\Battleship.Data\Strategies\Hunt Target\Optimal-HuntTarget ({num}).tsv").ToList();
+
+            //    // remove header
+            //    raw.RemoveAt(0);
+
+            //    foreach (string line in raw)
+            //    {
+            //        List<int> items = line.Split("\t").Select(i => int.Parse(i)).ToList();
+
+            //        if (items[1] == 1)
+            //        {
+            //            wins++;
+            //        }
+
+            //        games.Add(items[2]);
+            //    }
+
+            //    games.Sort();
+
+            //    Console.WriteLine($"n = {n}\n\tWin rate: {(decimal)wins / 10000}\n\tMean: {(decimal)games.Average()/(2 * n * n)}\n\tMedian: {(decimal)games[games.Count / 2]/(2 * n * n)}\n\tMode: {(decimal)(games.Distinct().Select(o => new { Value = o, Count = games.Count(c => c == o) }).OrderByDescending(o => o.Count).First().Value)/ (2 * n * n)}");
+            //}
         }
 
         /// <summary>
@@ -114,7 +150,7 @@
             {
                 Grid g1 = new (length, breadth);
                 Grid g2 = new (length, breadth);
-                g1.AddShipsRandomly(templateList);
+                g1.AddShipsOptimally(templateList);
                 g2.AddShipsRandomly(templateList);
 
                 Player p1 = new ("Player 1", g1);

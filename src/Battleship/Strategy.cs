@@ -145,8 +145,32 @@
         /// Attacks an enemy square based on previous searches. Searches for all enemy ships at the same time.
         /// </summary>
         /// <returns>The square to attack.</returns>
-        public static (Square, decimal) ProbabilityDensity(Grid p2, List<Ship> shipList)
+        public static (Square, decimal) Optimal(Grid p2, List<Ship> shipList)
         {
+            // 1. A hit square only has 1 unsearched adjacent square
+            foreach (Square square in p2.Squares)
+            {
+                if (square.Status != SquareStatus.Hit)
+                {
+                    continue;
+                }
+
+                List<Square> unsearchedSquares = new();
+
+                foreach (Square adjSquare in square.AdjacentSquares)
+                {
+                    if (!adjSquare.Searched)
+                    {
+                        unsearchedSquares.Add(adjSquare);
+                    }
+                }
+
+                if (unsearchedSquares.Count == 1)
+                {
+                    return (unsearchedSquares[0], 1);
+                }
+            }
+
             Dictionary<Square, int> probability = new();
             HashSet<Square> adjacentSquares = new();
 
