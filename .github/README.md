@@ -5,7 +5,6 @@ Battleship is a classic board game that involves two players attempting to destr
 - Simulate games
 - Find the optimal ship layout
 - Find the optimal square to search
-- Create a probability heat map of a given position
 - Play against three algorithms
 
 ## Documentation
