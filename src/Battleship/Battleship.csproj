@@ -4,9 +4,22 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net5.0</TargetFramework>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<Authors>Asdia0</Authors>
+	<Company>Asdia0</Company>
+	<Product>Battleship</Product>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<RepositoryUrl>https://github.com/asdia0/Battleship</RepositoryUrl>
+	<PackageTags>Battleship</PackageTags>
+	<Description>A simulator and solver for Battleship.</Description>
+	<PackageId>Battleship</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
