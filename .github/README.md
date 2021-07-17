@@ -7,9 +7,6 @@ Battleship is a classic board game that involves two players attempting to destr
 - Find the optimal square to search
 - Play against three algorithms
 
-## Documentation
-All documentation can be found [here](https://github.com/asdia0/Battleship/tree/main/documentation).
-
 ## Authors
 - [asdia0](https://github.com/asdia0)  
 - [T-Eason](https://github.com/T-Eason)  
