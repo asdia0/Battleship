@@ -15,85 +15,7 @@
         /// </summary>
         public static void Main()
         {
-            for (int n = 6; n <= 15; n++)
-            {
-                string path = $"Layout Optimal-Random ({n}).tsv";
-
-                File.WriteAllText(path, "Game ID\tWinner\tPlies");
-
-                Grid template = new(n, n);
-
-                List<Ship> templateList = new()
-                {
-                    new(template, 2),
-                    new(template, 3),
-                    new(template, 3),
-                    new(template, 4),
-                    new(template, 5),
-                };
-
-                Grid optimal = Layout.Optimal(n, n, templateList);
-
-                for (int i = 0; i < 10000; i++)
-                {
-                    string res = "\n" + i.ToString();
-
-                    Grid g1 = new(n, n);
-                    Grid g2 = new(n, n);
-                    g1.AddShipsFromGrid(optimal);
-                    g2.AddShipsRandomly(templateList);
-
-                    Player p1 = new("Player 1", g1);
-                    Player p2 = new("Player 2", g2);
-                    Game g = new(p1, p2, StrategyType.Optimal, StrategyType.Optimal);
-
-                    if (g.Winner == p1)
-                    {
-                        res += $"\t1";
-                    }
-                    else if (g.Winner == p2)
-                    {
-                        res += $"\t0";
-                    }
-
-                    res += $"\t{g.MoveList.Count}";
-
-                    File.AppendAllText(path, res);
-                }
-            }
-
-            //for (int n = 6; n <= 15; n++)
-            //{
-            //    int wins = 0;
-            //    List<int> games = new();
-
-            //    string num = n.ToString();
-            //    if (num.Length == 1)
-            //    {
-            //        num = "0" + num;
-            //    }
-
-            //    List<string> raw = File.ReadAllLines(@$"C:\Users\eytan\source\repos\asdia0\Battleship.Data\Strategies\Hunt Target\Optimal-HuntTarget ({num}).tsv").ToList();
-
-            //    // remove header
-            //    raw.RemoveAt(0);
-
-            //    foreach (string line in raw)
-            //    {
-            //        List<int> items = line.Split("\t").Select(i => int.Parse(i)).ToList();
-
-            //        if (items[1] == 1)
-            //        {
-            //            wins++;
-            //        }
-
-            //        games.Add(items[2]);
-            //    }
-
-            //    games.Sort();
-
-            //    Console.WriteLine($"n = {n}\n\tWin rate: {(decimal)wins / 10000}\n\tMean: {(decimal)games.Average()/(2 * n * n)}\n\tMedian: {(decimal)games[games.Count / 2]/(2 * n * n)}\n\tMode: {(decimal)(games.Distinct().Select(o => new { Value = o, Count = games.Count(c => c == o) }).OrderByDescending(o => o.Count).First().Value)/ (2 * n * n)}");
-            //}
+            Console.WriteLine("Hello world");
         }
 
         /// <summary>
@@ -170,6 +92,14 @@
             return (first, second);
         }
 
+        /// <summary>
+        /// Writes the number of moves for every game simulated.
+        /// </summary>
+        /// <param name="path">The path to the file to write to.</param>
+        /// <param name="length">The length of the grid.</param>
+        /// <param name="breadth">The breadth of the grid.</param>
+        /// <param name="numberOfGames">The number of games to simulate.</param>
+        /// <param name="strategy">The <see cref="StrategyType"/> to simulate.</param>
         public static void SimulateMoves(string path, int length, int breadth, int numberOfGames, StrategyType strategy)
         {
             Grid template = new (length, breadth);

@@ -265,11 +265,15 @@
             return result;
         }
 
+        /// <summary>
+        /// Add ships from another grid.
+        /// </summary>
+        /// <param name="g">The grid whose ships are to be cloned.</param>
         public void AddShipsFromGrid(Grid g)
         {
             foreach (Ship gShip in g.Ships)
             {
-                Ship ship = new(this, gShip.Length);
+                Ship ship = new (this, gShip.Length);
 
                 this.Ships.Add(ship);
 
@@ -290,7 +294,7 @@
         /// <param name="shipList">List of ships to add.</param>
         public void AddShipsRandomly(List<Ship> shipList)
         {
-            Random rnd = new();
+            Random rnd = new ();
 
             int counter = 0;
 
@@ -331,13 +335,17 @@
             }
         }
 
+        /// <summary>
+        /// Adds ships according to <see cref="Layout.Optimal(int, int, List{Ship})"/>.
+        /// </summary>
+        /// <param name="shipList">The list of ships to find the optimal layout of.</param>
         public void AddShipsOptimally(List<Ship> shipList)
         {
             Grid optimalLayout = Layout.Optimal(this.Length, this.Breadth, shipList);
 
             foreach (Ship optimalShip in optimalLayout.Ships)
             {
-                Ship ship = new(this, optimalShip.Length);
+                Ship ship = new (this, optimalShip.Length);
 
                 this.Ships.Add(ship);
 
