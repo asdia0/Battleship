@@ -88,7 +88,7 @@
                     }
                 }
 
-                Strategy.Optimal(res, shipList).Item1.Searched = true;
+                Strategy.Optimal(res, shipList).Searched = true;
             }
 
             return res;
