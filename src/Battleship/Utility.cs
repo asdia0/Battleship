@@ -1,23 +1,13 @@
 ﻿namespace Battleship
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
 
     /// <summary>
-    /// Main class of the project.
+    /// This class contains useful methods for the project.
     /// </summary>
-    public class Program
+    public class Utility
     {
-        /// <summary>
-        /// The entry point of the program.
-        /// </summary>
-        public static void Main()
-        {
-            Console.WriteLine("Hello world");
-        }
-
         /// <summary>
         /// Simulates games and records win rates into a TSV files.
         /// </summary>
