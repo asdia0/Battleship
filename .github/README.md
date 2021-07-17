@@ -1,6 +1,9 @@
 # Battleship
 Battleship is a classic board game that involves two players attempting to destroy all the other player’s ships. This game is usually played on a 10x10 board. Turns alternate bewteen the players. Each player gets the chance to search a square each turn.
 
+## NuGet
+The library's NuGet package can be found [here](https://www.nuget.org/packages/Battleship/).
+
 ## Features
 - Simulate games
 - Find the optimal ship layout
