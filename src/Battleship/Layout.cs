@@ -3,8 +3,18 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// This class contains methods for ship layouts.
+    /// </summary>
     public static class Layout
     {
+        /// <summary>
+        /// Gets the optimal layout.
+        /// </summary>
+        /// <param name="length">The length of the grid.</param>
+        /// <param name="breadth">The breadth of the grid.</param>
+        /// <param name="shipList">The list of ships to clone.</param>
+        /// <returns>A grid with the optimal layout.</returns>
         public static Grid Optimal(int length, int breadth, List<Ship> shipList)
         {
             Grid res = new (length, breadth);
@@ -26,8 +36,7 @@
                            .Skip(1)
                            .Aggregate(
                                new HashSet<int>(arrs.First()),
-                               (h, e) => { h.IntersectWith(e); return h; }
-                           );
+                               (h, e) => { h.IntersectWith(e); return h; });
 
                     int numActualArrs = intersection.Any() ? 1 : 0;
 
@@ -79,16 +88,10 @@
                     }
                 }
 
-                (Square square, decimal prob) = Strategy.Optimal(res, shipList);
-                square.Searched = true;
+                Strategy.Optimal(res, shipList).Item1.Searched = true;
             }
 
             return res;
-        }
-
-        public static void Random()
-        {
-
         }
     }
 }

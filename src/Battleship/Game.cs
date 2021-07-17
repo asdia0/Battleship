@@ -130,7 +130,7 @@
         }
 
         /// <summary>
-        /// Returns essential information for <see cref="Random"/>, <see cref="HuntTarget"/> and <see cref="ProbabilityDensity"/>.
+        /// Returns essential information for <see cref="Strategy.Random"/>, <see cref="Strategy.HuntTarget"/> and <see cref="Strategy.Optimal(Grid)"/>.
         /// </summary>
         /// <returns>Essential information.</returns>
         public (Player player, Grid grid1, Grid grid2) ConfigureTurn()

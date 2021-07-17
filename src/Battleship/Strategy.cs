@@ -4,11 +4,15 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// This class contains methods for the various strategies.
+    /// </summary>
     public static class Strategy
     {
         /// <summary>
         /// Attacks an enemy square randomly.
         /// </summary>
+        /// <param name="opponent">The opponent's grid.</param>
         /// <returns>The square to attack.</returns>
         public static Square Random(Grid opponent)
         {
@@ -18,12 +22,13 @@
         /// <summary>
         /// Attacks an enmy square that is adjacent to a hit square. Implements parity.
         /// </summary>
+        /// <param name="opponent">The opponent's grid.</param>
         /// <returns>The square to attack.</returns>
         public static Square HuntTarget(Grid opponent)
         {
             Square attackedSquare;
             List<Square> hitSquares = opponent.Squares.Where(i => i.Status == SquareStatus.Hit).ToList();
-            List<Square> adjHitSquares = new();
+            List<Square> adjHitSquares = new ();
 
             foreach (Square hitSquare in hitSquares)
             {
@@ -47,6 +52,7 @@
         /// <summary>
         /// Attacks an enemy square based on previous searches. Searches for all enemy ships at the same time.
         /// </summary>
+        /// <param name="opponent">The opponent's grid.</param>
         /// <returns>The square to attack.</returns>
         public static Square Optimal(Grid opponent)
         {
@@ -66,7 +72,7 @@
                     continue;
                 }
 
-                List<Square> unsearchedSquares = new();
+                List<Square> unsearchedSquares = new ();
 
                 foreach (Square adjSquare in square.AdjacentSquares)
                 {
@@ -85,7 +91,7 @@
             // 2. A ship only has 1 possible arrangement
             foreach (Ship ship in opponent.OperationalShips)
             {
-                HashSet<HashSet<int>> arrangements = ship.Arrangements;
+                HashSet<HashSet<int>> arrangements = ship.HitArrangements;
 
                 if (arrangements.Count == 1)
                 {
@@ -97,8 +103,8 @@
             }
 
             // 3. A square has a hit adjacent square
-            Dictionary<Square, int> probability = new();
-            HashSet<Square> adjacentSquares = new();
+            Dictionary<Square, int> probability = new ();
+            HashSet<Square> adjacentSquares = new ();
 
             foreach (Square hitSquare in opponent.Squares.Where(i => i.Status == SquareStatus.Hit))
             {
@@ -125,7 +131,7 @@
             // Get probability
             foreach (Ship ship in opponent.OperationalShips)
             {
-                foreach (HashSet<int> arrangement in ship.Arrangements)
+                foreach (HashSet<int> arrangement in ship.HitArrangements)
                 {
                     foreach (int squareID in arrangement)
                     {
@@ -144,8 +150,10 @@
         /// <summary>
         /// Attacks an enemy square based on previous searches. Searches for all enemy ships at the same time.
         /// </summary>
+        /// <param name="p2">The opponent's grid..</param>
+        /// <param name="shipList">The list of ships to consider.</param>
         /// <returns>The square to attack.</returns>
-        public static (Square, decimal) Optimal(Grid p2, List<Ship> shipList)
+        public static Square Optimal(Grid p2, List<Ship> shipList)
         {
             // 1. A hit square only has 1 unsearched adjacent square
             foreach (Square square in p2.Squares)
@@ -155,7 +163,7 @@
                     continue;
                 }
 
-                List<Square> unsearchedSquares = new();
+                List<Square> unsearchedSquares = new ();
 
                 foreach (Square adjSquare in square.AdjacentSquares)
                 {
@@ -167,12 +175,12 @@
 
                 if (unsearchedSquares.Count == 1)
                 {
-                    return (unsearchedSquares[0], 1);
+                    return unsearchedSquares[0];
                 }
             }
 
-            Dictionary<Square, int> probability = new();
-            HashSet<Square> adjacentSquares = new();
+            Dictionary<Square, int> probability = new ();
+            HashSet<Square> adjacentSquares = new ();
 
             foreach (Square hitSquare in p2.Squares.Where(i => i.Status == SquareStatus.Hit))
             {
@@ -199,7 +207,7 @@
             // Get probability
             foreach (Ship ship in shipList)
             {
-                foreach (HashSet<int> arrangement in ship.Arrangements)
+                foreach (HashSet<int> arrangement in ship.HitArrangements)
                 {
                     foreach (int squareID in arrangement)
                     {
@@ -212,8 +220,7 @@
                 }
             }
 
-            Square returnedSq = probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
-            return (returnedSq, probability.Values.Sum() == 0 ? 0 : (decimal)probability[returnedSq] / probability.Values.Sum());
+            return probability.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
         }
     }
 }

@@ -205,7 +205,7 @@
         /// <summary>
         /// Gets the collection of all of the ship's potential arrangements.
         /// </summary>
-        public HashSet<HashSet<int>> Arrangements
+        public HashSet<HashSet<int>> HitArrangements
         {
             get
             {
@@ -233,11 +233,14 @@
             }
         }
 
+        /// <summary>
+        /// Gets the collection of the ship's potential arrangements where the ship does not lie on a hit square.
+        /// </summary>
         public HashSet<HashSet<int>> NoHitArrangements
         {
             get
             {
-                HashSet<HashSet<int>> res = new();
+                HashSet<HashSet<int>> res = new ();
 
                 foreach (Square square in this.Grid.Squares)
                 {
