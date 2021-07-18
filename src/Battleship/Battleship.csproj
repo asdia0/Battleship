@@ -13,6 +13,8 @@
 	<PackageTags>Battleship</PackageTags>
 	<Description>A simulator and solver for Battleship.</Description>
 	<PackageId>Battleship</PackageId>
+	<Version>1.1.0</Version>
+	<PackageReleaseNotes>- Added Layout.Random(int, int, List&lt;Ship&gt;)</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
