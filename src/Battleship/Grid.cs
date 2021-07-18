@@ -294,45 +294,7 @@
         /// <param name="shipList">List of ships to add.</param>
         public void AddShipsRandomly(List<Ship> shipList)
         {
-            Random rnd = new ();
-
-            int counter = 0;
-
-            while (this.Ships.Count != shipList.Count)
-            {
-                if (counter >= shipList.Count)
-                {
-                    foreach (Ship localShip in this.Ships)
-                    {
-                        foreach (Square localSq in localShip.Squares)
-                        {
-                            int id = localSq.ID;
-                            this.Squares[id] = null;
-                            this.Squares[id] = new Square(this, id);
-                        }
-                    }
-
-                    this.Ships.Clear();
-                    counter = 0;
-                }
-
-                Ship ship = shipList[counter];
-
-                counter++;
-                bool horizontal = false;
-
-                if (rnd.Next(2) == 0)
-                {
-                    horizontal = true;
-                }
-
-                Ship addShip = new (this, ship.Length);
-
-                if (this.AddShip(this.UnoccupiedSquares[rnd.Next(this.UnoccupiedSquares.Count)], addShip, horizontal ? Alignment.Horizontal : Alignment.Vertical))
-                {
-                    continue;
-                }
-            }
+            this.AddShipsFromGrid(Layout.Random(this.Length, this.Breadth, shipList));
         }
 
         /// <summary>
@@ -341,23 +303,7 @@
         /// <param name="shipList">The list of ships to find the optimal layout of.</param>
         public void AddShipsOptimally(List<Ship> shipList)
         {
-            Grid optimalLayout = Layout.Optimal(this.Length, this.Breadth, shipList);
-
-            foreach (Ship optimalShip in optimalLayout.Ships)
-            {
-                Ship ship = new (this, optimalShip.Length);
-
-                this.Ships.Add(ship);
-
-                HashSet<Square> shipSquares = optimalShip.Squares.Select(i => this.Squares[i.ID]).ToHashSet();
-
-                ship.Squares = shipSquares;
-
-                foreach (Square square in shipSquares)
-                {
-                    square.Ship = ship;
-                }
-            }
+            this.AddShipsFromGrid(Layout.Optimal(this.Length, this.Breadth, shipList));
         }
     }
 }
