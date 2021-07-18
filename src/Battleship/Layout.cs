@@ -138,7 +138,7 @@
                     horizontal = true;
                 }
 
-                Ship addShip = new(res, ship.Length);
+                Ship addShip = new (res, ship.Length);
 
                 if (res.AddShip(res.UnoccupiedSquares[rnd.Next(res.UnoccupiedSquares.Count)], addShip, horizontal ? Alignment.Horizontal : Alignment.Vertical))
                 {
